@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import userStore from '../store/user'
 import { Button, AppBar, Toolbar, IconButton, Typography} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { RouteComponentProps, Redirect, withRouter} from 'react-router-dom';
+import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles'
 
 interface Props extends RouteComponentProps {}
@@ -14,7 +14,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
     const [title, setTitle] = useState('metitle')
     return (
         <div className={classes.root}>
-            <AppBar color='secondary' position="static">
+            <AppBar color='secondary' position="fixed">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                     <MenuIcon />
@@ -45,4 +45,4 @@ const useStyles = makeStyles({
     }
 });
 
-export default withRouter(MainAppBar)
+export default withRouter(MainAppBar) // withRouter enables us to use the router even though this component is not a "Route"

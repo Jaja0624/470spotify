@@ -1,16 +1,18 @@
 import { createMuiTheme }  from '@material-ui/core/styles'
 
 // global theme
-// material ui theming: 
+// material ui theming... 
+// for more info: 
 // https://material-ui.com/customization/theming/#theme-configuration-variables
 
 const theme = createMuiTheme({
     palette: {
+        type:'dark',
         primary: { 
             main: '#179443' 
         },
         secondary: { 
-            main :'#E8E6E3'
+            main :'#191B1C'
         }
     },
     typography: {

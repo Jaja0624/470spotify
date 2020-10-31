@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import { colors } from '@material-ui/core';
 import theme from '../core/theme';
 import { red } from '@material-ui/core/colors';
-import { Palette } from '@material-ui/icons';
+// import { Palette } from '@material-ui/icons';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 

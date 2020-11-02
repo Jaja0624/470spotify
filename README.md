@@ -15,48 +15,62 @@ Libraries
 
 - Axios (allows for http requests)
 
-## 470 - Backend (All steps done in Windows)
+## 470 - Backend Setup (Windows)
 
-Libraries
-- Express (framework to make middleware)
-- Cors (allows to make http requests to and from react and node)
-- Pg (Postgres)
+### Google Cloud SDK Installation and Running the Database Proxy
 
-> To be able to properly run the node server, we need to ensure that the db will properly connect. In this case, we need to make sure that the google cloud sdk is installed in your local computer, you are authenticated to use the project, and that you have downloaded, and ran the proxy.
+To be able to properly run the node server, we need to ensure that the database will properly connect. In this case, we need to ensure that the Google Cloud SDK is properly intalled in your local computer, you are authenticated to use the project, and that you have downloaded and ran the proxy of the database.
 
-Steps prior to running the node server:
-1. If you have not yet installed the Google Cloud SDK to your local computer, go to this link: https://cloud.google.com/sdk/docs/install . This will allow you to authenticate with Google Cloud Platform so that you can properly authenticate when using the proxy.
+1. If the Google Cloud SDK is already installed and authenticated, skip to Step 4.
+2. Go to [the Google Cloud SDK installation](https://cloud.google.com/sdk/docs/install) to install. 
+3. Authenticate with the Google Cloud SDK.
+4. Download [the cloud proxy for the database](https://cloud.google.com/sql/docs/postgres/connect-admin-proxy), following "Step 2. Install the proxy". Keep track of where you have placed the executable file.
+5. Use the Google SDK terminal and go to the folder where you have downloaded the proxy. 
+6. On the Google SDK terminal, run the following command:
+    ```bash
+    cloud_sql_proxy -instances=cmpt470-proj:northamerica-northeast1:cmpt470db=tcp:5431
+    ```
+    If done properly, the following should be the output:
+    ```bash
+    2020/10/29 16:29:30 Listening on 127.0.0.1:5431 for cmpt470-proj:northamerica-northeast1:cmpt470db
+    2020/10/29 16:29:30 Ready for new connections
+    ```
 
-2. Follow step (2) in the link : https://cloud.google.com/sql/docs/postgres/connect-admin-proxy to download the proxy. 
+    To terminate the connection, run the command: 
+    ```bash
+    ctrl + c
+    ```
+7. You can now run the server while the database is properly connected.
 
-3. Use the Google SDK terminal and go to the folder where you have downloaded the proxy
+### Running the Backend Server
 
-4. in the Google SDK terminal : cloud_sql_proxy -instances=cmpt470-proj:northamerica-northeast1:cmpt470db=tcp:5431. If done correctly, the following should be the output:
+1. Ensure that the database proxy is properly running. If not, refer to **Google Cloud SDK Installation and Running the Database Proxy**
+2. Using a terminal/console, go to `cmpt470-project/server` and type the following command to install all dependencies for the server:
+    ```bash
+    npm install
+    ```
+3. Create a `.env` file in `cmpt470-project/server`, ensuring that the following environment variables are set:
 
-2020/10/29 16:29:30 Listening on 127.0.0.1:5431 for cmpt470-proj:northamerica-northeast1:cmpt470db
-2020/10/29 16:29:30 Ready for new connections
+    ```javascript
+    DATABASE_HOST = <populate host>
+    DATABASE_USERNAME = <populate username>
+    DATABASE_PORT = <populate database port>
+    DATABASE_PASSWORD = <populate password>
+    DATABASE_NAME = <populate database name>
+    SERVER_PORT = <populate server port>
+    ```
+3. To run the server using Typescript: `npm run dev`. To build the Typescript int Javascript: `npm run build`. To run the Javascript after building: `npm start`.
 
-5. When step 4 is executed properly, you can start running the node server with a fully functioning database connection.
+    To terminate the server, run the command:
+    ```bash
+    ctrl + c
+    ```
 
-> To terminate the connection with the Proxy, type ctrl + c
+### Testing the Backend Server with the Database
 
-Steps to run the node server:
-1. First, we need to ensure that we can connect to the Cloud SQL proxy. Follow "Steps prior to running the node server" if not yet done.
+> To be determined, but right now, a valid output from the console would look like such
 
-2. Using the terminal, go to cmpt470-project/server and type the command to install all dependencies for the server: npm install
-
-3. To run the server using Typescript: npm run dev. To build the Typescript into javascript: npm run build. To run the Javascript after building: npm start
-
-4. Ensure the front end server is also running.
-
-5. Go to the browser and go to localhost:3000 to see the front end.
-
-6. Click the 'Login' button.
-
-7. Click the 'Logout' button.
-
-8. The following should be the console.log of the node server:
-
+```bash
 /api called
 { attr1: 'test' }
 value of attribute in request is test
@@ -65,7 +79,13 @@ value of attribute in request is test
 ├─────────┼───────────┼─────────────┼────────────────────┤
 │    0    │    '1'    │ 'testGroup' │ 'some description' │
 └─────────┴───────────┴─────────────┴────────────────────┘
+```
 
-Also, in the browser, there should be an alert saying 'successful post'.
+Also, in the browser, there should be an alert saying `successful post`.
 
-> To terminate the local server, type ctrl + c
+###Libraries
+
+
+- Express (framework to make middleware)
+- Cors (allows to make http requests to and from react and node)
+- Pg (Postgres)

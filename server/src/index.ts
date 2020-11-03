@@ -1,6 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import { Pool } from 'pg'
+import config from './config';
+
+const DATABASE_HOST = config.database.host;
+const DATABASE_USERNAME = config.database.user;
+const DATABASE_PORT : number = +config.database.port;
+const DATABASE_PASSWORD = config.database.password;
+const DATABASE_NAME = config.database.databaseName;
+const SERVER_PORT = config.server.port;
 
 const app = express();
 
@@ -8,11 +16,11 @@ app.use(express.json());// be able to read in the body of the req and res
 app.use(cors());
 
 const pool = new Pool({
-    host:'127.0.0.1',
-    user: 'postgres',
-    password: 'mfz2gMkiJulF73yi',
-    port: 5431,
-    database: 'cmpt470db',
+    host: DATABASE_HOST,
+    user: DATABASE_USERNAME,
+    password: DATABASE_PASSWORD,
+    port: DATABASE_PORT,
+    database: DATABASE_NAME,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000
@@ -32,4 +40,4 @@ app.post('/api', async (req, res) => {
 
 
 
-app.listen(5000, () => console.log('Server Running'));
+app.listen(SERVER_PORT, () => console.log(`Server Running ${SERVER_PORT}`));

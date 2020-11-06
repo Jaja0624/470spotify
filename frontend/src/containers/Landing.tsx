@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import Axios from 'axios';
 
 interface Props extends RouteComponentProps {}
 
@@ -48,7 +49,18 @@ export const Landing: React.FC<Props> = ({history}) => {
 
                     <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
                         userState.login(() => {
-                            console.log('login btn pressed')
+                            console.log('login btn pressed');
+                            const obj = {attr1 : "test"};
+                            console.log(obj);
+
+                            // For local testing:
+                            // Axios.post('http://localhost:5000/api', obj)
+                            // For production:
+                            // Axios.post('/api', obj)
+                            Axios.post('/api', obj)
+                                 .then(res => {
+                                     console.log(res);
+                                 })
                             history.push('/app');
                         })
                     }}>

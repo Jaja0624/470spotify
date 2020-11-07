@@ -1,17 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-import { Pool } from 'pg'
 import dotenv from 'dotenv';
 import Knex from 'knex';
 
 dotenv.config();
 
-const DB_HOST = process.env.DB_HOST || 'defaultHost:5000';
-const DB_SOCKET_ADDR = DB_HOST.split(':');
+const DB_HOST : string | undefined = process.env.DB_HOST;
 const DB_USER = process.env.DB_USER || 'defaultUser';
 const DB_PASS = process.env.DB_PASS || 'defaultPassword';
 const DB_NAME = process.env.DB_NAME || 'defaultDatabase';
-const SERVER_PORT = process.env.SERVER_PORT || '8080';
+const BACKEND_PORT = process.env.BACKEND_PORT || '8080';
 const DB_SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 const CLOUD_SQL_CONNECTION_NAME = process.env.CLOUD_SQL_CONNECTION_NAME;
 
@@ -29,11 +27,11 @@ app.use((req, res, next) => {
   });
 
 // [START cloud_sql_postgres_knex_create_tcp]
-const connectWithTcp = (config : any) => {
+const connectWithTcp = (dbHost : string, config : any) => {
     console.log("Connecting with tcp");
 
     // Extract host and port from socket address
-    // const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
+    const dbSocketAddr  = dbHost.split(':'); // e.g. '127.0.0.1:5432'
 
     // Establish a connection to the database
     return Knex({
@@ -42,8 +40,8 @@ const connectWithTcp = (config : any) => {
             user: DB_USER, // e.g. 'my-user'
             password: DB_PASS, // e.g. 'my-user-password'
             database: DB_NAME, // e.g. 'my-database'
-            host: DB_SOCKET_ADDR[0], // e.g. '127.0.0.1'
-            port: DB_SOCKET_ADDR[1], // e.g. '5432'
+            host: dbSocketAddr[0], // e.g. '127.0.0.1'
+            port: dbSocketAddr[1], // e.g. '5432'
         },
         // ... Specify additional properties here.
         ...config,
@@ -109,8 +107,8 @@ const connect = () => {
     // [END cloud_sql_postgres_knex_backoff]
   
     let knex;
-    if (process.env.DB_HOST) {
-      knex = connectWithTcp(config);
+    if (DB_HOST) {
+      knex = connectWithTcp(DB_HOST, config);
     } else {
       knex = connectWithUnixSockets(config);
     }
@@ -145,8 +143,7 @@ app.post('/api', async function (req, res) {
     res.status(200).send(temp);
 });
 
-const PORT = process.env.PORT || 8080;
-const server = app.listen(SERVER_PORT, () => {
-    console.log(`App listening on port ${SERVER_PORT}`);
+const server = app.listen(BACKEND_PORT, () => {
+    console.log(`App listening on port ${BACKEND_PORT}`);
     console.log('Press Ctrl+C to quit.');
 });

@@ -17,7 +17,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
-                    <MenuIcon />
+                    {/* <MenuIcon /> */}
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
                     {title}

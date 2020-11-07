@@ -10,11 +10,12 @@
 
 # production
 /build
-/server/build
+/backend/build
+# /backend/jsOutput
 
 # misc
 .DS_Store
-/server/.env
+/backend/.env
 .env.local
 .env.development.local
 .env.test.local

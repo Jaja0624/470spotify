@@ -62,6 +62,24 @@ export const Landing: React.FC<Props> = ({history}) => {
                     }}>
                         Sign In
                     </Button>
+
+                    <a href='http://localhost:8888'> 
+                        <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
+                            userState.login(() => {
+                                console.log('login btn pressed');
+                            const obj = {attr1 : "test"};
+                            console.log(obj);
+
+                            Axios.post('/api', obj)
+                                 .then(res => {
+                                     console.log(res);
+                                 })
+                            history.push('/app');
+                            })
+                        }}>
+                            Log in with Spotify
+                        </Button>
+                    </a>
                 </Grid>
             </Grid>
         </div>

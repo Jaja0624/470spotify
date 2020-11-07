@@ -54,10 +54,10 @@ export const Landing: React.FC<Props> = ({history}) => {
                             console.log(obj);
 
                             // For local testing:
-                            // Axios.post('http://localhost:5000/api', obj)
+                            Axios.post('http://localhost:5000/api', obj)
                             // For production:
                             // Axios.post('/api', obj)
-                            Axios.post('/api', obj)
+                            // Axios.post('/api', obj)
                                  .then(res => {
                                      console.log(res);
                                  })

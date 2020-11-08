@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import Knex from 'knex';
 
+// Required to use for process.env variables
 dotenv.config();
 
 const DB_HOST : string | undefined = process.env.DB_HOST;
@@ -26,7 +27,7 @@ app.use((req, res, next) => {
     next();
   });
 
-// [START cloud_sql_postgres_knex_create_tcp]
+// Running locally on Windows uses TCP to connect to the database
 const connectWithTcp = (dbHost : string, config : any) => {
     console.log("Connecting with tcp");
 
@@ -47,11 +48,11 @@ const connectWithTcp = (dbHost : string, config : any) => {
         ...config,
     });
 };
-// [END cloud_sql_postgres_knex_create_tcp]
 
-// [START cloud_sql_postgres_knex_create_socket]
+// Running locally on Mac or Linux uses UNIX sockets to connect to the database.
+// Running on production (GCP) also uses UNIX sockets,
+// (specifically a hostname starting with /cloudsql).
 const connectWithUnixSockets = (config : any)=> {
-    // const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
     console.log("Connecting with unix sockets");
 
     // Establish a connection to the database
@@ -67,7 +68,6 @@ const connectWithUnixSockets = (config : any)=> {
         ...config,
     });
 };
-// [END cloud_sql_postgres_knex_create_socket]
 
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const connect = () => {
@@ -76,62 +76,63 @@ const connect = () => {
     // something like https://cloud.google.com/kms/ to help keep secrets secret.
     const config : any = {pool: {}};
   
-    // [START cloud_sql_postgres_knex_limit]
     // 'max' limits the total number of concurrent connections this pool will keep. Ideal
     // values for this setting are highly variable on app design, infrastructure, and database.
     config.pool.max = 5;
     // 'min' is the minimum number of idle connections Knex maintains in the pool.
     // Additional connections will be established to meet this value unless the pool is full.
     config.pool.min = 5;
-    // [END cloud_sql_postgres_knex_limit]
   
-    // [START cloud_sql_postgres_knex_timeout]
     // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
     // connection from the pool. This is slightly different from connectionTimeout, because acquiring
     // a pool connection does not always involve making a new connection, and may include multiple retries.
     // when making a connection
     config.pool.acquireTimeoutMillis = 60000; // 60 seconds
+
     // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
     // initial connection before retrying.
     // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
     config.createTimeoutMillis = 30000; // 30 seconds
+
     // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
     // and not be checked out before it is automatically closed.
     config.idleTimeoutMillis = 600000; // 10 minutes
-    // [END cloud_sql_postgres_knex_timeout]
   
-    // [START cloud_sql_postgres_knex_backoff]
     // 'knex' uses a built-in retry strategy which does not implement backoff.
     // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
     config.createRetryIntervalMillis = 200; // 0.2 seconds
-    // [END cloud_sql_postgres_knex_backoff]
   
     let knex;
     if (DB_HOST) {
-      knex = connectWithTcp(DB_HOST, config);
+        knex = connectWithTcp(DB_HOST, config);
     } else {
-      knex = connectWithUnixSockets(config);
+        knex = connectWithUnixSockets(config);
     }
     return knex;
 };
 
 const knex = connect();
 
-const getStuff = async (knex : any) => {
-  return await knex
-    .select('*')
-    .from('appgroup')
-    .limit(5);
+const createGroup = async (knex : any, data : string) => {
+  return await knex.raw(`
+    insert into AppGroup (group_name) values
+    ('${data}')
+  `);
+};
+
+const getAllGroup = async (knex : any) => {
+    return await knex
+      .select('*')
+      .from('appgroup')
 };
 
 app.post('/api', async function (req, res) {
     console.log('/api called');
     console.log(req.body);
-
     try {
-        var temp = await getStuff(knex);
-        console.log(temp);
-
+        var result = await getAllGroup(knex);
+        console.log(result);
+        res.json(result);
     } catch (err) {
         console.log(err);
         res
@@ -139,8 +140,33 @@ app.post('/api', async function (req, res) {
           .send('Unable to load page; see logs for more details.')
           .end();
     }
+});
 
-    res.status(200).send(temp);
+// creates a group
+app.post('/api/group/create', async (req, res) => {
+    console.log('api/group/create called');
+    console.log(req.body);
+    try {
+        var result = await createGroup(knex, req.body.groupName);
+        console.log(result)
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.json(err)
+    }
+});
+
+// gets all the groups in the db 
+app.get('/api/group/all', async (req, res) => {
+    console.log('api/group/all called');
+    try {
+        var result = await getAllGroup(knex);
+        console.log(result)
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.json(err)
+    }
 });
 
 const server = app.listen(BACKEND_PORT, () => {

@@ -33,6 +33,7 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            maxWidth: '100%',
             textAlign:'center',
             justifyContent:'center',
             alignItems:'center',

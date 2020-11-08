@@ -1,32 +1,51 @@
-import * as React from 'react';
+import React, { useEffect, useState }from 'react';
 import {
     Route, 
     Redirect,
-    RouteProps,
-    RouteComponentProps
 } from "react-router-dom";
+import userStore from '../store/user'
+import axios, {AxiosResponse} from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-interface PrivateRouteProps extends RouteProps {
-    isAuthenticated: boolean;
-}
+export const AuthenticatedRoute = ({ component, ...rest}: any) => {
+    const user = userStore();
+    const [loading, setLoading] = useState(true);
 
-export class AuthenticatedRoute extends Route<PrivateRouteProps> {
-    render() {
+    const getCurrentUserData = async (): Promise<AxiosResponse> => {
+        const aa = new URLSearchParams(window.location.search);
+        const accessToken = aa.get('access_token');
+        return await axios.get('https://api.spotify.com/v1/me', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+    }
+
+    const verifyAccessToken = async () => {
+        const result = await getCurrentUserData();
+        if (result.status === 200) {
+            user.setSpotifyProfile(result.data);
+        }
+        setLoading(false);
+    }
+    useEffect(() => {
+        verifyAccessToken();
+    })
+    
+    const routeComponent = (props: any) => (
+        user.authenticated
+            ? React.createElement(component, props)
+            : <Redirect to={{pathname: '/'}}/>
+    );
+
+    if (loading) {
         return (
-            <Route render={(props: RouteComponentProps) => {
-                if(!this.props.isAuthenticated) {
-					console.log('not logged in. redirect')
-                    return <Redirect to='/' />
-                } 
+            <div>
+                <CircularProgress/>
+            </div>
 
-                if(this.props.component) {
-                    return React.createElement(this.props.component);
-                } 
-
-                if(this.props.render) {
-                    return this.props.render(props);
-                }
-            }} />
-        );
+        )
+    } else {
+        return <Route {...rest} render={routeComponent}/>;
     }
 }

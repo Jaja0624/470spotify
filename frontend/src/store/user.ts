@@ -6,6 +6,8 @@ type State = {
     authenticated: boolean,
     login: (cb: any) => void,
     logout: (cb: any) => void,
+    spotifyProfile: any,
+    setSpotifyProfile: (blah: any) => void,
     userGroups: IGroup[],
     currentGroup?: IGroup,
     setCurrentGroup: (id: number) => void,
@@ -13,7 +15,7 @@ type State = {
 }
 
 const userStore = create<State>(set => ({
-    authenticated: false, // primitive state
+    authenticated: true, // primitive state
     login: (cb) => { // function that modifies state
         set(state => (
             {
@@ -29,6 +31,10 @@ const userStore = create<State>(set => ({
             }
         ))
         cb()
+    },
+    spotifyProfile: {},
+    setSpotifyProfile: (blah: any) => { 
+        set(state => ({spotifyProfile: blah}))
     },
     userGroups: [ // static group data, to be replaced with what i just showed u 
     {

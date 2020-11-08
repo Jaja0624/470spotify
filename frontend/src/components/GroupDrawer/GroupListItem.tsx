@@ -17,8 +17,8 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
     
     // executed when component is mounted
     useEffect(() => {
-        console.log("GroupListItem groupData", groupData);
-        console.log("GroupListItem key", key);
+        // console.log("GroupListItem groupData", groupData);
+        // console.log("GroupListItem key", key);
     })
 
     return (

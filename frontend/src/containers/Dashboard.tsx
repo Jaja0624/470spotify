@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import userStore from '../store/user'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
@@ -25,6 +25,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
     }
     const classes = useStyles();
     const userState = userStore()
+    
     const {
         isGroupDrawerOpen, 
         hideGroupDrawer, 

@@ -11,7 +11,6 @@ interface Props extends RouteComponentProps {}
 const MainAppBar: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
-    const [title, setTitle] = useState('metitle')
     return (
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
@@ -20,7 +19,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                     {/* <MenuIcon /> */}
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                    {title}
+                        {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
                     </Typography>
                     <Button color="primary" variant='contained' onClick={() => {
                         userState.logout(() => {

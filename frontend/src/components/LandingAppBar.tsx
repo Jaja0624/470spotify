@@ -12,6 +12,7 @@ const LandingAppBar: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
     const [title, setTitle] = useState('<Project Name>')
+    
     return (
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">

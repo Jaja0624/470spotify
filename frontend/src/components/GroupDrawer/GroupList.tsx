@@ -13,12 +13,6 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
     const classes = useStyles();
     const userState = userStore();
 
-    // executed when component is mounted
-    useEffect(() => {
-        console.log('this component is mounted');
-        console.log(userState.userGroups);
-    })
-    
     return (
         <div className={classes.root}>
             <List>

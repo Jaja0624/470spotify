@@ -15,7 +15,7 @@ import Axios from 'axios';
 interface Props extends RouteComponentProps {}
 
 
-export const Landing: React.FC<Props> = ({history}) => {
+const Landing: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
 
@@ -131,3 +131,5 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
+
+export default Landing;

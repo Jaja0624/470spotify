@@ -15,7 +15,7 @@ import Axios from 'axios';
 interface Props extends RouteComponentProps {}
 
 
-export const Landing: React.FC<Props> = ({history}) => {
+const Landing: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
 
@@ -61,6 +61,23 @@ export const Landing: React.FC<Props> = ({history}) => {
                         })
                     }}>
                         Sign In
+                    </Button>
+
+                    <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
+                        userState.login(() => {
+                            console.log('login btn pressed');
+                            const obj = {attr1 : "test"};
+                            console.log(obj);
+
+                            Axios.post('/api', obj)
+                                    .then(res => {
+                                        console.log(res);
+                                    })
+                            history.push('/app');
+                            })
+                        window.location.href = 'http://localhost:8888/Login';
+                    }}>
+                        Log in with Spotify
                     </Button>
                 </Grid>
             </Grid>
@@ -113,3 +130,5 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
+
+export default Landing;

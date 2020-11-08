@@ -10,17 +10,32 @@ import CreateGroupModal from '../CreateGroupModal'
 import GroupList from './GroupList'
 import KeyboardArrowLeftTwoToneIcon from '@material-ui/icons/KeyboardArrowLeftTwoTone';
 import axios from 'axios';
+import IGroup from '../../types/IGroup'
 
-interface Props extends RouteComponentProps {
-
-}
+interface Props extends RouteComponentProps {}
 
 // create group popup
 const GroupDrawer: React.FC<Props> = ({history}: Props) => {
+    const user = userStore();
     const handleOpen = () => {
         console.log("hh")
     }
 
+    const getGroup = async ()  => {
+		const res = await axios.get('http://localhost:5000/api/group/all');
+		console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
+		const groups: Array<IGroup> = [];
+		for (let i = 0; i < res.data.length; i++) {
+			let newG = {
+				id: res.data[i].group_uid,
+				name: res.data[i].group_name,
+				img_url: undefined
+			}
+			groups.push(newG);
+		}
+		user.setUserGroups(groups);
+    }
+    
     const createGroupHandler = async (groupName: string) => {
         console.log(groupName);
         console.log('group created...' + groupName);
@@ -34,7 +49,7 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         userState.setUserGroups(old);
         let body = {groupName}
         const res = axios.post('http://localhost:5000/api/group/create', body);
-        console.log(res);
+        await getGroup();
     }
     const classes = useStyles();
     const userState = userStore();

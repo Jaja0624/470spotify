@@ -52,7 +52,7 @@ const GroupDrawerSmall: React.FC<Props> = ({history}: Props) => {
                 </IconButton>
             </Typography>
             
-            <div style={{padding: 15}}>
+            <div>
                 <IconButton
                         edge="end"
                         aria-label="addGroup"

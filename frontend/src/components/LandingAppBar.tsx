@@ -11,15 +11,12 @@ interface Props extends RouteComponentProps {}
 const LandingAppBar: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
-    const [title, setTitle] = useState('<Project Name>')
-    
+
+    const [title, setTitle] = useState('metitle')
     return (
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                    <MenuIcon />
-                    </IconButton>
                     <Typography variant="h6" className={classes.title}>
                     {title}
                     </Typography>

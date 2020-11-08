@@ -75,7 +75,7 @@ export const Landing: React.FC<Props> = ({history}) => {
                                     })
                             history.push('/app');
                             })
-                        window.location.href = 'http://localhost:8888';
+                        window.location.href = 'http://localhost:8888/Login';
                     }}>
                         Log in with Spotify
                     </Button>

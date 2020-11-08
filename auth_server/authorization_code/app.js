@@ -108,7 +108,7 @@ app.get('/callback', function(req, res) {
 
         // we can also pass the token to the browser to make requests from there
         // this is where you get redirected after logging in
-        res.redirect('http://localhost:3000/app#' +
+        res.redirect('http://localhost:3000/app?' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token

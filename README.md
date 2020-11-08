@@ -42,24 +42,23 @@ To be able to properly run the node server, we need to ensure that the database 
     ```
 7. You can now run the server while the database is properly connected.
 
-### Running the Backend Server
+### Running the Backend Server Locally
 
 1. Ensure that the database proxy is properly running. If not, refer to **Google Cloud SDK Installation and Running the Database Proxy**
 2. Using a terminal/console, go to `cmpt470-project/server` and type the following command to install all dependencies for the server:
     ```bash
     npm install
     ```
-3. Create a `.env` file in `cmpt470-project/server`, ensuring that the following environment variables are set:
+3. Create a `.env` file in `cmpt470-project/backend`, ensuring that the following environment variables are set:
 
     ```javascript
-    DATABASE_HOST = <populate host>
-    DATABASE_USERNAME = <populate username>
-    DATABASE_PORT = <populate database port>
-    DATABASE_PASSWORD = <populate password>
-    DATABASE_NAME = <populate database name>
-    SERVER_PORT = <populate server port>
+    DB_USER = <populate username>
+    DB_PASS = <populate password>
+    DB_NAME = <populate database name>
+    DB_HOST = 127.0.0.1:5432
+    BACKEND_PORT = 5000
     ```
-3. To run the server using Typescript: `npm run dev`. To build the Typescript int Javascript: `npm run build`. To run the Javascript after building: `npm start`.
+3. To run the server using Typescript: `npm run dev`. To build the Typescript into Javascript: `npm run build`. To run the Javascript after building: `npm start`.
 
     To terminate the server, run the command:
     ```bash

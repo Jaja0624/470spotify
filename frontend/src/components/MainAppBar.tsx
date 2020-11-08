@@ -24,6 +24,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                     <Button color="primary" variant='contained' onClick={() => {
                         userState.logout(() => {
                                 console.log('login btn pressed')
+                                userState.setSpotifyProfile(undefined);
                                 history.push('/')
                             })
                         }}>

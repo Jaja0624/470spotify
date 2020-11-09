@@ -17,12 +17,12 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
     
     // executed when component is mounted
     useEffect(() => {
-        console.log("GroupListItem groupData", groupData);
-        console.log("GroupListItem key", key);
+        // console.log("GroupListItem groupData", groupData);
+        // console.log("GroupListItem key", key);
     })
 
     return (
-        <ListItem button className={classes.root} key={groupData.id} onClick={() => {setCurrentGroup(groupData.id)}}>
+        <ListItem button className={classes.root} key={groupData.id} style={{maxHeight: '100%', overflow: 'auto'}} onClick={() => {setCurrentGroup(groupData.id)}}>
             <ListItemAvatar>
                 {groupData.img_url ? 
                 (
@@ -31,8 +31,9 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
                     <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
                 }
             </ListItemAvatar>
-            <ListItemText
+            <ListItemText 
                 primary={groupData.name}
+                className={classes.group}
             />
         </ListItem>
     )
@@ -46,6 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems:'center',
             width: '100%',
         },
+        group: {
+            overflowWrap: 'anywhere'
+        }
     }),
 );
 

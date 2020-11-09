@@ -13,30 +13,25 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
     const classes = useStyles();
     const userState = userStore();
 
-    // executed when component is mounted
-    useEffect(() => {
-        console.log('this component is mounted');
-        console.log(userState.userGroups);
-    })
-    
     return (
-        <div className={classes.root}>
-            <List>
+            <List className={classes.root}>
               {userState.userGroups.map((groupData: IGroup) => {
                   return (<GroupListItem key={groupData.id} groupData={groupData}/>)
               })}
             </List>
-        </div>
     )
 }
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+
         root: {
-            textAlign:'center',
-            justifyContent:'center',
-            alignItems:'center',
-        },
+            flexDirection:'row',
+            overflowX:'auto',
+            width:'100%',
+            height:'100%',
+            position:'relative'
+        }
     }),
 );
 

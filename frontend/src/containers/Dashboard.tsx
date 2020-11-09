@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import userStore from '../store/user'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
@@ -19,12 +19,8 @@ import CurrentPlaylist from '../components/CurrentPlaylist'
 interface Props extends RouteComponentProps {}
 
 const Dashboard: React.FC<Props> = ({history}) => {
-    const createGroup = () => {
-        // open create group dialog
-        console.log("create gruop clicked");
-    }
     const classes = useStyles();
-    const userState = userStore()
+    const user = userStore()
     const {
         isGroupDrawerOpen, 
         hideGroupDrawer, 
@@ -34,13 +30,13 @@ const Dashboard: React.FC<Props> = ({history}) => {
         hideGroupDrawer: state.hideGroupDrawer,
         openGroupDrawer: state.openGroupDrawer,
     }), shallow);
-
+    
     return (
         <div className={classes.root}>
             <MainAppBar/>
             {isGroupDrawerOpen ? (
                 <Grid container className={classes.container}>
-                    <Grid item xs={2}>
+                    <Grid item xs={2} className={classes.drawer}>
                         <GroupDrawer/>
                     </Grid>
                     <Grid item xs={7} className={`${classes.box} ${classes.bigBox}`}>
@@ -78,7 +74,8 @@ const Dashboard: React.FC<Props> = ({history}) => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-        minHeight: '100vh'
+        minHeight: '100vh',
+        overflowY: 'hidden' // PREVENT SCROLLING
     },
     smallContainer: {
         flexGrow:1,
@@ -91,6 +88,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
         border: "solid 1px black",
+    },
+    drawer:{
+        overflowY:'auto',
+        backgroundColor: theme.drawer.backgroundColor,
+
     },
     bigBox: {
         width: '100%',

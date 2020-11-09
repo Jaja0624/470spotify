@@ -1,32 +1,20 @@
-import * as React from 'react';
+import React from 'react';
 import {
     Route, 
     Redirect,
-    RouteProps,
-    RouteComponentProps
 } from "react-router-dom";
+import userStore from '../store/user'
 
-interface PrivateRouteProps extends RouteProps {
-    isAuthenticated: boolean;
+const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
+    const user = userStore();
+    
+    const routeComponent = (props: any) => (
+        user.spotifyProfile
+            ? React.createElement(component, props)
+            : <Redirect to={{pathname: redirectPath}}/>
+    );
+
+    return <Route {...rest} render={routeComponent}/>;
 }
 
-export class AuthenticatedRoute extends Route<PrivateRouteProps> {
-    render() {
-        return (
-            <Route render={(props: RouteComponentProps) => {
-                if(!this.props.isAuthenticated) {
-					console.log('not logged in. redirect')
-                    return <Redirect to='/' />
-                } 
-
-                if(this.props.component) {
-                    return React.createElement(this.props.component);
-                } 
-
-                if(this.props.render) {
-                    return this.props.render(props);
-                }
-            }} />
-        );
-    }
-}
+export default AuthenticatedRoute;

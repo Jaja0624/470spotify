@@ -52,7 +52,7 @@ const GroupDrawerSmall: React.FC<Props> = ({history}: Props) => {
                 </IconButton>
             </Typography>
             
-            <div style={{padding: 15}}>
+            <div>
                 <IconButton
                         edge="end"
                         aria-label="addGroup"
@@ -90,8 +90,6 @@ const useStyles = makeStyles((theme: Theme) =>
         title: {
             textAlign:'left',
             paddingLeft: 2,
-            paddingTop: 15,
-
         },
         addGroup: {
             float: 'left',

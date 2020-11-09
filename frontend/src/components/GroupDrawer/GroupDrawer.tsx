@@ -3,24 +3,35 @@ import shallow from 'zustand/shallow'
 import userStore from '../../store/user'
 import globalStore from '../../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Grid, Button,Typography, IconButton, List } from '@material-ui/core';
+import { Grid, Button,Typography, IconButton, List, Container } from '@material-ui/core';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import CreateGroupModal from '../CreateGroupModal'
 import GroupList from './GroupList'
 import KeyboardArrowLeftTwoToneIcon from '@material-ui/icons/KeyboardArrowLeftTwoTone';
 import axios from 'axios';
+import IGroup from '../../types/IGroup'
 
-interface Props extends RouteComponentProps {
-
-}
+interface Props extends RouteComponentProps {}
 
 // create group popup
 const GroupDrawer: React.FC<Props> = ({history}: Props) => {
-    const handleOpen = () => {
-        console.log("hh")
+    const user = userStore();
+    const getGroup = async ()  => {
+		const res = await axios.get('/api/group/all');
+		console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
+		const groups: Array<IGroup> = [];
+		for (let i = 0; i < res.data.length; i++) {
+			let newG = {
+				id: res.data[i].group_uid,
+				name: res.data[i].group_name,
+				img_url: undefined
+			}
+			groups.push(newG);
+		}
+		user.setUserGroups(groups);
     }
-
+    
     const createGroupHandler = async (groupName: string) => {
         console.log(groupName);
         console.log('group created...' + groupName);
@@ -34,7 +45,7 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         userState.setUserGroups(old);
         let body = {groupName}
         const res = axios.post('/api/group/create', body);
-        console.log(res);
+        await getGroup();
     }
     const classes = useStyles();
     const userState = userStore();
@@ -52,32 +63,36 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
 
     return (
         <div className={classes.drawer}>
-            <Typography variant="h6" className={classes.title}>
-                Groups
-                <IconButton style={{float:'right'}} onClick={hideGroupDrawer}>
+            <Grid container 
+                justify='space-between' 
+                alignItems='center' // CENTER TEXT VERTICALLY
+                direction='row'
+                className={classes.containers}>
+                <Typography variant="h6" >
+                    Groups
+                </Typography>
+                <IconButton onClick={hideGroupDrawer}>
                     <KeyboardArrowLeftTwoToneIcon/>
                 </IconButton>
-            </Typography>
-            
-            <div style={{padding: 15}}>
+            </Grid>
+        
+            <Grid container
+                justify='space-between'
+                alignItems='center'
+                direction='row'>
                 <IconButton
                         edge="end"
                         aria-label="addGroup"
-                        className={`${classes.addGroup}`}
                         onClick={() => setCreateGroupModalVisible(true)}>
                 <AddIcon />
                 <Typography variant='subtitle1'>
-                    Create Group
+                    Create
                 </Typography>
+
                 </IconButton>
-            </div>
-     
-
-            <div style={{paddingTop: 25}}>
-                <GroupList/>
-            </div>
-
-
+            </Grid>
+            
+            <GroupList/>
 
             <CreateGroupModal isOpen={createGroupModalVisible} 
                                 cancelHandler={() => setCreateGroupModalVisible(false)}
@@ -88,28 +103,14 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            textAlign:'center',
-            justifyContent:'center',
-            alignItems:'center',
-        },
         drawer: {
             height: '100%',
-            color: 'white',
-            backgroundColor: theme.drawer.backgroundColor,
-            textAlign:'center',
-            justifyContent:'center',
-            alignItems:'center',
+            width:'100%',
         },
-        title: {
-            textAlign:'left',
-            paddingLeft: 15,
-            paddingTop:15,
+        containers:{
+            paddingLeft:15,
+        }
 
-        },
-        addGroup: {
-            float: 'left',
-        },
 
     }),
 );

@@ -5,13 +5,13 @@ import {
 } from "react-router-dom";
 import userStore from '../store/user'
 
-const AuthenticatedRoute = ({ component, ...rest}: any) => {
+const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
     const user = userStore();
     
     const routeComponent = (props: any) => (
         user.spotifyProfile
             ? React.createElement(component, props)
-            : <Redirect to={{pathname: '/'}}/>
+            : <Redirect to={{pathname: redirectPath}}/>
     );
 
     return <Route {...rest} render={routeComponent}/>;

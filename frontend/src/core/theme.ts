@@ -41,6 +41,15 @@ const theme = createMuiTheme({
     },
     shape: {
         borderRadius: 15
+    },
+    overrides: {
+        MuiIconButton: {
+            root: {
+                '&:hover': {
+                    borderRadius: 0
+                }
+            }
+        }
     }
 })
 

@@ -65,8 +65,10 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         <div className={classes.drawer}>
             <Grid container 
                 justify='space-between' 
-                direction='row'>
-                <Typography variant="h6" align='center'>
+                alignItems='center' // CENTER TEXT VERTICALLY
+                direction='row'
+                className={classes.containers}>
+                <Typography variant="h6" >
                     Groups
                 </Typography>
                 <IconButton onClick={hideGroupDrawer}>
@@ -74,17 +76,21 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
                 </IconButton>
             </Grid>
         
-            <div>
+            <Grid container
+                justify='space-between'
+                alignItems='center'
+                direction='row'>
                 <IconButton
                         edge="end"
                         aria-label="addGroup"
                         onClick={() => setCreateGroupModalVisible(true)}>
                 <AddIcon />
                 <Typography variant='subtitle1'>
-                    Create Group
+                    Create
                 </Typography>
+
                 </IconButton>
-            </div>
+            </Grid>
             
             <GroupList/>
 
@@ -97,11 +103,13 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-        },
         drawer: {
             height: '100%',
+            width:'100%',
         },
+        containers:{
+            paddingLeft:15,
+        }
 
 
     }),

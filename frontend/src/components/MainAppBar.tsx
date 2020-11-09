@@ -83,7 +83,6 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                     </Popper>
 
                     <IconButton ref={anchorRef}
-                        edge="end"
                         aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
                         onClick={handleToggle}>

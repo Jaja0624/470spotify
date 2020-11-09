@@ -18,7 +18,7 @@ const App: React.FC = () => {
 	const user = userStore();
 
 	const getGroup = async ()  => {
-		const res = await axios.get('http://localhost:5000/api/group/all');
+		const res = await axios.get('/api/group/all');
 		// console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
 		if (user.userGroups.length === res.data.length) {
 			// assume no new data

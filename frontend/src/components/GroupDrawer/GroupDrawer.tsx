@@ -18,7 +18,7 @@ interface Props extends RouteComponentProps {}
 const GroupDrawer: React.FC<Props> = ({history}: Props) => {
     const user = userStore();
     const getGroup = async ()  => {
-		const res = await axios.get('http://localhost:5000/api/group/all');
+		const res = await axios.get('/api/group/all');
 		console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
 		const groups: Array<IGroup> = [];
 		for (let i = 0; i < res.data.length; i++) {
@@ -44,7 +44,7 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         })
         userState.setUserGroups(old);
         let body = {groupName}
-        const res = axios.post('http://localhost:5000/api/group/create', body);
+        const res = axios.post('/api/group/create', body);
         await getGroup();
     }
     const classes = useStyles();

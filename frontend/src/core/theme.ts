@@ -49,6 +49,11 @@ const theme = createMuiTheme({
                     borderRadius: 0
                 }
             }
+        },
+        MuiListItemAvatar: {
+            root: {
+                minWidth: 0
+            }
         }
     }
 })

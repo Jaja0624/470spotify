@@ -24,7 +24,10 @@ const GroupListItemSmall: React.FC<Props> = ({history, groupData, key}: Props) =
     return (
         <ListItem button className={classes.root} key={groupData.id} onClick={() => {setCurrentGroup(groupData.id)}}>
             <ListItemAvatar>
-                <Avatar src={groupData.img_url}/>
+                { groupData.img_url 
+                ? <Avatar src={groupData.img_url}/> 
+                : <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
+                }
             </ListItemAvatar>
         </ListItem>
     )

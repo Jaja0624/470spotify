@@ -24,62 +24,43 @@ const Landing: React.FC<Props> = ({history}) => {
             <LandingAppBar/>
 
             <Grid className={classes.signIn}>
-                <Typography className={`${classes.signInHead}`} variant="h5" gutterBottom>
+                <Typography variant="h5" gutterBottom className={`${classes.typography}`}>
                     Sign in
                 </Typography>
-                <Typography variant="body2" gutterBottom>
-                    Connect your &lt;Project name&gt; account. <br/> Don't have an account?&nbsp;  
-                    <Link className={`${classes.signUpLink}`} 
+
+                <Typography variant="body2" gutterBottom className={`${classes.typography}`}>
+                    Connect your spotify account. <br/> Don't have an account?&nbsp;  
+                    <Link
                         href="https://www.spotify.com/ca-en/signup/" target="_blank">
                             Sign up now
                     </Link>
                 </Typography>
-                
-                <Grid className="login-creds">
-                    
-                    <TextField className={`${classes.input}`} id="login-user" type="text" label="Username" variant="outlined" />
-                    <TextField className={`${classes.input}`} id="login-pass" type="password" label="Password" variant="outlined" />
 
-                    <FormControlLabel
-                        control={
-                            <Checkbox color="primary"/>
-                        }
-                        label="Remember me"
-                    />
+                <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
+                    userState.login(() => {
+                        console.log('login btn pressed');
+                        const obj = {attr1 : "test"};
+                        console.log(obj);
 
-                    <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
-                        userState.login(() => {
-                            console.log('login btn pressed');
-                            const obj = {attr1 : "test"};
-                            console.log(obj);
-
-                            Axios.post('/api', obj)
-                                 .then(res => {
-                                     console.log(res);
-                                 })
-                            history.push('/app');
+                        Axios.post('/api', obj)
+                                .then(res => {
+                                    console.log(res);
+                                })
+                        history.push('/app');
                         })
-                    }}>
-                        Sign In
-                    </Button>
+                    window.location.href = 'http://localhost:8888/Login';
+                }}>
+                    Log in with Spotify
+                </Button>
 
-                    <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
-                        userState.login(() => {
-                            console.log('login btn pressed');
-                            const obj = {attr1 : "test"};
-                            console.log(obj);
+                <Typography variant="body2" gutterBottom className={`${classes.typography}`}>
+                    <Link className={`${classes.adminLogin}`}> 
+                        admin login
+                    </Link>
+                </Typography>
 
-                            Axios.post('/api', obj)
-                                    .then(res => {
-                                        console.log(res);
-                                    })
-                            history.push('/app');
-                            })
-                        window.location.href = 'http://localhost:8888/Login';
-                    }}>
-                        Log in with Spotify
-                    </Button>
-                </Grid>
+                {/* <TextField className={`${classes.input}`} id="login-user" type="text" label="Username" variant="outlined" />
+                <TextField className={`${classes.input}`} id="login-pass" type="password" label="Password" variant="outlined" /> */}
             </Grid>
         </div>
     )
@@ -96,10 +77,9 @@ const useStyles = makeStyles((theme: Theme) =>
         bottom: 0,
         left: 0, 
         right: 0,
-        border: "solid 1px green",
         borderRadius: theme.shape.borderRadius,
         backgroundColor: '#434343',
-        height: 300,
+        height: 210,
         width: 340,
         margin: 'auto',
         textAlign: 'center',
@@ -123,11 +103,15 @@ const useStyles = makeStyles((theme: Theme) =>
     loginButton: {
         color: 'white',
         background: 'green',
-        marginLeft: 30
+        margin: 10
     },
-    signUpLink: {
-        textDecoration: 'none'
+    typography: {
+        margin: 10
+    },
+    adminLogin: {
+        fontSize: 12
     }
+
   }),
 );
 

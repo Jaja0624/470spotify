@@ -42,6 +42,8 @@ handlers:
     mime_type: image/png
     static_files: build/\1
     upload: build/(.*\.png)
+  - url: /api/.*
+    script: auto
   - url: /api
     script: auto
   - url: /

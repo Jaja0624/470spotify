@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import userStore from '../store/user'
-import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem} from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Typography, Button, MenuItem} from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -9,13 +9,14 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
-
+import globalStore from '../store/global'
 interface Props extends RouteComponentProps {}
 
 
 const MainAppBar: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
+    const globalState = globalStore();
 
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const [title, setTitle] = useState('metitle')
@@ -50,6 +51,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         prevOpen.current = open;
     }, [open]);
 
+
     return (
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
@@ -57,6 +59,17 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                 <Typography variant="h6" style={{flexGrow:1}}>
                     470
                 </Typography>
+                {globalState.middleContainer === 'user' 
+                ? (
+                    <Button color='primary' onClick={() => {
+                        globalState.setMiddleContainer('user')
+                    }}>Home</Button>
+                ) : (
+                    <Button color='default' onClick={() => {
+                        globalState.setMiddleContainer('user')
+                    }}>Home</Button>
+                )}
+
                     <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow

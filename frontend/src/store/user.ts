@@ -11,7 +11,9 @@ type State = {
     userGroups: IGroup[],
     currentGroup?: IGroup,
     setCurrentGroup: (id: number) => void,
-    setUserGroups: (userGroups: IGroup[]) => void
+    setUserGroups: (userGroups: IGroup[]) => void,
+    userPlaylists?: any[],
+    setUserPlaylists: (playlists: any[]) => void
 }
 
 const userStore = create<State>(set => ({
@@ -63,6 +65,10 @@ const userStore = create<State>(set => ({
     setUserGroups: (userGroups: IGroup[]) => { // via this function since u cannot modify state directly
         set(state => ({userGroups: userGroups}))
     },
+    userPlaylists: undefined,
+    setUserPlaylists: (playlists: any[]) => {
+        set(state => ({userPlaylists: playlists}))
+    }
     
 }))
 

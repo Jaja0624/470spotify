@@ -4,6 +4,7 @@ import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import UserPlaylists from './UserPlaylists'
 
 interface IObj {
     name: string,
@@ -15,22 +16,29 @@ interface IObj {
 interface CustomPropsLol extends RouteComponentProps {}
 
 // FC (function component)
-const CurrentPlaylist: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
+const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
     const userState = userStore();
+    const globalState = globalStore();
 
-    return (
-        <div className={classes.root}>
-            {userState.currentGroup ? (
+    const ifhandler = () => {
+        if (globalState.middleContainer === 'group' && userState.currentGroup) {
+            return (
                 <div>
                     {userState.currentGroup.id}-
                     {userState.currentGroup.name}
                 </div>
-            ) : (
-                <div>
-                    No group selected
-                </div>
-            )}
+            )
+        } else {
+            return (
+                <UserPlaylists/>
+            )
+        }
+    }
+
+    return (
+        <div className={classes.root}>
+            {ifhandler()}
         </div>
     )
 }
@@ -44,4 +52,4 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default withRouter(CurrentPlaylist) // withRouter enables us to use the router even though this component is not a "Route"
+export default withRouter(MiddleContainer) // withRouter enables us to use the router even though this component is not a "Route"

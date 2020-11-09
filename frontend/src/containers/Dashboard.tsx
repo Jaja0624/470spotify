@@ -14,7 +14,7 @@ import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
-import CurrentPlaylist from '../components/CurrentPlaylist'
+import MiddleContainer from '../components/MiddleContainer';
 
 interface Props extends RouteComponentProps {}
 
@@ -40,7 +40,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
                         <GroupDrawer/>
                     </Grid>
                     <Grid item xs={7} className={`${classes.box} ${classes.bigBox}`}>
-                        <CurrentPlaylist/>
+                        <MiddleContainer/>
                     </Grid>
                     <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
                         <TextField id="songSearch" label="Outlined" variant="outlined" />
@@ -54,7 +54,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
                     </Grid>
                     <Grid direction='row' className={classes.smallContainer}>
                         <Grid item xs={9} className={`${classes.box} ${classes.smallBox}`}>
-                            <CurrentPlaylist/>
+                            <MiddleContainer/>
                         </Grid>
                         <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
                             <TextField id="songSearch" label="Outlined" variant="outlined" />

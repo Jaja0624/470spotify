@@ -33,7 +33,7 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         })
         userState.setUserGroups(old);
         let body = {groupName}
-        const res = axios.post('http://localhost:5000/api/group/create', body);
+        const res = axios.post('/api/group/create', body);
         console.log(res);
     }
     const classes = useStyles();

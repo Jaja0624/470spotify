@@ -20,7 +20,7 @@ const App: React.FC = () => {
         setInterval(async function() {
 			// should use axios but im getting "module not found" error for axios ...
 			try {
-				const res = await axios.get('http://localhost:5000/api/group/all');
+				const res = await axios.get('/api/group/all');
 				console.log(res.data); // here is the group data
 			
 			} catch (err) {

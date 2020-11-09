@@ -4,7 +4,8 @@ type State = {
     isGroupDrawerOpen: boolean,
     hideGroupDrawer: () => void,
     openGroupDrawer: () => void
-
+    middleContainer: string, 
+    setMiddleContainer: (container: string) => void
 }
 
 const globalStore = create<State>(set => ({
@@ -17,7 +18,10 @@ const globalStore = create<State>(set => ({
         console.log('group drawer open')
         set({isGroupDrawerOpen: true})
     },
-    
+    middleContainer: 'user',
+    setMiddleContainer: (container: string) => {
+        set({middleContainer: container})
+    }
 
 }))
 

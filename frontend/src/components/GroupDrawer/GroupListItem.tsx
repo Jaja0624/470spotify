@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText} from '@material-ui/core';
 import IGroup from '../../types/IGroup'
 import userStore from '../../store/user'
+import globalStore from '../../store/global'
 
 interface Props extends RouteComponentProps {
     groupData: IGroup,
@@ -12,17 +13,16 @@ interface Props extends RouteComponentProps {
 
 const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
     const classes = useStyles();
-
+    const setMiddleContainer = globalStore(state => state.setMiddleContainer);
     const setCurrentGroup = userStore(state => state.setCurrentGroup);
     
-    // executed when component is mounted
-    useEffect(() => {
-        // console.log("GroupListItem groupData", groupData);
-        // console.log("GroupListItem key", key);
-    })
+    const groupClickHandler = () => {
+        setCurrentGroup(groupData.id);
+        setMiddleContainer('group');
+    }
 
     return (
-        <ListItem button className={classes.root} key={groupData.id} style={{maxHeight: '100%', overflow: 'auto'}} onClick={() => {setCurrentGroup(groupData.id)}}>
+        <ListItem button className={classes.root} key={groupData.id} onClick={groupClickHandler}>
             <ListItemAvatar>
                 {groupData.img_url ? 
                 (
@@ -31,9 +31,8 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
                     <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
                 }
             </ListItemAvatar>
-            <ListItemText 
+            <ListItemText
                 primary={groupData.name}
-                className={classes.group}
             />
         </ListItem>
     )
@@ -46,10 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent:'center',
             alignItems:'center',
             width: '100%',
+            
         },
-        group: {
-            overflowWrap: 'anywhere'
-        }
     }),
 );
 

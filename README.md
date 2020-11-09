@@ -15,6 +15,17 @@ Libraries
 
 - Axios (allows for http requests)
 
+## 470 - Spotify Authentication Setup 
+To log in with Spotify, we need to run the node server inside the /auth_server/authorisation_code folder. 
+1. Run this command in the cmpt470-project folder: 
+    ```bash
+    node .\auth_server\authorization_code\app.js
+    ```
+If you do not have a Spotify account to use, you can test the app with these credentials:  
+Username: jbaltar@sfu.ca  
+Password: cmpt470470  
+
+
 ## 470 - Backend Setup (Windows)
 
 ### Google Cloud SDK Installation and Running the Database Proxy

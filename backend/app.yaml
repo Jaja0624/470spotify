@@ -46,6 +46,12 @@ handlers:
     script: auto
   - url: /api
     script: auto
+  - url: /login
+    script: auto
+  - url: /callback
+    script: auto
+  - url: /refresh_token
+    script: auto
   - url: /
     static_files: build/index.html
     upload: build/index.html

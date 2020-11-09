@@ -90,8 +90,6 @@ const useStyles = makeStyles((theme: Theme) =>
         title: {
             textAlign:'left',
             paddingLeft: 2,
-            paddingTop: 15,
-
         },
         addGroup: {
             float: 'left',

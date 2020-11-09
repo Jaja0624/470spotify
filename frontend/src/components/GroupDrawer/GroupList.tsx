@@ -14,24 +14,24 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
     const userState = userStore();
 
     return (
-        <div className={classes.root}>
-            <List>
+            <List className={classes.root}>
               {userState.userGroups.map((groupData: IGroup) => {
                   return (<GroupListItem key={groupData.id} groupData={groupData}/>)
               })}
             </List>
-        </div>
     )
 }
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+
         root: {
-            maxWidth: '100%',
-            textAlign:'center',
-            justifyContent:'center',
-            alignItems:'center',
-        },
+            flexDirection:'row',
+            overflowX:'auto',
+            width:'100%',
+            height:'100%',
+            position:'relative'
+        }
     }),
 );
 

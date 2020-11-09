@@ -21,8 +21,6 @@ const Landing: React.FC<Props> = ({history}) => {
 
     return (
         <div className={classes.root}>
-            <LandingAppBar/>
-
             <Grid className={classes.signIn}>
                 <Typography variant="h5" gutterBottom className={`${classes.typography}`}>
                     Sign in

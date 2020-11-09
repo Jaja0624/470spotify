@@ -36,7 +36,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
             <MainAppBar/>
             {isGroupDrawerOpen ? (
                 <Grid container className={classes.container}>
-                    <Grid item xs={2}>
+                    <Grid item xs={2} className={classes.drawer}>
                         <GroupDrawer/>
                     </Grid>
                     <Grid item xs={7} className={`${classes.box} ${classes.bigBox}`}>
@@ -74,7 +74,8 @@ const Dashboard: React.FC<Props> = ({history}) => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-        minHeight: '100vh'
+        minHeight: '100vh',
+        overflowY: 'hidden' // PREVENT SCROLLING
     },
     smallContainer: {
         flexGrow:1,
@@ -87,6 +88,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
         border: "solid 1px black",
+    },
+    drawer:{
+        overflowY:'auto',
+        backgroundColor: theme.drawer.backgroundColor,
+
     },
     bigBox: {
         width: '100%',

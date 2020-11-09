@@ -3,7 +3,7 @@ import shallow from 'zustand/shallow'
 import userStore from '../../store/user'
 import globalStore from '../../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Grid, Button,Typography, IconButton, List } from '@material-ui/core';
+import { Grid, Button,Typography, IconButton, List, Container } from '@material-ui/core';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import CreateGroupModal from '../CreateGroupModal'
@@ -63,18 +63,21 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
 
     return (
         <div className={classes.drawer}>
-            <Typography variant="h6" className={classes.title}>
-                Groups
-                <IconButton style={{float:'right'}} onClick={hideGroupDrawer}>
+            <Grid container 
+                justify='space-between' 
+                direction='row'>
+                <Typography variant="h6" align='center'>
+                    Groups
+                </Typography>
+                <IconButton onClick={hideGroupDrawer}>
                     <KeyboardArrowLeftTwoToneIcon/>
                 </IconButton>
-            </Typography>
-            
-            <div style={{padding: 15}}>
+            </Grid>
+        
+            <div>
                 <IconButton
                         edge="end"
                         aria-label="addGroup"
-                        className={`${classes.addGroup}`}
                         onClick={() => setCreateGroupModalVisible(true)}>
                 <AddIcon />
                 <Typography variant='subtitle1'>
@@ -82,13 +85,8 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
                 </Typography>
                 </IconButton>
             </div>
-     
-
-            <div style={{paddingTop: 25}}>
-                <GroupList/>
-            </div>
-
-
+            
+            <GroupList/>
 
             <CreateGroupModal isOpen={createGroupModalVisible} 
                                 cancelHandler={() => setCreateGroupModalVisible(false)}
@@ -100,27 +98,11 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            textAlign:'center',
-            justifyContent:'center',
-            alignItems:'center',
         },
         drawer: {
             height: '100%',
-            color: 'white',
-            backgroundColor: theme.drawer.backgroundColor,
-            textAlign:'center',
-            justifyContent:'center',
-            alignItems:'center',
         },
-        title: {
-            textAlign:'left',
-            paddingLeft: 15,
-            paddingTop:15,
 
-        },
-        addGroup: {
-            float: 'left',
-        },
 
     }),
 );

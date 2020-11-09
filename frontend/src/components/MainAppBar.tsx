@@ -54,20 +54,9 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                    {/* <MenuIcon /> */}
-                    </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
-                    </Typography>
-
-                    <IconButton ref={anchorRef}
-                        aria-controls={open ? 'menu-list-grow' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleToggle}>
-                        <AccountCircleRoundedIcon className={classes.accountIcon}/>
-                    </IconButton>
-
+                <Typography variant="h6" style={{flexGrow:1}}>
+                    470
+                </Typography>
                     <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow
@@ -92,6 +81,17 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                         </Grow>
                     )}
                     </Popper>
+
+                    <IconButton ref={anchorRef}
+                        edge="end"
+                        aria-controls={open ? 'menu-list-grow' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleToggle}>
+                        <AccountCircleRoundedIcon className={classes.accountIcon}/>
+                        <Typography variant="h6" className={classes.title}>
+                            {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
+                        </Typography>
+                    </IconButton>
                 </Toolbar>
             </AppBar>
         </div>
@@ -104,6 +104,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         title: {
+            paddingLeft:5,
             flexGrow:1
         },
         logoutButton: {

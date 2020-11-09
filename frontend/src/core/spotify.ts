@@ -8,3 +8,10 @@ export const getUserProfile = async (accessToken: string): Promise<AxiosResponse
     })
 }
 
+export const getPlaylists = async (accessToken: string, clientId: string): Promise<AxiosResponse> => {
+    return await axios.get(`https://api.spotify.com/v1/users/${clientId}/playlists`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+}

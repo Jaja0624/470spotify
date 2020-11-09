@@ -80,6 +80,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                                 <MenuItem onClick={() => {
                                     userState.logout(() => {
                                             console.log('login btn pressed')
+                                            userState.setSpotifyProfile(undefined);
                                             history.push('/')
                                         })
                                     }}>

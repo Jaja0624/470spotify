@@ -15,9 +15,7 @@ const GroupListItem: React.FC<Props> = ({history, playlistData, key}: Props) => 
     return (
         <ListItem button className={classes.root} key={key}>
             <ListItemAvatar>
-                {playlistData?.images?.url && (
-                    <Avatar src={playlistData.images[0].url}/>
-                )}
+                <Avatar src={playlistData.images[0].url}/>
             </ListItemAvatar>
             <ListItemText
                 primary={playlistData.name}

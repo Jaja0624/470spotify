@@ -17,10 +17,6 @@ interface Props extends RouteComponentProps {}
 // create group popup
 const GroupDrawer: React.FC<Props> = ({history}: Props) => {
     const user = userStore();
-    const handleOpen = () => {
-        console.log("hh")
-    }
-
     const getGroup = async ()  => {
 		const res = await axios.get('http://localhost:5000/api/group/all');
 		console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data

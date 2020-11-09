@@ -15,7 +15,7 @@ type State = {
 }
 
 const userStore = create<State>(set => ({
-    authenticated: true, // primitive state
+    authenticated: false, // primitive state
     login: (cb) => { // function that modifies state
         set(state => (
             {

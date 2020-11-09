@@ -19,13 +19,8 @@ import CurrentPlaylist from '../components/CurrentPlaylist'
 interface Props extends RouteComponentProps {}
 
 const Dashboard: React.FC<Props> = ({history}) => {
-    const createGroup = () => {
-        // open create group dialog
-        console.log("create gruop clicked");
-    }
     const classes = useStyles();
-    const userState = userStore()
-    
+    const user = userStore()
     const {
         isGroupDrawerOpen, 
         hideGroupDrawer, 
@@ -35,7 +30,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
         hideGroupDrawer: state.hideGroupDrawer,
         openGroupDrawer: state.openGroupDrawer,
     }), shallow);
-
+    
     return (
         <div className={classes.root}>
             <MainAppBar/>

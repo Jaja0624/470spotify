@@ -20,6 +20,12 @@ const App: React.FC = () => {
 	const getGroup = async ()  => {
 		const res = await axios.get('http://localhost:5000/api/group/all');
 		console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
+		if (user.userGroups.length === res.data.length) {
+			// assume no new data
+			// TODO: Actually verify if new data exists
+			// server pushes new data (TBD)
+			return;
+		}
 		const groups: Array<IGroup> = [];
 		for (let i = 0; i < res.data.length; i++) {
 			let newG = {
@@ -33,16 +39,20 @@ const App: React.FC = () => {
 	}
 	// when frontend loads, it will call the "all group" endpoint every 5s
 	useEffect(() => {
-		// getGroup().then(() => {
-		// 	console.log('.')
-		// })
+		async function scopedGetGroup() {
+            await getGroup();
+        }
+		if (user.spotifyProfile) {
+			scopedGetGroup();
+		}
         setInterval(async function() {
-			// should use axios but im getting "module not found" error for axios ...
-			try {
-				await getGroup();
-			} catch (err) {
-				console.log("err");
-				console.log(err)
+			if (user.spotifyProfile) {
+				try {
+					await getGroup();
+				} catch (err) {
+					console.log("err");
+					console.log(err)
+				}
 			}
 		}, 5000);
     })

@@ -2,6 +2,19 @@
 
 ## 470 - Frontend 
 
+### Environment Variables Setup
+
+To ensure that the frontend works with the backend, we need to ensure that the proper environment variables are set.
+
+1. Navigate to `./cmpt470-project/frontend`
+2. Make a new file called `.env`
+3. Populate the `.env` file with the following:
+
+    ```javascript
+    REACT_APP_BACKEND = http://localhost:8080
+    ```
+    > the prefix of `REACT_APP_` is necessary so that React can properly detect environment variables
+
 ### Component Directory
 > TBD when we start building more components
 
@@ -67,7 +80,9 @@ To be able to properly run the node server, we need to ensure that the database 
     DB_PASS = <populate password>
     DB_NAME = <populate database name>
     DB_HOST = 127.0.0.1:5432
-    BACKEND_PORT = 5000
+    BACKEND_PORT = 8080
+    BACKEND_REDIRECT = http://localhost:8080
+    FRONTEND_REDIRECT = http://localhost:3000
     ```
 3. To run the server using Typescript: `npm run dev`. To build the Typescript into Javascript: `npm run build`. To run the Javascript after building: `npm start`.
 

@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Axios from 'axios';
 
+const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
+
 interface Props extends RouteComponentProps {}
 
 
@@ -46,7 +48,7 @@ const Landing: React.FC<Props> = ({history}) => {
                                 })
                         history.push('/app');
                         })
-                    window.location.href = '/login';
+                    window.location.href = REACT_APP_BACKEND + '/login';
                 }}>
                     Log in with Spotify
                 </Button>

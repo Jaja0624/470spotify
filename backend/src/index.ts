@@ -16,11 +16,12 @@ const DB_NAME = process.env.DB_NAME || 'defaultDatabase';
 const BACKEND_PORT = '8080';
 const DB_SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 const CLOUD_SQL_CONNECTION_NAME = process.env.CLOUD_SQL_CONNECTION_NAME;
-const REDIRECT_URI = process.env.REDIRECT_URI || 'http://cmpt470-proj.appspot.com';
+const BACKEND_REDIRECT = process.env.BACKEND_REDIRECT || 'http://cmpt470-proj.appspot.com';
+const FRONTEND_REDIRECT = process.env.FRONTEND_REDIRECT || '';
 
 var client_id = 'c29ee1e218a5424f862bf1a828a7b982'; // Your client id
 var client_secret = '0106186e5042431b8e45639d76241338'; // Your secret
-var redirect_uri = 'http://cmpt470-proj.appspot.com/callback'; // Your redirect uri
+var redirect_uri = BACKEND_REDIRECT + '/callback'; // Your redirect uri
 
 /*
  * Generates a random string containing numbers and letters
@@ -260,7 +261,7 @@ app.get('/callback', function(req, res) {
 
         // we can also pass the token to the browser to make requests from there
         // this is where you get redirected after logging in
-        res.redirect('/authloader?' +
+        res.redirect(FRONTEND_REDIRECT + '/authloader?' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token

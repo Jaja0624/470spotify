@@ -5,6 +5,7 @@ import {
 import userStore from '../store/user'
 import { getUserProfile, getPlaylists} from '../core/spotify'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Cookies from 'js-cookie';
 
 const AuthLoadingScreen = () => {
     const user = userStore();
@@ -14,6 +15,8 @@ const AuthLoadingScreen = () => {
         const aa = new URLSearchParams(window.location.search);
         const accessToken = aa.get('access_token');
         if (accessToken) {
+            Cookies.set('spotifytoken', accessToken);
+            console.log('access token set');
             const userProfile = await getUserProfile(accessToken);
             const playlists = await getPlaylists(accessToken, userProfile.data.id)
             if (userProfile.status === 200) {
@@ -24,10 +27,10 @@ const AuthLoadingScreen = () => {
                 user.setUserPlaylists(playlists.data.items);
                 console.log(playlists.data);
             }
-            setLoading(false);
         } else {
             console.log("access token not found in query string", aa);
         }
+        setLoading(false);
     }
     useEffect(() => {
         verifyAccessToken();

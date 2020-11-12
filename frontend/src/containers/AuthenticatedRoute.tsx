@@ -4,13 +4,17 @@ import {
     Redirect,
 } from "react-router-dom";
 import userStore from '../store/user'
+import globalStore from '../store/global'
 import Cookies from 'js-cookie';
 import {getUserProfile, getPlaylists} from '../core/spotify';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
     const user = userStore();
+    const globalState = globalStore();
     const [loading, setLoading] = useState(true);
+
+    // verify user is logged in 
     const verifyAccessToken = async () => {
         const accessToken = Cookies.get('spotifytoken');
         if (accessToken) {
@@ -20,18 +24,33 @@ const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
             if (userProfile.status === 200) {
                 user.setSpotifyProfile(userProfile.data);
                 console.log(userProfile.data)
+            } else {
+                user.setSpotifyProfile(undefined);
             }
             if (playlists.status === 200) {
                 user.setUserPlaylists(playlists.data.items);
                 console.log(playlists.data);
+            } else {
+                user.setUserPlaylists([]);
+            }
+
+            // check if user was invited to group, if so, set page to the new group
+            if (globalState.groupInvite) {
+                console.log("Invitation");
+                globalState.setMiddleContainer('group');
+                user.setCurrentGroup(globalState.groupInvite?.groupId);
+                globalState.setGroupInvite(undefined);
             }
         } else {
             console.log('access token not found');
         }
     }
+
     useEffect(() => {
         async function test() {
             await verifyAccessToken();
+
+            
             setLoading(false);
         }
         test();

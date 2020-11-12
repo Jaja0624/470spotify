@@ -5,7 +5,9 @@ type State = {
     hideGroupDrawer: () => void,
     openGroupDrawer: () => void
     middleContainer: string, 
-    setMiddleContainer: (container: string) => void
+    setMiddleContainer: (container: string) => void,
+    groupInvite: any | undefined,
+    setGroupInvite: (groupId?: number) => void
 }
 
 const globalStore = create<State>(set => ({
@@ -21,8 +23,11 @@ const globalStore = create<State>(set => ({
     middleContainer: 'user',
     setMiddleContainer: (container: string) => {
         set({middleContainer: container})
+    },
+    groupInvite: undefined, // {groupId: groupId}
+    setGroupInvite: (groupId?: number) => {
+        set({groupInvite: {groupId}})
     }
-
 }))
 
 

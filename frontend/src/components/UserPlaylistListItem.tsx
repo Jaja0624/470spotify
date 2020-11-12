@@ -9,13 +9,13 @@ interface Props extends RouteComponentProps {
     key: string
 }
 
-const GroupListItem: React.FC<Props> = ({history, playlistData, key}: Props) => {
+const UserPlaylistListItem: React.FC<Props> = ({history, playlistData, key}: Props) => {
     const classes = useStyles();
 
     return (
         <ListItem button className={classes.root} key={key}>
             <ListItemAvatar>
-                <Avatar src={playlistData.images[0].url}/>
+                {playlistData.images[0].url && <Avatar src={playlistData.images[0].url}/>}
             </ListItemAvatar>
             <ListItemText
                 primary={playlistData.name}
@@ -36,4 +36,4 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default withRouter(GroupListItem) // withRouter enables us to use the router even though this component is not a "Route"
+export default withRouter(UserPlaylistListItem) // withRouter enables us to use the router even though this component is not a "Route"

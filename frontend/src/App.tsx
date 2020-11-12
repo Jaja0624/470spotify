@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import AuthenticatedRoute from './containers/AuthenticatedRoute';
 import Landing from './containers/Landing';
 import Dashboard from './containers/Dashboard';
-import Group from './containers/Group'
 import NotFound from './containers/NotFound';
 import userStore from './store/user'
 import { ThemeProvider } from '@material-ui/core/styles'
@@ -34,13 +33,11 @@ const App: React.FC = () => {
         }
 		scopedGetGroup();
 		let intervalId = setInterval(async function() {
-			console.log(user);
 			if (user.spotifyProfile) {
 				try {
 					await scopedGetGroup();
 				} catch (err) {
-					console.log("err");
-					console.log(err)
+					console.log('App.tsx error', err)
 				}
 			}
 		}, 5000);

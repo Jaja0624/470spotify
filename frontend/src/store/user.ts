@@ -36,7 +36,7 @@ const userStore = create<State>(set => ({
     },
     spotifyProfile: undefined,
     setSpotifyProfile: (blah: any) => { 
-        console.log("setting spotify profile")
+        console.log("setting spotify profile", blah)
         set(state => ({spotifyProfile: blah}))
     },
     userGroups: [ // static group data, to be replaced with what i just showed u 

@@ -7,6 +7,11 @@ export const getGroupsHandler = async (): Promise<IGroup[]> => {
     const res = await getUserGroups();
     console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
     const groups: Array<IGroup> = [];
+    
+    if (res.data.length === 0) {
+        return groups;
+    }
+
     for (let i = 0; i < res.data.length; i++) {
         let newG = {
             id: res.data[i].group_uid,

@@ -25,13 +25,15 @@ const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
                 user.setSpotifyProfile(userProfile.data);
                 console.log(userProfile.data)
             } else {
-                user.setSpotifyProfile(undefined);
+                console.log("error user profile")
+                // user.setSpotifyProfile(undefined);
             }
             if (playlists.status === 200) {
                 user.setUserPlaylists(playlists.data.items);
                 console.log(playlists.data);
             } else {
-                user.setUserPlaylists([]);
+                console.log("error user playlist")
+                // user.setUserPlaylists([]);
             }
 
             // check if user was invited to group, if so, set page to the new group

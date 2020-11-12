@@ -10,31 +10,20 @@ import userStore from './store/user'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from './core/theme';
-import axios from 'axios'
-import IGroup from './types/IGroup'
 import AuthLoadingScreen from './containers/AuthLoadingScreen'
 import InvitedUserScreen from './containers/InvitedUserScreen'
+import { getGroupsHandler } from './core/serverhandler'
 
 const App: React.FC = () => {
 	const user = userStore();
 
 	const getGroup = async ()  => {
-		const res = await axios.get('/api/group/all');
-		// console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
-		if (user.userGroups.length === res.data.length) {
+		const groups = await getGroupsHandler();
+		if (groups.length === 0) {
 			// assume no new data
 			// TODO: Actually verify if new data exists
 			// server pushes new data (TBD)
 			return;
-		}
-		const groups: Array<IGroup> = [];
-		for (let i = 0; i < res.data.length; i++) {
-			let newG = {
-				id: res.data[i].group_uid,
-				name: res.data[i].group_name,
-				img_url: undefined
-			}
-			groups.push(newG);
 		}
 		user.setUserGroups(groups);
 	}
@@ -43,20 +32,25 @@ const App: React.FC = () => {
 		async function scopedGetGroup() {
             await getGroup();
         }
-		if (user.spotifyProfile) {
-			scopedGetGroup();
-		}
-        setInterval(async function() {
+		scopedGetGroup();
+		let intervalId = setInterval(async function() {
+			console.log(user);
 			if (user.spotifyProfile) {
 				try {
-					await getGroup();
+					await scopedGetGroup();
 				} catch (err) {
 					console.log("err");
 					console.log(err)
 				}
 			}
 		}, 5000);
-    })
+
+		return () => {
+			// execute when app unmounts
+			clearInterval(intervalId);
+		}
+	}, [])
+
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -66,8 +60,6 @@ const App: React.FC = () => {
 					<Route exact path='/' component={Landing}/>
 					<AuthenticatedRoute exact path='/app' component={Dashboard}/>
 					<Route exact path='/invite' component={InvitedUserScreen}/>
-					{/* <Route exact path='/aa' component={Dashboard}/> */}
-                    <Route exact path='/group' component={Group}/>
                     <Route exact path='/authloader' component={AuthLoadingScreen}/>
 					<Route exact path='*' component={NotFound}/>
 				</Switch>

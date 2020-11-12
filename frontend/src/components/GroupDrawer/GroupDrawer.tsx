@@ -30,7 +30,7 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
             name: groupName
         })
         userState.setUserGroups(old);
-        let body = {groupName}
+        let body = {groupName, id: "prq2vz0ahfeet3o4lsonysgjn"};
         await createGroup(body);
         const groups = await getGroupsHandler();
 		userState.setUserGroups(groups);

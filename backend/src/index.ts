@@ -21,7 +21,7 @@ const FRONTEND_REDIRECT = process.env.FRONTEND_REDIRECT || '';
 
 var client_id = 'c29ee1e218a5424f862bf1a828a7b982'; // Your client id
 var client_secret = '0106186e5042431b8e45639d76241338'; // Your secret
-var redirect_uri = BACKEND_REDIRECT + '/callback'; // Your redirect uri
+var redirect_uri = BACKEND_REDIRECT + '/api/spotify/callback'; // Your redirect uri
 
 /*
  * Generates a random string containing numbers and letters
@@ -29,13 +29,13 @@ var redirect_uri = BACKEND_REDIRECT + '/callback'; // Your redirect uri
  * @return {string} The generated string
  */
 var generateRandomString = function(length : any) {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
+    for (var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 };
 
 var stateKey = 'spotify_auth_state';
@@ -52,7 +52,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     res.set('Content-Type', 'text/html');
     next();
-  });
+});
 
 // Running locally on Windows uses TCP to connect to the database
 const connectWithTcp = (dbHost : string, config : any) => {
@@ -102,14 +102,15 @@ const connect = () => {
     // Remember - storing secrets in plaintext is potentially unsafe. Consider using
     // something like https://cloud.google.com/kms/ to help keep secrets secret.
     const config : any = {pool: {}};
-  
+
     // 'max' limits the total number of concurrent connections this pool will keep. Ideal
     // values for this setting are highly variable on app design, infrastructure, and database.
     config.pool.max = 5;
+
     // 'min' is the minimum number of idle connections Knex maintains in the pool.
     // Additional connections will be established to meet this value unless the pool is full.
     config.pool.min = 5;
-  
+
     // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
     // connection from the pool. This is slightly different from connectionTimeout, because acquiring
     // a pool connection does not always involve making a new connection, and may include multiple retries.
@@ -124,11 +125,11 @@ const connect = () => {
     // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
     // and not be checked out before it is automatically closed.
     config.idleTimeoutMillis = 600000; // 10 minutes
-  
+
     // 'knex' uses a built-in retry strategy which does not implement backoff.
     // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
     config.createRetryIntervalMillis = 200; // 0.2 seconds
-  
+
     let knex;
     if (DB_HOST) {
         knex = connectWithTcp(DB_HOST, config);
@@ -196,110 +197,119 @@ app.get('/api/group/all', async (req, res) => {
     }
 });
 
-app.get('/login', function(req, res) {
+// Called from Landing.tsx
+app.get('/api/spotify/login', function(req, res) {
+    console.log('/api/spotify/login called');
 
-  var state = generateRandomString(16);
-  res.cookie(stateKey, state);
+    var state = generateRandomString(16);
+    res.cookie(stateKey, state);
 
-  // your application requests authorization
-  var scope = 'user-read-private user-read-email user-read-playback-state playlist-read-private playlist-read-collaborative';
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      response_type: 'code',
-      client_id: client_id,
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
+    // your application requests authorization
+    var scope = 'user-read-private user-read-email user-read-playback-state playlist-read-private playlist-read-collaborative';
+    res.redirect('https://accounts.spotify.com/authorize?' +
+        querystring.stringify({
+        response_type: 'code',
+        client_id: client_id,
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state
     }));
 });
 
-app.get('/callback', function(req, res) {
+// Called from /api/spotify/login as a redirect_uri
+app.get('/api/spotify/callback', function(req, res) {
+    console.log('/api/spotify/callback called');
 
   // your application requests refresh and access tokens
   // after checking the state parameter
+    var code = req.query.code || null;
+    var state = req.query.state || null;
+    var storedState = req.cookies ? req.cookies[stateKey] : null;
 
-  var code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
+    if (state === null || state !== storedState) {
+        res.redirect('/#' +
+            querystring.stringify({
+                error: 'state_mismatch'
+            })
+        );
+    } else {
+        res.clearCookie(stateKey);
+        var authOptions = {
+            url: 'https://accounts.spotify.com/api/token',
+            form: {
+                code: code,
+                redirect_uri: redirect_uri,
+                grant_type: 'authorization_code'
+            },
+            headers: {
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+            },
+            json: true
+        };
 
-  if (state === null || state !== storedState) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
-  } else {
-    res.clearCookie(stateKey);
+        request.post(authOptions, function(error : any, response : any, body : any) {
+            if (!error && response.statusCode === 200) {
+
+                var access_token = body.access_token,
+                    refresh_token = body.refresh_token;
+
+                var options = {
+                    url: 'https://api.spotify.com/v1/me',
+                    headers: { 'Authorization': 'Bearer ' + access_token },
+                    json: true
+                };
+
+                // use the access token to access the Spotify Web API
+                request.get(options, async function(error : any, response : any, body : any) {
+                    console.log(body);
+                });
+
+                // we can also pass the token to the browser to make requests from there
+                // this is where you get redirected after logging in
+                res.redirect(
+                    FRONTEND_REDIRECT + '/authloader?' +
+                    querystring.stringify({
+                        access_token: access_token,
+                        refresh_token: refresh_token
+                    })
+                );
+            } else {
+                res.redirect('/#' +
+                    querystring.stringify({
+                        error: 'invalid_token'
+                    })
+                );
+            }
+        });
+    }
+});
+
+app.get('/api/spotify/refresh_token', function(req, res) {
+    console.log('/api/spotify/refresh_token called');
+
+    // requesting access token from refresh token
+    var refresh_token = req.query.refresh_token;
     var authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-      },
-      json: true
+        url: 'https://accounts.spotify.com/api/token',
+        headers: {
+            'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        },
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: refresh_token
+        },
+        json: true
     };
 
     request.post(authOptions, function(error : any, response : any, body : any) {
-      if (!error && response.statusCode === 200) {
-
-        var access_token = body.access_token,
-            refresh_token = body.refresh_token;
-
-        var options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
-        };
-
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error : any, response : any, body : any) {
-          console.log(body);
-        });
-
-        // we can also pass the token to the browser to make requests from there
-        // this is where you get redirected after logging in
-        res.redirect(FRONTEND_REDIRECT + '/authloader?' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
-      } else {
-        res.redirect('/#' +
-          querystring.stringify({
-            error: 'invalid_token'
-          }));
-      }
+        if (!error && response.statusCode === 200) {
+            var access_token = body.access_token;
+            res.send({
+                'access_token': access_token
+            });
+        }
     });
-  }
 });
-
-app.get('/refresh_token', function(req, res) {
-
-  // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
-  var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-    form: {
-      grant_type: 'refresh_token',
-      refresh_token: refresh_token
-    },
-    json: true
-  };
-
-  request.post(authOptions, function(error : any, response : any, body : any) {
-    if (!error && response.statusCode === 200) {
-      var access_token = body.access_token;
-      res.send({
-        'access_token': access_token
-      });
-    }
-  });
-});
-
 
 const server = app.listen(BACKEND_PORT, () => {
     console.log(`App listening on port ${BACKEND_PORT}`);

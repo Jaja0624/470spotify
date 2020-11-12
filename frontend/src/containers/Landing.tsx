@@ -48,7 +48,7 @@ const Landing: React.FC<Props> = ({history}) => {
                                 })
                         history.push('/app');
                         })
-                    window.location.href = REACT_APP_BACKEND + '/login';
+                    window.location.href = REACT_APP_BACKEND + '/api/spotify/login';
                 }}>
                     Log in with Spotify
                 </Button>

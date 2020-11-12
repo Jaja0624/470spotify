@@ -104,7 +104,7 @@ app.post('/api/group/create', async (req, res) => {
 });
 
 // gets all the groups associated with a spotify_uid
-app.get('/api/group/user', async (req, res) => {
+app.get('/api/user/groups', async (req, res) => {
     console.log('api/group/user called');
     console.log(req.query);
     try {

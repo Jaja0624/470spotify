@@ -19,7 +19,7 @@ const App: React.FC = () => {
     const user = userStore();
 
     const getGroup = async ()  => {
-        const res = await axios.get('/api/group/user', {params: {id: "prq2vz0ahfeet3o4lsonysgjn"}});
+        const res = await axios.get('/api/user/groups', {params: {id: "prq2vz0ahfeet3o4lsonysgjn"}});
         // console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
         if (user.userGroups.length === res.data.length) {
             // assume no new data

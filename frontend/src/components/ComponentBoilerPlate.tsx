@@ -26,10 +26,15 @@ const ComponentBoilerPlate: React.FC<CustomPropsLol> = ({history, someBoolean, s
     const asdf = globalStore((state) => state.isGroupDrawerOpen);
     const [text, setText] = useState('Placeholder Text');
 
+    // inf loop
+    useEffect(() => {
+        console.log('infinite loop');
+    }) 
+
     // executed when component is mounted
     useEffect(() => {
         console.log('this component is mounted');
-    })
+    }, []) 
 
     // executed every time text is changed
     useEffect(() => {

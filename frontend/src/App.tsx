@@ -13,6 +13,7 @@ import theme from './core/theme';
 import axios from 'axios'
 import IGroup from './types/IGroup'
 import AuthLoadingScreen from './containers/AuthLoadingScreen'
+import InvitedUserScreen from './containers/InvitedUserScreen'
 
 const App: React.FC = () => {
     const user = userStore();
@@ -64,6 +65,7 @@ const App: React.FC = () => {
                 <Switch>
                     <Route exact path='/' component={Landing}/>
                     <AuthenticatedRoute exact path='/app' component={Dashboard}/>
+                    <Route exact path='/invite' component={InvitedUserScreen}/>
                     {/* <Route exact path='/aa' component={Dashboard}/> */}
                     <Route exact path='/group' component={Group}/>
                     <Route exact path='/authloader' component={AuthLoadingScreen}/>

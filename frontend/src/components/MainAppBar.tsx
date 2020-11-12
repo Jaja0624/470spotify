@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
+import Cookies from 'js-cookie';
 interface Props extends RouteComponentProps {}
 
 
@@ -26,6 +27,13 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         setOpen((prevOpen) => !prevOpen);
     };
 
+    const logoutHandler = () => {
+        console.log('logout btn pressed')
+        userState.setSpotifyProfile(undefined);
+        Cookies.remove('spotifytoken');
+        history.push('/')
+    }
+    
     const handleClose = (event: React.MouseEvent<EventTarget>) => {
         if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
         return;
@@ -79,14 +87,8 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                         <Paper>
                             <ClickAwayListener onClickAway={handleClose}>
                             <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                <MenuItem onClick={() => {
-                                    userState.logout(() => {
-                                            console.log('login btn pressed')
-                                            userState.setSpotifyProfile(undefined);
-                                            history.push('/')
-                                        })
-                                    }}>
-                                        Logout
+                                <MenuItem onClick={logoutHandler}>
+                                    Logout
                                 </MenuItem>
                             </MenuList>
                             </ClickAwayListener>

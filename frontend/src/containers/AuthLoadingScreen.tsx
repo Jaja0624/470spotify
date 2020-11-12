@@ -5,33 +5,26 @@ import {
 import userStore from '../store/user'
 import { getUserProfile, getPlaylists} from '../core/spotify'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Cookies from 'js-cookie';
 
+// for auth flow
 const AuthLoadingScreen = () => {
     const user = userStore();
     const [loading, setLoading] = useState(true);
 
-    const verifyAccessToken = async () => {
-        const aa = new URLSearchParams(window.location.search);
-        const accessToken = aa.get('access_token');
+    const setAccessToken = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
         if (accessToken) {
-            const userProfile = await getUserProfile(accessToken);
-            const playlists = await getPlaylists(accessToken, userProfile.data.id)
-            if (userProfile.status === 200) {
-                user.setSpotifyProfile(userProfile.data);
-                console.log(userProfile.data)
-            }
-            if (playlists.status === 200) {
-                user.setUserPlaylists(playlists.data.items);
-                console.log(playlists.data);
-            }
-            setLoading(false);
+            Cookies.set('spotifytoken', accessToken);
         } else {
-            console.log("access token not found in query string", aa);
+            console.log("access token not found in query string", urlParams);
         }
+        setLoading(false);
     }
     useEffect(() => {
-        verifyAccessToken();
-    })
+        setAccessToken();
+    }, [])
 
     if (loading) {
         return (

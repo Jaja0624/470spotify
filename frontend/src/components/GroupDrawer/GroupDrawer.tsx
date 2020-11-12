@@ -9,28 +9,15 @@ import AddIcon from '@material-ui/icons/Add';
 import CreateGroupModal from '../CreateGroupModal'
 import GroupList from './GroupList'
 import KeyboardArrowLeftTwoToneIcon from '@material-ui/icons/KeyboardArrowLeftTwoTone';
-import axios from 'axios';
-import IGroup from '../../types/IGroup'
+import { createGroup } from '../../core/server'
+import { getGroupsHandler } from '../../core/serverhandler'
 
 interface Props extends RouteComponentProps {}
 
 // create group popup
 const GroupDrawer: React.FC<Props> = ({history}: Props) => {
-    const user = userStore();
-    const getGroup = async ()  => {
-		const res = await axios.get('/api/group/all');
-		console.log("group dataaaaaaaaaaaaaaaaaa", res.data); // here is the group data
-		const groups: Array<IGroup> = [];
-		for (let i = 0; i < res.data.length; i++) {
-			let newG = {
-				id: res.data[i].group_uid,
-				name: res.data[i].group_name,
-				img_url: undefined
-			}
-			groups.push(newG);
-		}
-		user.setUserGroups(groups);
-    }
+    const userState = userStore();
+    const classes = useStyles();
     
     const createGroupHandler = async (groupName: string) => {
         console.log(groupName);
@@ -44,11 +31,11 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         })
         userState.setUserGroups(old);
         let body = {groupName}
-        const res = axios.post('/api/group/create', body);
-        await getGroup();
+        await createGroup(body);
+        const groups = await getGroupsHandler();
+		userState.setUserGroups(groups);
     }
-    const classes = useStyles();
-    const userState = userStore();
+
     const {
         isGroupDrawerOpen, 
         hideGroupDrawer, 

@@ -141,11 +141,27 @@ const connect = () => {
 
 const knex = connect();
 
-const createGroup = async (knex : any, data : string) => {
-  return await knex.raw(`
-    insert into AppGroup (group_name) values
-    ('${data}')
-  `);
+// Create a group associated with a specfic Spotify user
+// Insert a group_name into the 'appgroup' table and
+// insert a group_uid into the 'groupmember' table.
+// Both inserts should happen, or not at all.
+const createGroup = async (knex : any, groupName : string, spotifyUid : string) => {
+    knex.transaction(function(trx : any) {
+        knex('appgroup')
+        .insert({group_name: groupName})
+        .transacting(trx)
+        .returning('group_uid')
+        .then(function(groupUid : bigint) {
+            console.log("group_uid: " + groupUid + " type: " + typeof(BigInt(groupUid)));
+            return trx('groupmember')
+                   .insert({group_uid: BigInt(groupUid), spotify_uid: spotifyUid})
+        })
+        .then(trx.commit)
+        .catch(trx.rollback);
+  })
+  .catch((err : any) => {
+    console.log("Error in createGroup: " + err);
+  });
 };
 
 const getAllGroup = async (knex : any) => {
@@ -187,7 +203,8 @@ app.post('/api/group/create', async (req, res) => {
     console.log('api/group/create called');
     console.log(req.body);
     try {
-        var result = await createGroup(knex, req.body.groupName);
+        // TODO: replace with spotify_uid from cookies
+        var result = await createGroup(knex, req.body.groupName, "prq2vz0ahfeet3o4lsonysgjn");
         console.log(result)
         res.json(result);
     } catch (err) {

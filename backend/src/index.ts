@@ -154,6 +154,18 @@ const getAllGroup = async (knex : any) => {
       .from('appgroup')
 };
 
+// adds a user to the appuser table
+const addUser = async (knex : any, spotifyUid : string, publicName : string) => {
+    return await knex.raw(`
+        insert into AppUser (spotify_uid, public_name)
+        select '${spotifyUid}', '${publicName}'
+        where not exists (
+            select spotify_uid from AppUser 
+            where spotify_uid = '${spotifyUid}'
+        )
+    `);
+};
+
 app.post('/api', async function (req, res) {
     console.log('/api called');
     console.log(req.body);
@@ -262,6 +274,9 @@ app.get('/api/spotify/callback', function(req, res) {
                 // use the access token to access the Spotify Web API
                 request.get(options, async function(error : any, response : any, body : any) {
                     console.log(body);
+                    // Add spotify_uid and display_name to appuser table
+                    var result = await addUser(knex, body.id, body.display_name);
+                    console.log(result);
                 });
 
                 // we can also pass the token to the browser to make requests from there

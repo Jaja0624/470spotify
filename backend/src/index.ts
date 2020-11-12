@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 var db = require('./db/dbConnection');
 
 var spotifyRouter = require('./routes/spotify');
+var userRouter = require('./routes/user');
 
 const BACKEND_PORT = '8080';
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 // All paths that start with /api/spotify will go to this router
 app.use('/api/spotify', spotifyRouter);
+app.use('/api/user', userRouter); // For all paths that start with /api/user
 
 // Set Content-Type for all responses for these routes.
 app.use((req, res, next) => {
@@ -56,22 +58,6 @@ const getAllGroup = async (db : any) => {
       .from('appgroup')
 };
 
-// Grab all groups from a user
-const getUserGroup = async (db : any, spotifyUid : string) => {
-
-    return await db('appgroup as ag')
-                 .join('groupmember as gm', 'gm.group_uid', 'ag.group_uid')
-                 .select('ag.group_uid', 'ag.group_name')
-                 .where({spotify_uid : spotifyUid});
-
-    // return await db.raw(`
-    //     select ag.group_uid, ag.group_name
-    //     from AppGroup ag
-    //     join groupmember gm on ag.group_uid = gm.group_uid
-    //     where gm.spotify_uid = '${spotifyUid}'
-    // `);
-};
-
 app.post('/api', async function (req, res) {
     console.log('/api called');
     console.log(req.body);
@@ -96,20 +82,6 @@ app.post('/api/group/create', async (req, res) => {
         // TODO: replace with spotify_uid from cookies
         var result = await createGroup(db, req.body.groupName, "prq2vz0ahfeet3o4lsonysgjn");
         console.log(result)
-        res.json(result);
-    } catch (err) {
-        console.log(err);
-        res.json(err)
-    }
-});
-
-// gets all the groups associated with a spotify_uid
-app.get('/api/user/groups', async (req, res) => {
-    console.log('api/group/user called');
-    console.log(req.query);
-    try {
-        var result = await getUserGroup(db, req.query.id as string);
-        // console.log("getUserGroup result: " + JSON.stringify(result));
         res.json(result);
     } catch (err) {
         console.log(err);

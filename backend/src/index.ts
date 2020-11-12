@@ -170,6 +170,22 @@ const getAllGroup = async (knex : any) => {
       .from('appgroup')
 };
 
+// Grab all groups from a user
+const getUserGroup = async (knex : any, spotifyUid : string) => {
+
+    return await knex('appgroup as ag')
+                 .join('groupmember as gm', 'gm.group_uid', 'ag.group_uid')
+                 .select('ag.group_uid', 'ag.group_name')
+                 .where({spotify_uid : spotifyUid});
+
+    // return await knex.raw(`
+    //     select ag.group_uid, ag.group_name
+    //     from AppGroup ag
+    //     join groupmember gm on ag.group_uid = gm.group_uid
+    //     where gm.spotify_uid = '${spotifyUid}'
+    // `);
+};
+
 // adds a user to the appuser table
 const addUser = async (knex : any, spotifyUid : string, publicName : string) => {
     return await knex.raw(`
@@ -213,7 +229,21 @@ app.post('/api/group/create', async (req, res) => {
     }
 });
 
-// gets all the groups in the db 
+// gets all the groups associated with a spotify_uid
+app.get('/api/group/user', async (req, res) => {
+    console.log('api/group/user called');
+    console.log(req.query);
+    try {
+        var result = await getUserGroup(knex, req.query.id as string);
+        // console.log("getUserGroup result: " + JSON.stringify(result));
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.json(err)
+    }
+});
+
+// gets all the groups in the db
 app.get('/api/group/all', async (req, res) => {
     console.log('api/group/all called');
     try {

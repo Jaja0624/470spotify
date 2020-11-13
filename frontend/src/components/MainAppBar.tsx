@@ -87,9 +87,6 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                             <ClickAwayListener onClickAway={handleClose}>
                             <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                 <MenuItem onClick={logoutHandler}>
-                                    Settings
-                                </MenuItem>
-                                <MenuItem onClick={logoutHandler}>
                                     Logout
                                 </MenuItem>
                                 
@@ -107,7 +104,6 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                         {userState.spotifyProfile?.images[0] 
                         ? <Avatar src={userState.spotifyProfile.images[0].url}/>
                         : <AccountCircleRoundedIcon className={classes.accountIcon}/>}
-                        {/* <Avatar src={userState.spotifyProfile.images[0]}/> */}
                         <Typography variant="h6" className={classes.title}>
                             {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
                         </Typography>

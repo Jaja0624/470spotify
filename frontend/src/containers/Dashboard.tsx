@@ -10,6 +10,9 @@ import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
+import MemberList from '../components/MemberList'
+
+
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
 interface Props extends RouteComponentProps {}
@@ -59,8 +62,15 @@ const Dashboard: React.FC<Props> = ({history}) => {
                         <MiddleContainer/>
                     </Grid>
                     <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                        <TextField id="songSearch" label="Outlined" variant="outlined" />
-                        <div>SongName</div>
+                            {!user.currentGroup
+                            ? (
+                                <div>
+                                    <TextField id="songSearch" label="Outlined" variant="outlined" />
+                                    <div>SongName</div>
+                                </div>
+                            ) : (
+                                <MemberList/>
+                            )}
                     </Grid>
                 </Grid>
             ) : (
@@ -73,8 +83,15 @@ const Dashboard: React.FC<Props> = ({history}) => {
                             <MiddleContainer/>
                         </Grid>
                         <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            <TextField id="songSearch" label="Outlined" variant="outlined" />
-                            <div>SongName</div>
+                            {!user.currentGroup
+                            ? (
+                                <div>
+                                    <TextField id="songSearch" label="Outlined" variant="outlined" />
+                                    <div>SongName</div>
+                                </div>
+                            ) : (
+                                <MemberList/>
+                            )}
                         </Grid>
                     </Grid>
                     

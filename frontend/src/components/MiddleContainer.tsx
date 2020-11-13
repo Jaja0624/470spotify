@@ -18,21 +18,13 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     const globalState = globalStore();
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
 
-    async function printMembers() {
-        if (userState?.currentGroup?.id) {
-            const mems = await getMembers(userState.currentGroup?.id.toString());
-            console.log("members", mems);
-        } else {
-            console.log(userState?.currentGroup?.id);
-        }
-    }
-
     async function leaveGroupAndUpdate() {
         if (userState?.currentGroup?.id) {
             const res = await leaveGroup(userState.currentGroup?.id.toString(), userState.spotifyProfile.id);
             await userState.getAndUpdateUserGroups()
             console.log("leave", res);
             globalState.setMiddleContainer('notgroup')
+            userState.setCurrentGroup(-1);
         } else {
             console.log(userState?.currentGroup?.id);
         }
@@ -48,12 +40,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                     <Button color='primary' variant='contained' onClick={() => {
                         setInviteModalVisible(true);
                     }}>Invite Link</Button>
-
-                    <div>
-                        <Button color='primary' variant='contained' onClick={async () => {
-                            await printMembers();
-                        }}>Group Members</Button>
-                    </div>
 
                     <div>
                         <Button color='primary' variant='contained' onClick={async () => {

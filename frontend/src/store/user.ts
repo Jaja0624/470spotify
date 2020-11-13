@@ -45,6 +45,10 @@ const userStore = create<State>((set, get)=> ({
     }],
     currentGroup: undefined,
     setCurrentGroup: (id: number) => { // the most recent group selected from the group drawer
+        if (id === -1) {
+            set({currentGroup: undefined})
+            return;
+        }
         console.log(id);
         set(state => ({
             currentGroup: state.userGroups.find((group: IGroup) => group.id === id) || undefined

@@ -60,3 +60,11 @@ export async function joinGroup(groupUid : string, spotifyUid : string) {
         console.log("Error in joinGroup: " + err);
   });
 }
+
+export async function getAllMembers(groupUid : string) {
+    console.log("dbHelper: getAllMembers");
+    return await db('groupmember as gm')
+                    .where({group_uid: BigInt(groupUid)})
+                    .join('appuser as au', 'gm.spotify_uid', 'au.spotify_uid')
+                    .select('*')
+}

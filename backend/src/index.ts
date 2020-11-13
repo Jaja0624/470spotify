@@ -46,8 +46,6 @@ app.get('/stream', (req, res) => {
   }
   res.writeHead(200, headers)
 
-  
-
   const spotifyId: string = req.query.spotifyid as string;
 
   res.on('close', () => {

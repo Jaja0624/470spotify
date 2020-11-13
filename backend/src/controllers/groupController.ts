@@ -35,3 +35,21 @@ exports.join = async function (req : any, res : any, next : any) {
     }
     
 }
+
+exports.members = async function (req : any, res : any, next : any) {
+    console.log("groupController exports.members req: " + req + " and " + JSON.stringify(req.body));
+    if (!req.body.groupId) {
+        res.status(400)
+        res.send('missing parameters');
+    } else {
+        try {
+            var result = await db.getAllMembers(req.body.groupId);
+            console.log('trx result', result)
+            res.json(result);
+        } catch (err) {
+            console.log(err);
+            res.json(err)
+        }
+    }
+    
+}

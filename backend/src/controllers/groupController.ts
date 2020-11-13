@@ -1,5 +1,5 @@
 import * as db from '../db/dbHelper';
-
+import SSEManagerInstance from '../SSEClientManager'
 exports.create = async function (req : any, res : any, next : any) {
     console.log("groupController exports.create req: " + req + " and " + JSON.stringify(req.body));
     if (!req.body.groupName || !req.body.id) {
@@ -26,6 +26,7 @@ exports.join = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.joinGroup(req.body.groupId, req.body.spotifyId);
+            SSEManagerInstance.sendMessage(['jjs0891'], 'a user just joined ur group man', 'updateGroup');
             console.log('trx result', result)
             res.json(result);
         } catch (err) {

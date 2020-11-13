@@ -40,11 +40,12 @@ const Dashboard: React.FC<Props> = ({history}) => {
         source.onmessage = e => {
             console.log(JSON.parse(e.data));
         }
-        source.addEventListener('ping', e => {
-            console.log(e);
+        source.addEventListener('updateGroup', async (e) => {
+            console.log('updateGroup');
+            await user.getAndUpdateUserGroups()
         })
     }, [])
-    
+
     return (
         <div className={classes.root}>
             <MainAppBar/>

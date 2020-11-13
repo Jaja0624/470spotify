@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
+import SSEManagerInstance  from './SSEClientManager';
 var db = require('./db/dbConnection');
 
 var spotifyRouter = require('./routes/spotify');
@@ -31,13 +31,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// connected clients 
-// connectedClientIds = {
-//   spotifyId: res
-// }
 
-let connectedClientIds: any = {};
-
+// a logged in client will be connected to this stream
 app.get('/stream', (req, res) => {
   const headers = {
     'Content-Type': 'text/event-stream',
@@ -50,31 +45,24 @@ app.get('/stream', (req, res) => {
 
   res.on('close', () => {
     console.log('sse closed');
-    clearInterval(intervalId);
+    // clearInterval(intervalId);
     res.end();
-    delete connectedClientIds[spotifyId];
+    SSEManagerInstance.deleteClient(spotifyId);
   })
 
   if (spotifyId) {
     console.log("adding", spotifyId)
-    connectedClientIds[spotifyId] = {res};
+    SSEManagerInstance.addClient(spotifyId, {res});
   }
 
-  let intervalId = setInterval(async () => {
-    console.log('connected clients', Object.keys(connectedClientIds));
-    try {
-      // connectedClientIds[spotifyId].res.write(`event: message\n data: ${JSON.stringify({ hasUnread: true })} \n\n`)
-      connectedClientIds[spotifyId].res.write('event: message\n');
-      connectedClientIds[spotifyId].res.write(`data: ${JSON.stringify('connected')}`);
-      connectedClientIds[spotifyId].res.write("\n\n");
-    } catch (err) {
-      console.log(err);
-    }
-    // res.write('event: message\n');
-    // res.write(`data: ${JSON.stringify({ hasUnread: true })}`);
-    // res.write("\n\n");
-    
-  }, 3000)
+  // let intervalId = setInterval(async () => {
+  //   console.log('connected clients', SSEManagerInstance.allClientIds());
+  //   try {
+  //     SSEManagerInstance.sendMessage([spotifyId], 'connected', 'ping');
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, 3000)
 })
 
 const server = app.listen(BACKEND_PORT, () => {

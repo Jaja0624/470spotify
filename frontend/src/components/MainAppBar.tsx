@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import userStore from '../store/user'
-import { AppBar, Toolbar, IconButton, Typography, Button, MenuItem} from '@material-ui/core';
+import { AppBar, Toolbar, Grid, IconButton, Typography, Button, MenuItem} from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -64,19 +64,14 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
-                <Typography variant="h6" style={{flexGrow:1}}>
+                <Grid style={{flexGrow:1}}>
                     470
-                </Typography>
-                {globalState.middleContainer === 'user' 
-                ? (
-                    <Button color='primary' onClick={() => {
+                    <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
                         globalState.setMiddleContainer('user')
                     }}>Home</Button>
-                ) : (
-                    <Button color='default' onClick={() => {
-                        globalState.setMiddleContainer('user')
-                    }}>Home</Button>
-                )}
+            
+                </Grid>
+                
 
                     <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (

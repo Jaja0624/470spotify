@@ -40,8 +40,9 @@ const Dashboard: React.FC<Props> = ({history}) => {
         source.onmessage = e => {
             console.log(JSON.parse(e.data));
         }
-        source.addEventListener('updateGroup', async (e) => {
+        source.addEventListener('updateGroup', async (ev: any) => {
             console.log('updateGroup');
+            console.log(JSON.parse(ev.data));
             await user.getAndUpdateUserGroups()
         })
     }, [])

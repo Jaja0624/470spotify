@@ -10,6 +10,7 @@ var groupController = require("../controllers/groupController");
 // for creating a new group for a user
 router.post("/create", groupController.create);
 router.post("/join", groupController.join);
+router.post("/leave", groupController.leave);
 router.get("/members", groupController.members);
 
 module.exports = router;

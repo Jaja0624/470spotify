@@ -61,6 +61,20 @@ export async function joinGroup(groupUid : string, spotifyUid : string) {
   });
 }
 
+export async function leaveGroup(groupUid : string, spotifyUid : string) {
+    console.log("spotifyUid", spotifyUid);
+    db.transaction(function(trx : any) {
+        db('groupmember')
+        .where({group_uid: BigInt(groupUid), spotify_uid: spotifyUid})
+        .del()
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .catch((err : any) => {
+        console.log("Error in joinGroup: " + err);
+  });
+}
+
 export async function getAllMembers(groupUid : string) {
     console.log("dbHelper: getAllMembers");
     return await db('groupmember as gm')

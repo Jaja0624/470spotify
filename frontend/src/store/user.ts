@@ -1,11 +1,11 @@
 import create from 'zustand';
 import IGroup from '../types/IGroup'
+import Cookies from 'js-cookie';
+import { getGroupsHandler } from '../core/serverhandler'
 
 
 type State = {
-    authenticated: boolean,
-    login: (cb: any) => void,
-    logout: (cb: any) => void,
+    validateAuthenticated: () => any,
     spotifyProfile: any,
     setSpotifyProfile: (blah: any) => void,
     userGroups: IGroup[],
@@ -13,31 +13,19 @@ type State = {
     setCurrentGroup: (id: number) => void,
     setUserGroups: (userGroups: IGroup[]) => void,
     userPlaylists?: any[],
-    setUserPlaylists: (playlists: any[]) => void
+    setUserPlaylists: (playlists: any[]) => void,
+    getAndUpdateUserGroups: () => void,
 }
 
-const userStore = create<State>(set => ({
-    authenticated: false, // primitive state
-    login: (cb) => { // function that modifies state
-        set(state => (
-            {
-                authenticated:true
-            }
-        ))
-        cb()
-    },
-    logout: (cb) => { // function that modifies state
-        set(state => (
-            {
-                authenticated:false
-            }
-        ))
-        cb()
+const userStore = create<State>((set, get)=> ({
+    validateAuthenticated: () => {
+        return Cookies.get('spotifytoken');
     },
     spotifyProfile: undefined,
-    setSpotifyProfile: (blah: any) => { 
-        console.log("setting spotify profile", blah)
-        set(state => ({spotifyProfile: blah}))
+    setSpotifyProfile: (spotifyProfile: any) => { 
+        console.log("setting spotify profile", spotifyProfile)
+        set({spotifyProfile : spotifyProfile})
+        console.log("updated spotify profile", get().spotifyProfile)
     },
     userGroups: [ // static group data, to be replaced with what i just showed u 
     {
@@ -61,6 +49,16 @@ const userStore = create<State>(set => ({
         set(state => ({
             currentGroup: state.userGroups.find((group: IGroup) => group.id === id) || undefined
         }))
+    },
+    getAndUpdateUserGroups: async () => {
+        if (get().spotifyProfile?.id) {
+            const groups = await getGroupsHandler(get().spotifyProfile.id);
+            if (groups) {
+                set(state => ({
+                    userGroups: groups
+                }))
+            }
+        }
     },
     setUserGroups: (userGroups: IGroup[]) => { // via this function since u cannot modify state directly
         set(state => ({userGroups: userGroups}))

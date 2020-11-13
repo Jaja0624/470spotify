@@ -9,5 +9,6 @@ var groupController = require("../controllers/groupController");
 // POST request route: /api/group/create
 // for creating a new group for a user
 router.post("/create", groupController.create);
+router.post("/join", groupController.join);
 
 module.exports = router;

@@ -31,7 +31,52 @@ app.use((req, res, next) => {
     next();
 });
 
+// connected clients 
+// connectedClientIds = {
+//   spotifyId: res
+// }
+
+let connectedClientIds: any = {};
+
+app.get('/stream', (req, res) => {
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'no-cache'
+  }
+  res.writeHead(200, headers)
+
+  res.on('close', () => {
+    console.log('sse closed');
+    clearInterval(intervalId);
+    res.end();
+  })
+
+  const spotifyId: string = req.query.spotifyid as string;
+  if (spotifyId) {
+    console.log("adding", spotifyId)
+    connectedClientIds[spotifyId] = {res};
+  }
+
+  let intervalId = setInterval(async () => {
+    console.log('connected clients', Object.keys(connectedClientIds));
+    try {
+      // connectedClientIds[spotifyId].res.write(`event: message\n data: ${JSON.stringify({ hasUnread: true })} \n\n`)
+      connectedClientIds[spotifyId].res.write('event: message\n');
+      connectedClientIds[spotifyId].res.write(`data: ${JSON.stringify('connected')}`);
+      connectedClientIds[spotifyId].res.write("\n\n");
+    } catch (err) {
+      console.log(err);
+    }
+    // res.write('event: message\n');
+    // res.write(`data: ${JSON.stringify({ hasUnread: true })}`);
+    // res.write("\n\n");
+    
+  }, 3000)
+})
+
 const server = app.listen(BACKEND_PORT, () => {
     console.log(`App listening on port ${BACKEND_PORT}`);
     console.log('Press Ctrl+C to quit.');
 });
+

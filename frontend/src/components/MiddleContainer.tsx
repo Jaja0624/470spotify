@@ -7,12 +7,6 @@ import { Button } from '@material-ui/core';
 import UserPlaylists from './UserPlaylists'
 import GroupInviteLinkModal from './GroupInviteLinkModal'
 
-interface IObj {
-    name: string,
-    derp: {},
-    awag: string[],
-}
-
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -32,7 +26,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                     <Button color='primary' variant='contained' onClick={() => {
                         setInviteModalVisible(true);
                     }}>Invite Link</Button>
-
                     <GroupInviteLinkModal 
                         isOpen={inviteModalVisible}
                         cancelHandler={() => setInviteModalVisible(false)}

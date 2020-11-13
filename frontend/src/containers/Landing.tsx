@@ -37,17 +37,7 @@ const Landing: React.FC<Props> = ({history}) => {
                 </Typography>
 
                 <Button id="login-but" className={`${classes.loginButton}`} color="primary" onClick={() => {
-                    userState.login(() => {
-                        console.log('login btn pressed');
-                        const obj = {attr1 : "test"};
-                        console.log(obj);
-
-                        Axios.post('/api', obj)
-                                .then(res => {
-                                    console.log(res);
-                                })
-                        history.push('/app');
-                        })
+                    // history.push('/app');
                     window.location.href = REACT_APP_BACKEND + '/api/spotify/login';
                 }}>
                     Log in with Spotify

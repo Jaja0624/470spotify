@@ -4,17 +4,13 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import MainAppBar from '../components/MainAppBar'
 import Grid from '@material-ui/core/Grid';
-import { Button, Typography } from '@material-ui/core';
-import theme from '../core/theme';
-import { red } from '@material-ui/core/colors';
-// import { Palette } from '@material-ui/icons';
-import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
+const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
 interface Props extends RouteComponentProps {}
 
@@ -30,6 +26,24 @@ const Dashboard: React.FC<Props> = ({history}) => {
         hideGroupDrawer: state.hideGroupDrawer,
         openGroupDrawer: state.openGroupDrawer,
     }), shallow);
+    
+    // when frontend loads, it will call the "all group" endpoint every 5s
+    useEffect(() => {
+        async function scopedGetGroup() {
+            await user.getAndUpdateUserGroups();
+        }
+        if (user.validateAuthenticated()) {
+            scopedGetGroup();
+        }
+        
+        const source = new EventSource(REACT_APP_BACKEND + '/stream?spotifyid=' + user.spotifyProfile.id);
+        source.onmessage = e => {
+            console.log(JSON.parse(e.data));
+        }
+        source.addEventListener('ping', e => {
+            console.log(e);
+        })
+    }, [])
     
     return (
         <div className={classes.root}>

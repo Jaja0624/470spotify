@@ -7,7 +7,6 @@ import { getMembers } from '../core/server'
 import MemberListItem from './MemberListItem'
 import CircularProgress from '@material-ui/core/CircularProgress';
  
-
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
 }

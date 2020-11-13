@@ -31,12 +31,17 @@ const GroupInviteLinkModal: React.FC<Props> = ({history, isOpen, cancelHandler}:
                     direction='row'
                     alignItems='center'>
                     <Typography>{inviteLink}</Typography>
-                        <Button color='secondary' variant='contained' onClick={() => {
-                            navigator.clipboard.writeText(inviteLink)
-                        }}>Copy Link</Button>
+                        
                 </Grid>
             </DialogContent>
             <DialogActions>
+                <div style={{flexGrow: 1}}>
+                    <Button color='secondary' variant='contained' onClick={() => {
+                        navigator.clipboard.writeText(inviteLink)
+                    }}>Copy Link</Button>
+                </div>
+
+                
                 <Button onClick={cancelHandler} color="primary" variant='contained'>
                     Done
                 </Button>

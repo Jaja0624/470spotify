@@ -17,3 +17,11 @@ export const joinGroup = async (groupId: string, spotifyId: string): Promise<Axi
     }
     return await axios.post('/api/group/join', body);
 }
+
+export const getMembers = async (groupId: string): Promise<AxiosResponse> => {
+    return await axios.get('/api/group/members', {
+        params: {
+            groupId
+        }
+    })
+}

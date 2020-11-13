@@ -31,7 +31,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // a logged in client will be connected to this stream
 app.get('/stream', (req, res) => {
   const headers = {
@@ -45,7 +44,7 @@ app.get('/stream', (req, res) => {
 
   res.on('close', () => {
     console.log('sse closed');
-    // clearInterval(intervalId);
+    clearInterval(intervalId);
     res.end();
     SSEManagerInstance.deleteClient(spotifyId);
   })
@@ -55,14 +54,9 @@ app.get('/stream', (req, res) => {
     SSEManagerInstance.addClient(spotifyId, {res});
   }
 
-  // let intervalId = setInterval(async () => {
-  //   console.log('connected clients', SSEManagerInstance.allClientIds());
-  //   try {
-  //     SSEManagerInstance.sendMessage([spotifyId], 'connected', 'ping');
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, 3000)
+  let intervalId = setInterval(async () => {
+    console.log('connected clients', SSEManagerInstance.allClientIds());
+  }, 5000)
 })
 
 const server = app.listen(BACKEND_PORT, () => {

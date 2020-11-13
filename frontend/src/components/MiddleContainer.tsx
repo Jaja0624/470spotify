@@ -6,6 +6,7 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import UserPlaylists from './UserPlaylists'
 import GroupInviteLinkModal from './GroupInviteLinkModal'
+import { getMembers } from '../core/server'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -16,6 +17,14 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     const userState = userStore();
     const globalState = globalStore();
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
+    async function scopedF() {
+        if (userState?.currentGroup?.id) {
+            const mems = await getMembers(userState.currentGroup?.id.toString());
+            console.log("members", mems);
+        } else {
+            console.log(userState?.currentGroup?.id);
+        }
+    }
 
     const ifhandler = () => {
         if (globalState.middleContainer === 'group' && userState.currentGroup) {
@@ -26,6 +35,13 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                     <Button color='primary' variant='contained' onClick={() => {
                         setInviteModalVisible(true);
                     }}>Invite Link</Button>
+                    <Button color='primary' variant='contained' onClick={async () => {
+                        await scopedF();
+                    }}>Group Members</Button>
+
+                    <div>
+
+                    </div>
                     <GroupInviteLinkModal 
                         isOpen={inviteModalVisible}
                         cancelHandler={() => setInviteModalVisible(false)}

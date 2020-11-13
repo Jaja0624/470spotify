@@ -46,13 +46,17 @@ app.get('/stream', (req, res) => {
   }
   res.writeHead(200, headers)
 
+  
+
+  const spotifyId: string = req.query.spotifyid as string;
+
   res.on('close', () => {
     console.log('sse closed');
     clearInterval(intervalId);
     res.end();
+    delete connectedClientIds[spotifyId];
   })
 
-  const spotifyId: string = req.query.spotifyid as string;
   if (spotifyId) {
     console.log("adding", spotifyId)
     connectedClientIds[spotifyId] = {res};

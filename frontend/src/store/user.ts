@@ -58,6 +58,7 @@ const userStore = create<State>((set, get)=> ({
         if (get().spotifyProfile?.id) {
             const groups = await getGroupsHandler(get().spotifyProfile.id);
             if (groups) {
+                console.log("updating user groups state");
                 set(state => ({
                     userGroups: groups
                 }))

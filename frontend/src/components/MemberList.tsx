@@ -36,11 +36,12 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     }
 
     useEffect(() => {
+        console.log('hello');
         async function scopedPull() {
             await pullMembers();
         }
         scopedPull();
-    }, [])
+    }, [userState.userGroups])
 
     if (loading) {
         return (
@@ -49,6 +50,7 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
             </div>
         )
     }
+    
     return (
         <div className={classes.root}>
             <Typography>

@@ -20,6 +20,7 @@ interface Props extends RouteComponentProps {}
 const Dashboard: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const user = userStore()
+    const globalState = globalStore();
     const {
         isGroupDrawerOpen, 
         hideGroupDrawer, 
@@ -62,7 +63,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
                         <MiddleContainer/>
                     </Grid>
                     <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            {!user.currentGroup
+                            {globalState.middleContainer !== 'group'
                             ? (
                                 <div>
                                     <TextField id="songSearch" label="Outlined" variant="outlined" />
@@ -83,7 +84,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
                             <MiddleContainer/>
                         </Grid>
                         <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            {!user.currentGroup
+                            {globalState.middleContainer !== 'group'
                             ? (
                                 <div>
                                     <TextField id="songSearch" label="Outlined" variant="outlined" />

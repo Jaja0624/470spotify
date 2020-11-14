@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import userStore from '../store/user'
-import { AppBar, Toolbar, IconButton, Typography, Button, MenuItem} from '@material-ui/core';
+import { AppBar, Toolbar, Grid, IconButton, Avatar, Typography, Button, MenuItem} from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -11,6 +11,8 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
 import Cookies from 'js-cookie';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+
 interface Props extends RouteComponentProps {}
 
 
@@ -64,19 +66,16 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
-                <Typography variant="h6" style={{flexGrow:1}}>
+                <Grid style={{flexGrow:1}}>
                     470
-                </Typography>
-                {globalState.middleContainer === 'user' 
-                ? (
-                    <Button color='primary' onClick={() => {
+                    <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
                         globalState.setMiddleContainer('user')
                     }}>Home</Button>
-                ) : (
-                    <Button color='default' onClick={() => {
-                        globalState.setMiddleContainer('user')
-                    }}>Home</Button>
-                )}
+         
+                </Grid>
+                <Button variant='text' color='primary' size='large'>Start Session
+                    <PlayCircleFilledIcon/>
+                </Button>
 
                     <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (
@@ -90,6 +89,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                                 <MenuItem onClick={logoutHandler}>
                                     Logout
                                 </MenuItem>
+                                
                             </MenuList>
                             </ClickAwayListener>
                         </Paper>
@@ -101,7 +101,9 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                         aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
                         onClick={handleToggle}>
-                        <AccountCircleRoundedIcon className={classes.accountIcon}/>
+                        {userState.spotifyProfile?.images[0] 
+                        ? <Avatar src={userState.spotifyProfile.images[0].url}/>
+                        : <AccountCircleRoundedIcon className={classes.accountIcon}/>}
                         <Typography variant="h6" className={classes.title}>
                             {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
                         </Typography>

@@ -2,14 +2,11 @@ import React, { useEffect, useState }from 'react';
 import {
     Redirect,
 } from "react-router-dom";
-import userStore from '../store/user'
-import { getUserProfile, getPlaylists} from '../core/spotify'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Cookies from 'js-cookie';
 
 // for auth flow
 const AuthLoadingScreen = () => {
-    const user = userStore();
     const [loading, setLoading] = useState(true);
 
     const setAccessToken = () => {

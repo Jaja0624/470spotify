@@ -7,6 +7,7 @@ import userStore from '../store/user'
 import globalStore from '../store/global'
 import Cookies from 'js-cookie';
 import {getUserProfile, getPlaylists} from '../core/spotify';
+import { joinGroup } from '../core/server';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
@@ -23,24 +24,33 @@ const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
             const playlists = await getPlaylists(accessToken, userProfile.data.id)
             if (userProfile.status === 200) {
                 user.setSpotifyProfile(userProfile.data);
-                console.log(userProfile.data)
+                if (globalState.groupInvite) {
+                    console.log("Invitation");
+                    const joinGroupResult = await joinGroup(globalState.groupInvite.groupId, userProfile.data.id);
+                    if (joinGroupResult.status === 200) {
+                        await user.getAndUpdateUserGroups();
+                        globalState.setMiddleContainer('group');
+                        user.setCurrentGroup(globalState.groupInvite?.groupId);
+                        // globalState.setGroupInvite(undefined);
+                    } else {
+                        // TODO indicate to user failure
+                        console.log('join group err')
+                    }
+                    
+                }
             } else {
                 user.setSpotifyProfile(undefined);
             }
             if (playlists.status === 200) {
+                user.setSpotifyProfile(userProfile.data);
                 user.setUserPlaylists(playlists.data.items);
-                console.log(playlists.data);
             } else {
                 user.setUserPlaylists([]);
             }
 
             // check if user was invited to group, if so, set page to the new group
-            if (globalState.groupInvite) {
-                console.log("Invitation");
-                globalState.setMiddleContainer('group');
-                user.setCurrentGroup(globalState.groupInvite?.groupId);
-                globalState.setGroupInvite(undefined);
-            }
+            console.log('groupInvite', globalState.groupInvite);
+            
         } else {
             console.log('access token not found');
         }
@@ -49,11 +59,11 @@ const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
     useEffect(() => {
         async function test() {
             await verifyAccessToken();
-
-            
             setLoading(false);
+
         }
         test();
+
     }, [])
 
     // const routeComponent = (props: any) => (

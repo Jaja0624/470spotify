@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import shallow from 'zustand/shallow'
 import userStore from '../../store/user'
 import globalStore from '../../store/global'
@@ -10,7 +10,7 @@ import CreateGroupModal from '../CreateGroupModal'
 import GroupList from './GroupList'
 import KeyboardArrowLeftTwoToneIcon from '@material-ui/icons/KeyboardArrowLeftTwoTone';
 import { createGroup } from '../../core/server'
-import { getGroupsHandler } from '../../core/serverhandler'
+
 
 interface Props extends RouteComponentProps {}
 
@@ -30,10 +30,9 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
             name: groupName
         })
         userState.setUserGroups(old);
-        let body = {groupName, id: "prq2vz0ahfeet3o4lsonysgjn"};
+        let body = {groupName, id: userState.spotifyProfile.id};
         await createGroup(body);
-        const groups = await getGroupsHandler();
-		userState.setUserGroups(groups);
+        await userState.getAndUpdateUserGroups();
     }
 
     const {
@@ -47,6 +46,8 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
     }), shallow);
 
     const [createGroupModalVisible, setCreateGroupModalVisible] = useState(false);
+    
+    
 
     return (
         <div className={classes.drawer}>

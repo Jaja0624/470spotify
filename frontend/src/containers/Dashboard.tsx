@@ -4,23 +4,23 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import MainAppBar from '../components/MainAppBar'
 import Grid from '@material-ui/core/Grid';
-import { Button, Typography } from '@material-ui/core';
-import theme from '../core/theme';
-import { red } from '@material-ui/core/colors';
-// import { Palette } from '@material-ui/icons';
-import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
+import MemberList from '../components/MemberList'
+
+
+const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
 interface Props extends RouteComponentProps {}
 
 const Dashboard: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const user = userStore()
+    const globalState = globalStore();
     const {
         isGroupDrawerOpen, 
         hideGroupDrawer, 
@@ -31,6 +31,26 @@ const Dashboard: React.FC<Props> = ({history}) => {
         openGroupDrawer: state.openGroupDrawer,
     }), shallow);
     
+    // when frontend loads, it will call the "all group" endpoint every 5s
+    useEffect(() => {
+        async function scopedGetGroup() {
+            await user.getAndUpdateUserGroups();
+        }
+        if (user.validateAuthenticated()) {
+            scopedGetGroup();
+        }
+        
+        const source = new EventSource(REACT_APP_BACKEND + '/stream?spotifyid=' + user.spotifyProfile.id);
+        source.onmessage = e => {
+            console.log(JSON.parse(e.data));
+        }
+        source.addEventListener('updateGroup', async (ev: any) => {
+            console.log('updateGroup');
+            console.log(JSON.parse(ev.data));
+            await user.getAndUpdateUserGroups()
+        })
+    }, [])
+
     return (
         <div className={classes.root}>
             <MainAppBar/>
@@ -43,8 +63,15 @@ const Dashboard: React.FC<Props> = ({history}) => {
                         <MiddleContainer/>
                     </Grid>
                     <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                        <TextField id="songSearch" label="Outlined" variant="outlined" />
-                        <div>SongName</div>
+                            {globalState.middleContainer !== 'group'
+                            ? (
+                                <div>
+                                    <TextField id="songSearch" label="Outlined" variant="outlined" />
+                                    <div>SongName</div>
+                                </div>
+                            ) : (
+                                <MemberList/>
+                            )}
                     </Grid>
                 </Grid>
             ) : (
@@ -57,8 +84,15 @@ const Dashboard: React.FC<Props> = ({history}) => {
                             <MiddleContainer/>
                         </Grid>
                         <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            <TextField id="songSearch" label="Outlined" variant="outlined" />
-                            <div>SongName</div>
+                            {globalState.middleContainer !== 'group'
+                            ? (
+                                <div>
+                                    <TextField id="songSearch" label="Outlined" variant="outlined" />
+                                    <div>SongName</div>
+                                </div>
+                            ) : (
+                                <MemberList/>
+                            )}
                         </Grid>
                     </Grid>
                     

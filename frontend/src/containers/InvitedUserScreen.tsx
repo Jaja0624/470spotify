@@ -5,10 +5,17 @@ import {
 import userStore from '../store/user'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import globalStore from '../store/global'
+import shallow from 'zustand/shallow'
 
 const InvitedUserScreen = () => {
-    const user = userStore();
-    const globalState = globalStore();
+    const {
+        setGroupInvite, 
+        setMiddleContainer, 
+    } = globalStore(state => ({ 
+        setGroupInvite: state.setGroupInvite, 
+        setMiddleContainer: state.setMiddleContainer,
+    }), shallow);
+
     const [loading, setLoading] = useState(true);
 
     // TODO: Join group *********************************
@@ -18,7 +25,8 @@ const InvitedUserScreen = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const groupId = urlParams.get('groupid'); // case sensitive, view GroupInviteLinkModa.tsx for link string
         if (groupId != null) {
-            globalState.setGroupInvite(parseInt(groupId));
+            setGroupInvite(parseInt(groupId));
+            setMiddleContainer('group');
             console.log('InvitedUserScreen', groupId)
         }
         setLoading(false);

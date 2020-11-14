@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
+import SSEManagerInstance  from './SSEClientManager';
 var db = require('./db/dbConnection');
 
 var spotifyRouter = require('./routes/spotify');
@@ -31,7 +31,36 @@ app.use((req, res, next) => {
     next();
 });
 
+// a logged in client will be connected to this stream
+app.get('/stream', (req, res) => {
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'no-cache'
+  }
+  res.writeHead(200, headers)
+
+  const spotifyId: string = req.query.spotifyid as string;
+
+  res.on('close', () => {
+    console.log('sse closed');
+    clearInterval(intervalId);
+    res.end();
+    SSEManagerInstance.deleteClient(spotifyId);
+  })
+
+  if (spotifyId) {
+    console.log("adding", spotifyId)
+    SSEManagerInstance.addClient(spotifyId, {res});
+  }
+
+  let intervalId = setInterval(async () => {
+    console.log('connected clients', SSEManagerInstance.allClientIds());
+  }, 5000)
+})
+
 const server = app.listen(BACKEND_PORT, () => {
     console.log(`App listening on port ${BACKEND_PORT}`);
     console.log('Press Ctrl+C to quit.');
 });
+

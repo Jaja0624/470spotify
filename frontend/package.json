@@ -19,6 +19,7 @@
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.4",
+    "react-spotify-web-playback": "^0.7.0",
     "spotify-web-api-js": "^1.5.1",
     "typescript": "^3.7.5",
     "zustand": "^3.1.3"

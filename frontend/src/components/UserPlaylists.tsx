@@ -22,12 +22,6 @@ const UserPlaylists: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
     const userState = userStore();
 
-    // executed when component is mounted
-    useEffect(() => {
-        console.log('this component is mounted');
-        
-    })
-
     return (
         <div className={classes.root}>
             <Typography>

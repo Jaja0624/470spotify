@@ -5,20 +5,17 @@ import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText} from '@mate
 
 
 interface Props extends RouteComponentProps {
-    playlistData: any, 
+    memberData: any, 
     key: string
 }
 
-const UserPlaylistListItem: React.FC<Props> = ({history, playlistData, key}: Props) => {
+const MemberListItem: React.FC<Props> = ({history, memberData, key}: Props) => {
     const classes = useStyles();
 
     return (
         <ListItem button className={classes.root} key={key}>
-            <ListItemAvatar>
-                {playlistData.images[0].url && <Avatar src={playlistData.images[0].url}/>}
-            </ListItemAvatar>
             <ListItemText
-                primary={playlistData.name}
+                primary={memberData.public_name}
             />
         </ListItem>
     )
@@ -36,4 +33,4 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default withRouter(UserPlaylistListItem) // withRouter enables us to use the router even though this component is not a "Route"
+export default withRouter(MemberListItem) // withRouter enables us to use the router even though this component is not a "Route"

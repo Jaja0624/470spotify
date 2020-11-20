@@ -34,12 +34,13 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         }
     }
 
-    const createSessionHandler = (createNewPlaylist: boolean) => {
+    const createSessionHandler = async (createNewPlaylist: boolean) => {
         setStartSessionModalVisible(false)
         // TBD: handle creating session in backend, setting up playlist on spotify profile...
         if (userState?.currentGroup?.id) {
             console.log("create new playlist", createNewPlaylist);
-            createSession(userState?.currentGroup?.id, userState?.createSessionInfo); 
+            const res = await createSession(userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo); 
+            console.log("create session resposnse", res)
         }
     }
 

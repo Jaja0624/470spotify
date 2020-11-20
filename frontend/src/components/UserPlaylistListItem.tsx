@@ -19,7 +19,7 @@ const UserPlaylistListItem: React.FC<Props> = ({history, playlistData, selected 
     return (
         <ListItem button className={`${classes.root} ${selected === playlistData.id && selectable && classes.selectedModifier}`} key={playlistData.id} onClick={(ev) => selectHandler(ev, playlistData)}>
             <ListItemAvatar>
-                {playlistData.images[0].url && <Avatar src={playlistData.images[0].url}/>}
+                {playlistData?.images[0]?.url && <Avatar src={playlistData.images[0].url}/>}
             </ListItemAvatar>
             {selected === playlistData.id ? (
                 <ListItemText

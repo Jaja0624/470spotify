@@ -11,32 +11,28 @@ const getPlaylistTracks = async (accessToken: string, playlistId: string): Promi
 }
 
 const createPlaylist = async (accessToken: string, playlistName: string, spotifyUid: string): Promise<AxiosResponse> => {
+    const headers = {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    }
+
     const body = {
         name: playlistName,
         public: false,
         collaborative: true,
-        description: "yeet"
-    }
-    return await axios.post(`https://api.spotify.com/v1/users/${spotifyUid}/playlists`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
-        body
-    })
+    };
+    return await axios.post(`https://api.spotify.com/v1/users/${spotifyUid}/playlists`, body, headers)
 }
 
 const addTracksToPlaylist = async (accessToken: string, playlistId: string, tracks: string[]): Promise<AxiosResponse> => {
-    const body = {
-        uris: tracks
+    const headers = {
+        headers: { Authorization: `Bearer ${accessToken}` }
     }
-    return await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
-        body
-    })
+
+    const body = {
+        uris:tracks
+    };
+
+    return await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, body, headers)
 }
 
 // also create admin
@@ -45,29 +41,43 @@ exports.create = async function (req: any, res: any, next: any) {
         res.status(400)
         res.send('missing parameters');
     } else {
-        const results = await db('appsession').insert({is_active:true}, 'session_uid');
-        // TODO...
-        // Create admin
-        if (!results) {
-            return;
+        try {
+            const results = await db('appsession').insert({is_active:true}, 'session_uid');
+            // TODO...
+            // Create admin
+            if (!results) {
+                return;
+            }
+            console.log("create session spotify id", req.body.spotifyId);
+            console.log("create session access token ", req.body.accessToken);
+            console.log("groupuid", req.body.groupUid);
+            console.log("createSessionInfo", req.body.createSessionInfo);
+            console.log("playlist id", req.body.createSessionInfo.playlistData.id)
+            const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
+            const trackUris = [];
+            for (let i = 0; i < tracks.data.items.length; i++) {
+                trackUris.push(tracks.data.items[i].track.uri);
+            }
+            console.log("trackUris", trackUris)
+
+            // GETTING 401 UNAUTHORIZED HERE I HAVE NO IDEA WHY
+            const newPlaylist = await createPlaylist(req.body.accessToken, "cmpt470-playlist-" + results[0], req.body.spotifyId);
+            // GETTING 401 UNAUTHORIZED HERE I HAVE NO IDEA WHY
+
+            console.log("newPlaylistId", newPlaylist.data.id)
+
+            const result = await addTracksToPlaylist(req.body.accessToken, newPlaylist.data.id, trackUris);
+            res.status(201);
+            res.json({
+                'session_uid':results[0],
+                // 'playlist_id': newPlaylist.data.id
+            });
+        } catch (err) {
+            console.log(err)
+            res.status(500)
+            res.json("oops")
         }
-        console.log("create session spotify id", req.body.spotifyId);
-        console.log("groupuid", req.body.groupUid);
-        console.log("createSessionInfo", req.body.createSessionInfo);
-        console.log("playlist id", req.body.createSessionInfo.playlistData.id)
-        // const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
-        // const trackUrls = [];
-        // for (let i = 0; i < tracks.items.length; i++) {
-        //     trackUrls.push(tracks.items[0].url);
-        // }
-        // const newPlaylist = await createPlaylist(req.body.accessToken, "cmpt470-playlist-" + results[0], req.body.spotifyId);
-        // const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
-        // const result = await addTracksToPlaylist(req.body.accessToken, newPlaylist.id, trackUrls);
-        // res.status(201);
-        // res.json({
-        //     'session_uid':results[0],
-        //     'playlist_id': newPlaylist.id
-        // });
+        
 
     }
 

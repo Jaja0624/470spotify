@@ -1,5 +1,5 @@
 export default interface IGroup {
-    id: number,
+    id: string,
     img_url?: string,
     name: string
 }

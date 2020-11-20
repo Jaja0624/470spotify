@@ -10,11 +10,13 @@ type State = {
     setSpotifyProfile: (blah: any) => void,
     userGroups: IGroup[],
     currentGroup?: IGroup,
-    setCurrentGroup: (id: number) => void,
+    setCurrentGroup: (id: string) => void,
     setUserGroups: (userGroups: IGroup[]) => void,
     userPlaylists?: any[],
     setUserPlaylists: (playlists: any[]) => void,
     getAndUpdateUserGroups: () => void,
+    createSessionInfo: any,
+    setCreateSessionInfo: (info: any) => void
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -27,25 +29,10 @@ const userStore = create<State>((set, get)=> ({
         set({spotifyProfile : spotifyProfile})
         console.log("updated spotify profile", get().spotifyProfile)
     },
-    userGroups: [ // static group data, to be replaced with what i just showed u 
-    {
-        id:14214,
-        img_url:'https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg',
-        name:'group1',
-    }, 
-    {
-        id:141516,
-        img_url:'https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg',
-        name:'group2'
-    }, 
-    {
-        id:15211254125,
-        img_url:'https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg',
-        name:'group3'
-    }],
+    userGroups: [],
     currentGroup: undefined,
-    setCurrentGroup: (id: number) => { // the most recent group selected from the group drawer
-        if (id === -1) {
+    setCurrentGroup: (id: string) => { // the most recent group selected from the group drawer
+        if (id === "") {
             set({currentGroup: undefined})
             return;
         }
@@ -71,8 +58,14 @@ const userStore = create<State>((set, get)=> ({
     userPlaylists: undefined,
     setUserPlaylists: (playlists: any[]) => {
         set(state => ({userPlaylists: playlists}))
+    },
+    createSessionInfo: {},
+    setCreateSessionInfo: (info: any) => {
+        set({createSessionInfo:  {
+            ...get().createSessionInfo,
+            ...info
+        }})
     }
-    
 }))
 
 

@@ -7,7 +7,7 @@ import userStore from '../../../store/user'
 
 interface Props extends RouteComponentProps {
     groupData: IGroup,
-    key: number
+    key: string
 }
 
 const GroupListItemSmall: React.FC<Props> = ({history, groupData, key}: Props) => {

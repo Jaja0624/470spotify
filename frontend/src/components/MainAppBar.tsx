@@ -11,7 +11,6 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
 import Cookies from 'js-cookie';
-import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
 interface Props extends RouteComponentProps {}
 
@@ -20,9 +19,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
     const classes = useStyles();
     const userState = userStore()
     const globalState = globalStore();
-
     const anchorRef = React.useRef<HTMLButtonElement>(null);
-    const [title, setTitle] = useState('metitle')
     const [open, setOpen] = React.useState(false);
 
     const handleToggle = () => {
@@ -38,7 +35,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
     
     const handleClose = (event: React.MouseEvent<EventTarget>) => {
         if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
-        return;
+            return;
         }
 
         setOpen(false);
@@ -73,41 +70,37 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                     }}>Home</Button>
          
                 </Grid>
-                <Button variant='text' color='primary' size='large'>Start Session
-                    <PlayCircleFilledIcon/>
-                </Button>
+                <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                {({ TransitionProps, placement }) => (
+                    <Grow
+                    {...TransitionProps}
+                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                    >
+                    <Paper>
+                        <ClickAwayListener onClickAway={handleClose}>
+                        <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                            <MenuItem onClick={logoutHandler}>
+                                Logout
+                            </MenuItem>
+                            
+                        </MenuList>
+                        </ClickAwayListener>
+                    </Paper>
+                    </Grow>
+                )}
+                </Popper>
 
-                    <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                        {...TransitionProps}
-                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                        >
-                        <Paper>
-                            <ClickAwayListener onClickAway={handleClose}>
-                            <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                <MenuItem onClick={logoutHandler}>
-                                    Logout
-                                </MenuItem>
-                                
-                            </MenuList>
-                            </ClickAwayListener>
-                        </Paper>
-                        </Grow>
-                    )}
-                    </Popper>
-
-                    <IconButton ref={anchorRef}
-                        aria-controls={open ? 'menu-list-grow' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleToggle}>
-                        {userState.spotifyProfile?.images[0] 
-                        ? <Avatar src={userState.spotifyProfile.images[0].url}/>
-                        : <AccountCircleRoundedIcon className={classes.accountIcon}/>}
-                        <Typography variant="h6" className={classes.title}>
-                            {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
-                        </Typography>
-                    </IconButton>
+                <IconButton ref={anchorRef}
+                    aria-controls={open ? 'menu-list-grow' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleToggle}>
+                    {userState.spotifyProfile?.images[0] 
+                    ? <Avatar src={userState.spotifyProfile.images[0].url}/>
+                    : <AccountCircleRoundedIcon className={classes.accountIcon}/>}
+                    <Typography variant="h6" className={classes.title}>
+                        {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
+                    </Typography>
+                </IconButton>
                 </Toolbar>
             </AppBar>
         </div>

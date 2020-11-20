@@ -33,3 +33,8 @@ export const getMembers = async (groupId: string): Promise<AxiosResponse> => {
         }
     })
 }
+
+export const createSession = async (groupId: string, createSessionInfo: any) => {
+    console.log("createSession TBD groupId", groupId);
+    console.log("createSession TBD info", createSessionInfo);
+}

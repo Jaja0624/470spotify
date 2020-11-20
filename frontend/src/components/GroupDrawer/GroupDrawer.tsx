@@ -11,7 +11,6 @@ import GroupList from './GroupList'
 import KeyboardArrowLeftTwoToneIcon from '@material-ui/icons/KeyboardArrowLeftTwoTone';
 import { createGroup } from '../../core/server'
 
-
 interface Props extends RouteComponentProps {}
 
 // create group popup
@@ -23,13 +22,6 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
         console.log(groupName);
         console.log('group created...' + groupName);
         setCreateGroupModalVisible(false);
-        let old = userState.userGroups
-        old.push({    
-            id: Math.floor(Math.random()*1000),
-            img_url: 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg',
-            name: groupName
-        })
-        userState.setUserGroups(old);
         let body = {groupName, id: userState.spotifyProfile.id};
         await createGroup(body);
         await userState.getAndUpdateUserGroups();
@@ -47,8 +39,6 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
 
     const [createGroupModalVisible, setCreateGroupModalVisible] = useState(false);
     
-    
-
     return (
         <div className={classes.drawer}>
             <Grid container 

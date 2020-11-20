@@ -12,7 +12,6 @@ import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
 import MemberList from '../components/MemberList'
 
-
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
 interface Props extends RouteComponentProps {}

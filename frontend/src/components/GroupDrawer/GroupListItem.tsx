@@ -8,7 +8,7 @@ import globalStore from '../../store/global'
 
 interface Props extends RouteComponentProps {
     groupData: IGroup,
-    key: number
+    key: string
 }
 
 const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {

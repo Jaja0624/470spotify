@@ -9,6 +9,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CreateGroupModal from '../../CreateGroupModal'
 import GroupListSmall from './GroupListSmall'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { createGroup } from '../../../core/server'
 
 interface Props extends RouteComponentProps {}
 
@@ -18,17 +19,13 @@ const GroupDrawerSmall: React.FC<Props> = ({history}: Props) => {
         console.log("hh")
     }
 
-    const createGroupHandler = (groupName: string) => {
+    const createGroupHandler = async (groupName: string) => {
         console.log(groupName);
         console.log('group created...' + groupName);
         setCreateGroupModalVisible(false);
-        let old = userState.userGroups
-        old.push({    
-            id: Math.floor(Math.random()*1000),
-            img_url: 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg',
-            name: groupName
-        })
-        userState.setUserGroups(old);
+        let body = {groupName, id: userState.spotifyProfile.id};
+        await createGroup(body);
+        await userState.getAndUpdateUserGroups();
     }
     const classes = useStyles();
     const userState = userStore();

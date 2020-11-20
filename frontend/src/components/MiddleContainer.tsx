@@ -7,6 +7,9 @@ import { Button } from '@material-ui/core';
 import UserPlaylists from './UserPlaylists'
 import GroupInviteLinkModal from './GroupInviteLinkModal'
 import { getMembers, leaveGroup } from '../core/server'
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import StartSessionModal from './StartSessionModal'
+import { createSession } from '../core/server'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -17,16 +20,26 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     const userState = userStore();
     const globalState = globalStore();
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
+    const [startSessionModalVisible, setStartSessionModalVisible] = useState(false);
 
     async function leaveGroupAndUpdate() {
         if (userState?.currentGroup?.id) {
-            const res = await leaveGroup(userState.currentGroup?.id.toString(), userState.spotifyProfile.id);
+            const res = await leaveGroup(userState.currentGroup?.id, userState.spotifyProfile.id);
             await userState.getAndUpdateUserGroups()
             console.log("leave", res);
             globalState.setMiddleContainer('notgroup')
-            userState.setCurrentGroup(-1);
+            userState.setCurrentGroup("");
         } else {
             console.log(userState?.currentGroup?.id);
+        }
+    }
+
+    const createSessionHandler = (createNewPlaylist: boolean) => {
+        setStartSessionModalVisible(false)
+        // TBD: handle creating session in backend, setting up playlist on spotify profile...
+        if (userState?.currentGroup?.id) {
+            console.log("create new playlist", createNewPlaylist);
+            createSession(userState?.currentGroup?.id, userState?.createSessionInfo); 
         }
     }
 
@@ -34,17 +47,35 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         if (globalState.middleContainer === 'group' && userState.currentGroup) {
             return (
                 <div>
-                    {userState.currentGroup.id}-
-                    {userState.currentGroup.name}
-
-                    <Button color='primary' variant='contained' onClick={() => {
-                        setInviteModalVisible(true);
-                    }}>Invite Link</Button>
+                    <div>
+                        {userState.currentGroup.id}-
+                        {userState.currentGroup.name}
+                    </div>
+                    
+                    <div>
+                        <Button color='primary' variant='contained' onClick={() => {
+                            setInviteModalVisible(true);
+                        }}>Invite Link</Button>
+                    </div>
 
                     <div>
                         <Button color='primary' variant='contained' onClick={async () => {
                             await leaveGroupAndUpdate();
                         }}>Leave Group</Button>
+                    </div>
+
+                    <div>
+                    <Button variant='text' color='primary' size='large' onClick={() => setStartSessionModalVisible(true)}>
+                        Start Session
+                        <PlayCircleFilledIcon/>
+                    </Button>
+
+                    <StartSessionModal
+                        isOpen={startSessionModalVisible}
+                        cancelHandler={() => setStartSessionModalVisible(false)}
+                        saveHandler={createSessionHandler}
+                        />
+
                     </div>
                     <GroupInviteLinkModal 
                         isOpen={inviteModalVisible}

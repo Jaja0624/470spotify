@@ -8,7 +8,7 @@
 create table AppUser (
     spotify_uid varchar(50),
     public_name varchar(100) NOT NULL,
-    session_uid bigint references AppSession(session_uid)
+    session_uid bigint references AppSession(session_uid),
     PRIMARY KEY(spotify_uid)
 );
 

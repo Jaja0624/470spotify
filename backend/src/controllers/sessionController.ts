@@ -19,7 +19,21 @@ const createPlaylist = async (accessToken: string, playlistName: string, spotify
     }
     return await axios.post(`https://api.spotify.com/v1/users/${spotifyUid}/playlists`, {
         headers: {
-            'Authorization': `Bearer ${accessToken}`
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body
+    })
+}
+
+const addTracksToPlaylist = async (accessToken: string, playlistId: string, tracks: string[]): Promise<AxiosResponse> => {
+    const body = {
+        uris: tracks
+    }
+    return await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
         },
         body
     })
@@ -27,27 +41,37 @@ const createPlaylist = async (accessToken: string, playlistName: string, spotify
 
 // also create admin
 exports.create = async function (req: any, res: any, next: any) {
-    if (!req.body.spotifyId || !req.body.groupUid || !req.body.createSessionInfo) {
+    if (!req.body.spotifyId || !req.body.groupUid || !req.body.createSessionInfo || !req.body.accessToken) {
         res.status(400)
         res.send('missing parameters');
     } else {
+        const results = await db('appsession').insert({is_active:true}, 'session_uid');
+        // TODO...
+        // Create admin
+        if (!results) {
+            return;
+        }
         console.log("create session spotify id", req.body.spotifyId);
         console.log("groupuid", req.body.groupUid);
         console.log("createSessionInfo", req.body.createSessionInfo);
-        for (let i = 0; i < req.body.createSessionInfo.playlistData.items.length; i++) {
-            console.log(req.body.createSessionInfo.playlistData.items[0].track.name)
-            console.log(req.body.createSessionInfo.playlistData.items[0].track.url)
-        }
+        console.log("playlist id", req.body.createSessionInfo.playlistData.id)
+        // const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
+        // const trackUrls = [];
+        // for (let i = 0; i < tracks.items.length; i++) {
+        //     trackUrls.push(tracks.items[0].url);
+        // }
+        // const newPlaylist = await createPlaylist(req.body.accessToken, "cmpt470-playlist-" + results[0], req.body.spotifyId);
+        // const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
+        // const result = await addTracksToPlaylist(req.body.accessToken, newPlaylist.id, trackUrls);
+        // res.status(201);
+        // res.json({
+        //     'session_uid':results[0],
+        //     'playlist_id': newPlaylist.id
+        // });
+
     }
-    // TODO...
-    // Create admin
-    // Setup playlist (create via spotify api)
-    // Return success/failure, playlist (playlist URI, client will request the playlist info via spotify API using URI)
-    const results = await db('appsession').insert({is_active:true}, 'session_uid');
-    if (results) {
-        res.status(201);
-        res.json({'session_uid':results[0]});
-    }
+
+    
 }
 
 // only admin

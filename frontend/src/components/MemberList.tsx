@@ -23,6 +23,7 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const [mems, setMems] = useState<Array<IMems>[]>([]);
     const [loading, setLoading] = useState(true);
     
+    // Pulls members from the backend and sets the mems state
     async function pullMembers() {
         if (userState?.currentGroup?.id) {
             const mems = await getMembers(userState.currentGroup?.id.toString());
@@ -59,7 +60,6 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
             <List>
                 {
                     mems.map((member: any) => {
-                        console.log(`<MemberList>: Member '${member.public_name}' being rendered as a <MemberListItem>`);
                         return (<MemberListItem key={member.public_name} memberData={member} />)
                     })
                 }

@@ -26,21 +26,22 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     async function pullMembers() {
         if (userState?.currentGroup?.id) {
             const mems = await getMembers(userState.currentGroup?.id.toString());
-            console.log("members", mems);
+            console.log("<MemberList>: New member list data taken from the backend: ", mems);
+            console.log()
             setMems(mems.data);
         } else {
-            console.log(userState?.currentGroup?.id);
+            console.log(`<MemberList>: The current group might be null: ${userState?.currentGroup?.id}`);
         }
         setLoading(false);
     }
 
     useEffect(() => {
-        console.log('hello');
+        console.log(`<MemberList>: The current group has changed to id: ${userState.currentGroup?.id}. Updating...`);
         async function scopedPull() {
             await pullMembers();
         }
         scopedPull();
-    }, [userState.userGroups])
+    }, [userState.currentGroup])
 
     if (loading) {
         return (
@@ -49,16 +50,19 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
             </div>
         )
     }
-    
+
     return (
         <div className={classes.root}>
             <Typography>
                 Members
             </Typography>
             <List>
-              {mems.map((member: any) => {
-                  return (<MemberListItem key={member.public_name} memberData={member} />)
-              })}
+                {
+                    mems.map((member: any) => {
+                        console.log(`<MemberList>: Member '${member.public_name}' being rendered as a <MemberListItem>`);
+                        return (<MemberListItem key={member.public_name} memberData={member} />)
+                    })
+                }
             </List>
         </div>
     )

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText} from '@material-ui/core';
+import { rootCertificates } from 'tls';
 
 
 interface Props extends RouteComponentProps {
@@ -20,9 +21,17 @@ const UserPlaylistListItem: React.FC<Props> = ({history, playlistData, selected 
             <ListItemAvatar>
                 {playlistData.images[0].url && <Avatar src={playlistData.images[0].url}/>}
             </ListItemAvatar>
-            <ListItemText
-                primary={playlistData.name}
-            />
+            {selected === playlistData.id ? (
+                <ListItemText
+                    primary={playlistData.name}
+                    classes={{root: classes.textModifier}}
+                />
+            ) : (
+                <ListItemText
+                    primary={playlistData.name}
+                />
+            )}
+            
         </ListItem>
     )
 }
@@ -36,8 +45,11 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
         },
         selectedModifier: {
-            backgroundColor: theme.palette.primary.dark
+            backgroundColor: theme.palette.primary.dark,
         },
+        textModifier:{
+            textDecoration:"underline"
+        }
     }),
 );
 

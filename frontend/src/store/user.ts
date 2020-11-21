@@ -3,7 +3,7 @@ import IGroup from '../types/IGroup'
 import Cookies from 'js-cookie';
 import { getGroupsHandler } from '../core/serverhandler'
 import { getActive } from '../core/server'
-import { getPlaylistItems } from '../core/spotify'
+import { getPlaylist } from '../core/spotify'
 
 type State = {
     validateAuthenticated: () => any,
@@ -77,15 +77,14 @@ const userStore = create<State>((set, get)=> ({
         const sessionData = await getActive(get()?.currentGroup?.id!, get().spotifyProfile.id);
         if (sessionData) {
             console.log("ACTIVE");
-            console.log(sessionData)
-            const playlistItems = await getPlaylistItems(Cookies.get('spotifytoken')!, sessionData.data[0].spotify_playlist_uri)
+            const playlistItems = await getPlaylist(Cookies.get('spotifytoken')!, sessionData.data[0].spotify_playlist_uri)
             // get playlist songs
             set({currentSessionData: {
                 ...get().currentSessionData,
                 ...sessionData,
                 ...playlistItems.data
             }})
-            console.log(get().currentSessionData);
+            console.log("session + playlist data", get().currentSessionData);
         }
 
     }

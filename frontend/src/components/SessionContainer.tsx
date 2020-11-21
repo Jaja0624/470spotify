@@ -6,6 +6,7 @@ import { Button } from '@material-ui/core';
 import globalStore from '../store/global'
 import SessionDetails from './SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TrackList from './TrackList'
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
 
@@ -19,14 +20,14 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
     const [loading, setLoading] = useState(false);
 
     // executed when component is mounted
-    const getSession = async () => {
-        await userState.getActiveSession()
+    const getSession = async (): Promise<any> => {
+        return await userState.getActiveSession()
+
     }
     useEffect(() => {
         async function load() {
-            await getSession();
+            const res = await getSession();
             setLoading(false);
-
         }
         setLoading(true);
         load();
@@ -43,6 +44,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             ) : (
                 <div>
                     <SessionDetails/>
+                    <TrackList tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </div>
             )}
 

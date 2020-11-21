@@ -10,5 +10,6 @@ var sessionController = require("../controllers/sessionController");
 // for creating a new group for a user
 router.post("/create", sessionController.create);
 router.post("/stop", sessionController.stop);
+router.get("/status", sessionController.status);
 
 module.exports = router;

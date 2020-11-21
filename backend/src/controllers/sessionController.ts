@@ -1,4 +1,3 @@
-import Knex from "knex";
 import axios, {AxiosResponse} from 'axios';
 var db = require('../db/dbConnection');
 
@@ -42,7 +41,7 @@ exports.create = async function (req: any, res: any, next: any) {
         res.send('missing parameters');
     } else {
         try {
-            const results = await db('appsession').insert({is_active:true}, 'session_uid');
+            const results = await db('appsession').insert({is_active:true, group_uid: BigInt(req.body.groupUid)}, 'session_uid');
             // TODO...
             // Create admin
             if (!results) {
@@ -76,11 +75,7 @@ exports.create = async function (req: any, res: any, next: any) {
             res.status(500)
             res.json("oops")
         }
-        
-
     }
-
-    
 }
 
 // only admin
@@ -97,5 +92,21 @@ exports.stop = async function (req : any, res : any, next : any) {
         res.json(result);
     }
 }
+
+exports.status = async function (req : any, res : any, next : any) {
+    if (!req.query.spotifyId || !req.query.groupUid) {
+        res.status(400)
+        res.send('missing parameters');
+        return;
+    } 
+    // todo verify member is in group
+    const result = await db('appsession')
+                    .where({group_uid: BigInt(req.query.groupUid)})
+                    .select('*')
+    if (result) {
+        res.json(result);
+    }
+}
+
 
 

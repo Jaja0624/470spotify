@@ -1,4 +1,17 @@
 
+-- The AppGroup table provides details about a group page excluding group members.
+-- * group_uid      : The unique identifier of a group. New groups are assigned 
+--                      with an incremented value from the latest unique identifier.
+-- * group_name     : The name of a group. The name of a group cannot be null as
+--                      it must be identified in a human readable way.
+-- * description    : The description of a group.
+create table AppGroup (
+    group_uid SERIAL, 
+    group_name varchar(50) not NULL,
+    description varchar(150),
+    primary key(group_uid)
+);
+
 -- The AppSession table provides details about a session page excluding session admins.
 -- * session_uid    : The unique identifier of a session. New sessions are assigned 
 --                      with an incremented value from the latest unique identifier.
@@ -11,7 +24,12 @@ create table AppSession (
     session_uid SERIAL,
     is_active boolean not NULL,
     spotify_playlist_uri varchar(55),
-    primary key(session_uid)
+    primary key(session_uid),
+    group_uid bigint,
+    constraint fk_group_uid
+        foreign key(group_uid)
+        references AppGroup(group_uid)
+        on delete set null
 );
 
 -- The AppUser table provides details on a user.
@@ -28,18 +46,6 @@ create table AppUser (
     PRIMARY KEY(spotify_uid)
 );
 
--- The AppGroup table provides details about a group page excluding group members.
--- * group_uid      : The unique identifier of a group. New groups are assigned 
---                      with an incremented value from the latest unique identifier.
--- * group_name     : The name of a group. The name of a group cannot be null as
---                      it must be identified in a human readable way.
--- * description    : The description of a group.
-create table AppGroup (
-    group_uid SERIAL, 
-    group_name varchar(50) not NULL,
-    description varchar(150),
-    primary key(group_uid)
-);
 
 -- The AppHistory table provides details about past songs added to a queue in a session.
 -- * date_added     : The date and time of when a song was added to a queue in a 

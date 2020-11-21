@@ -121,6 +121,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
         border: "solid 1px black",
+        overflowY: 'auto'
     },
     drawer:{
         overflowY:'auto',

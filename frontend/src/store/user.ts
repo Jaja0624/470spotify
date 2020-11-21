@@ -18,7 +18,7 @@ type State = {
     getAndUpdateUserGroups: () => void,
     createSessionInfo: any,
     setCreateSessionInfo: (info: any) => void,
-    currentSessionData: {},
+    currentSessionData: any,
     getActiveSession: () => void
 }
 
@@ -77,12 +77,12 @@ const userStore = create<State>((set, get)=> ({
         const sessionData = await getActive(get()?.currentGroup?.id!, get().spotifyProfile.id);
         if (sessionData) {
             console.log("ACTIVE");
-            const playlistItems = await getPlaylist(Cookies.get('spotifytoken')!, sessionData.data[0].spotify_playlist_uri)
+            const playlistData = await getPlaylist(Cookies.get('spotifytoken')!, sessionData.data[0].spotify_playlist_uri)
             // get playlist songs
             set({currentSessionData: {
                 ...get().currentSessionData,
                 ...sessionData,
-                ...playlistItems.data
+                playlist: playlistData.data
             }})
             console.log("session + playlist data", get().currentSessionData);
         }

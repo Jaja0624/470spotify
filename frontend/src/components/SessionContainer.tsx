@@ -4,7 +4,8 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import globalStore from '../store/global'
-
+import SessionDetails from './SessionDetails'
+import CircularProgress from '@material-ui/core/CircularProgress';
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
 
@@ -15,7 +16,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
     const globalState = globalStore();
     const classes = useStyles();
     const userState = userStore();
-    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // executed when component is mounted
     const getSession = async () => {
@@ -24,20 +25,27 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
     useEffect(() => {
         async function load() {
             await getSession();
-            // setLoading(false);
+            setLoading(false);
 
         }
+        setLoading(true);
         load();
     }, []) 
-
 
     return (
         <div className={classes.root}>
             <div>
-                <Button onClick={() => globalState.setMiddleContainer('session')}>Session If Active (Disable if no session active)</Button>
+                <Button onClick={() => globalState.setMiddleContainer('session')}>Session If Active (TBD Disable if no session active)</Button>
                 <Button onClick={() => globalState.setMiddleContainer('group')}>Group Page</Button>
             </div>
-            Session 
+            {loading ? (
+                <CircularProgress/>
+            ) : (
+                <div>
+                    <SessionDetails/>
+                </div>
+            )}
+
         </div>
     )
 }

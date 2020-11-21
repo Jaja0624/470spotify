@@ -60,17 +60,16 @@ exports.create = async function (req: any, res: any, next: any) {
             }
             console.log("trackUris", trackUris)
 
-            // GETTING 401 UNAUTHORIZED HERE I HAVE NO IDEA WHY
             const newPlaylist = await createPlaylist(req.body.accessToken, "cmpt470-playlist-" + results[0], req.body.spotifyId);
-            // GETTING 401 UNAUTHORIZED HERE I HAVE NO IDEA WHY
-
             console.log("newPlaylistId", newPlaylist.data.id)
+
+            await db('appsession').update({spotify_playlist_uri:newPlaylist.data.id});
 
             const result = await addTracksToPlaylist(req.body.accessToken, newPlaylist.data.id, trackUris);
             res.status(201);
             res.json({
                 'session_uid':results[0],
-                // 'playlist_id': newPlaylist.data.id
+                'playlist_id': newPlaylist.data.id
             });
         } catch (err) {
             console.log(err)

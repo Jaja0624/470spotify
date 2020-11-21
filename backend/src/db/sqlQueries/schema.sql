@@ -1,3 +1,19 @@
+
+-- The AppSession table provides details about a session page excluding session admins.
+-- * session_uid    : The unique identifier of a session. New sessions are assigned 
+--                      with an incremented value from the latest unique identifier.
+-- * is_active      : The active state of a session. True dictates that the session 
+--                      is live and can still be accessed. False dictates that the 
+--                      session is dead and cannot be accessed. This attribute exists 
+--                      since the paradigm (currently) is to keep sessions even 
+--                      when they are no longer useful.
+create table AppSession (
+    session_uid SERIAL,
+    is_active boolean not NULL,
+    spotify_playlist_uri varchar(55),
+    primary key(session_uid)
+);
+
 -- The AppUser table provides details on a user.
 -- * spotify_uid    : The unique identifier of a user, provided by Spotify.
 -- * public_name    : The name of the user as seen publicly. The public name cannot 
@@ -23,20 +39,6 @@ create table AppGroup (
     group_name varchar(50) not NULL,
     description varchar(150),
     primary key(group_uid)
-);
-
--- The AppSession table provides details about a session page excluding session admins.
--- * session_uid    : The unique identifier of a session. New sessions are assigned 
---                      with an incremented value from the latest unique identifier.
--- * is_active      : The active state of a session. True dictates that the session 
---                      is live and can still be accessed. False dictates that the 
---                      session is dead and cannot be accessed. This attribute exists 
---                      since the paradigm (currently) is to keep sessions even 
---                      when they are no longer useful.
-create table AppSession (
-    session_uid SERIAL,
-    is_active boolean not NULL,
-    primary key(session_uid)
 );
 
 -- The AppHistory table provides details about past songs added to a queue in a session.

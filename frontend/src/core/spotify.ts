@@ -15,3 +15,11 @@ export const getPlaylists = async (accessToken: string, clientId: string): Promi
         }
     })
 }
+
+export const getPlaylistItems = async (accessToken: string, playlistId: string): Promise<AxiosResponse> => {
+    return await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+}

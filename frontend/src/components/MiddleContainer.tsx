@@ -11,6 +11,7 @@ import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StartSessionModal from './StartSessionModal'
 import { createSession } from '../core/server'
 import Cookies from 'js-cookie';
+import SessionContainer from './SessionContainer'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -44,11 +45,13 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                 const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo); 
                 console.log("create session resposnse", res)
                 console.log("create session resposnse", res.data.session_uid)
+                if (res.status == 201) {
+
+                }
             } catch (err) {
                 console.log(err);
             }
 
-            
         }
     }
 
@@ -56,6 +59,10 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         if (globalState.middleContainer === 'group' && userState.currentGroup) {
             return (
                 <div>
+                    <div>
+                        <Button onClick={() => globalState.setMiddleContainer('session')}>Session If Active (Disable if no session active)</Button>
+                        <Button onClick={() => globalState.setMiddleContainer('group')}>Group Page</Button>
+                    </div>
                     <div>
                         {userState.currentGroup.id}-
                         {userState.currentGroup.name}
@@ -92,10 +99,10 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                         />
                 </div>
             )
+        } else if (globalState.middleContainer === 'session') {
+            return <SessionContainer/>
         } else {
-            return (
-                <UserPlaylists/>
-            )
+            return <UserPlaylists/>
         }
     }
 

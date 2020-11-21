@@ -93,7 +93,9 @@ exports.stop = async function (req : any, res : any, next : any) {
     }
 }
 
-exports.status = async function (req : any, res : any, next : any) {
+// tries to find an active session for this group
+// returns array (empty if not found)
+exports.active = async function (req : any, res : any, next : any) {
     if (!req.query.spotifyId || !req.query.groupUid) {
         res.status(400)
         res.send('missing parameters');
@@ -101,12 +103,15 @@ exports.status = async function (req : any, res : any, next : any) {
     } 
     // todo verify member is in group
     const result = await db('appsession')
-                    .where({group_uid: BigInt(req.query.groupUid)})
+                    .where({group_uid: BigInt(req.query.groupUid), is_active: true})
                     .select('*')
     if (result) {
         res.json(result);
+    } else {
+        res.json("No Session Active");
     }
 }
+
 
 
 

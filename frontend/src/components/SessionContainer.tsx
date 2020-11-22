@@ -6,11 +6,10 @@ import { Button } from '@material-ui/core';
 import globalStore from '../store/global'
 import SessionDetails from './SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TrackList from './TrackList'
-// extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
-interface CustomPropsLol extends RouteComponentProps {
+import TrackTable from './TrackTable'
+import MiddleContainerHeader from './MiddleContainerHeader'
 
-}
+interface CustomPropsLol extends RouteComponentProps {}
 
 // FC (function component)
 const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
@@ -35,16 +34,15 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
 
     return (
         <div className={classes.root}>
-            <div>
-                <Button onClick={() => globalState.setMiddleContainer('session')}>Session If Active (TBD Disable if no session active)</Button>
-                <Button onClick={() => globalState.setMiddleContainer('group')}>Group Page</Button>
+            <div style={{display:'flex', alignItems:'center', marginBottom:12}}>
+                <MiddleContainerHeader/>
             </div>
             {loading ? (
                 <CircularProgress/>
             ) : (
                 <div>
                     <SessionDetails/>
-                    <TrackList tracks={userState.currentSessionData.playlist?.tracks?.items}/>
+                    <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </div>
             )}
 

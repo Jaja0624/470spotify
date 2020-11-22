@@ -12,6 +12,7 @@ import StartSessionModal from './StartSessionModal'
 import { createSession } from '../core/server'
 import Cookies from 'js-cookie';
 import SessionContainer from './SessionContainer'
+import MiddleContainerHeader from './MiddleContainerHeader'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -59,9 +60,8 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         if (globalState.middleContainer === 'group' && userState.currentGroup) {
             return (
                 <div>
-                    <div>
-                        <Button onClick={() => globalState.setMiddleContainer('session')}>Session If Active (Disable if no session active)</Button>
-                        <Button onClick={() => globalState.setMiddleContainer('group')}>Group Page</Button>
+                    <div style={{display:'flex', alignItems:'center', marginBottom:12}}>
+                        <MiddleContainerHeader/>
                     </div>
                     <div>
                         {userState.currentGroup.id}-

@@ -13,12 +13,32 @@ import { createSession } from '../core/server'
 import Cookies from 'js-cookie';
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from './MiddleContainerHeader'
+const io = require('socket.io-client');
+const socket = io();
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
 
 // FC (function component)
 const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
+
+    // when someone else has joined the same group, alert all members currently in session
+    socket.on('connectToSession', function(data : any) {
+        console.log("connectToSession data:", data);
+    });
+
+    const [session, setSession] = useState(false);
+
+    useEffect(() => {
+        console.log("session: " + session);
+        if (session)
+        {
+            console.log("session exists");
+            // send session id too?
+            socket.emit('clientEvent', {'spotify_uid': userState.spotifyProfile.id, 'group_uid': userState.currentGroup?.id});
+        }
+    });
+
     const classes = useStyles();
     const userState = userStore();
     const globalState = globalStore();
@@ -52,6 +72,8 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                 console.log(err);
             }
 
+            // send session id instead?
+            setSession(true);
         }
     }
 

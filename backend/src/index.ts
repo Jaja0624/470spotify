@@ -11,6 +11,12 @@ var groupRouter = require('./routes/group');
 const BACKEND_PORT = '8080';
 
 const app = express();
+var socket = require('socket.io');
+
+// debug
+function SOCKETIO_PRINT(...args : any) {
+    console.log("SOCKET.IO:", args);
+}
 
 // Automatically parse request body as form data.
 app.enable('trust proxy');
@@ -64,3 +70,25 @@ const server = app.listen(BACKEND_PORT, () => {
     console.log('Press Ctrl+C to quit.');
 });
 
+let io = socket(server);
+
+// whenever a user connects on port 3000 via
+// a websocket, log that a user has connected
+io.on("connection", function(socket: any) {
+    SOCKETIO_PRINT("a user connected", socket.id);
+    socket.on('clientEvent', async function(data : any) {
+
+        SOCKETIO_PRINT("Received client event. Data:", data);
+        SOCKETIO_PRINT("data.group_uid: " + data.group_uid);
+        SOCKETIO_PRINT("socket.id: " + socket.id);
+
+        socket.join(data.group_uid);
+
+        // all users in the same group
+        const ids = await io.in(data.group_uid).allSockets();
+        SOCKETIO_PRINT("All users in group_uid: " + data.group_uid, ids);
+
+        // Send this event to everyone in the same group
+        io.sockets.in(data.group_uid).emit('connectToSession', 'HEYOOOOOOO');
+    });
+});

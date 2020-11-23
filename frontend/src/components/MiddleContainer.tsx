@@ -44,10 +44,9 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
             console.log("create new playlist", createNewPlaylist);
             try {
                 const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo); 
-                console.log("create session resposnse", res)
-                console.log("create session resposnse", res.data.session_uid)
                 if (res.status == 201) {
-
+                    await userState.getAndUpdateUserGroups()
+                    globalState.setMiddleContainer('session');
                 }
             } catch (err) {
                 console.log(err);

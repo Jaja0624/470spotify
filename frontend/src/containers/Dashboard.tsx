@@ -11,6 +11,7 @@ import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
 import MemberList from '../components/MemberList'
+import Chatroom from '../components/Chat/Chatroom'
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
@@ -69,7 +70,8 @@ const Dashboard: React.FC<Props> = ({history}) => {
                                     <div>SongName</div>
                                 </div>
                             ) : (
-                                <MemberList/>
+                                // <MemberList/>
+                                <Chatroom groupId={user?.currentGroup?.id!} sessionId={user.currentSessionData?.data?.session_uid!}/>
                             )}
                     </Grid>
                 </Grid>
@@ -90,7 +92,9 @@ const Dashboard: React.FC<Props> = ({history}) => {
                                     <div>SongName</div>
                                 </div>
                             ) : (
-                                <MemberList/>
+                                // <MemberList/>
+                                <Chatroom groupId={user?.currentGroup?.id!} sessionId={user.currentSessionData?.data?.session_uid!}/>
+
                             )}
                         </Grid>
                     </Grid>

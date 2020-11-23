@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import userStore from '../store/user'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Button } from '@material-ui/core';
-import globalStore from '../store/global'
+import { Box} from '@material-ui/core';
 import SessionDetails from './SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TrackTable from './TrackTable'
@@ -39,10 +38,12 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             {loading ? (
                 <CircularProgress/>
             ) : (
-                <div>
-                    <SessionDetails/>
+                <Box height={300}>
+                    <Box style={{paddingLeft:10}}>
+                        <SessionDetails/>
+                    </Box>
                     <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
-                </div>
+                </Box>
             )}
 
         </div>

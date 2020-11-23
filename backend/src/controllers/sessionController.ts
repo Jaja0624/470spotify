@@ -55,7 +55,9 @@ exports.create = async function (req: any, res: any, next: any) {
             const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
             const trackUris = [];
             for (let i = 0; i < tracks.data.items.length; i++) {
-                trackUris.push(tracks.data.items[i].track.uri);
+                if (tracks.data.items[i].track) {
+                    trackUris.push(tracks.data.items[i].track.uri);
+                }
             }
             console.log("trackUris", trackUris)
 

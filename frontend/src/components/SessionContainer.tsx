@@ -13,7 +13,6 @@ interface CustomPropsLol extends RouteComponentProps {}
 
 // FC (function component)
 const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
-    const globalState = globalStore();
     const classes = useStyles();
     const userState = userStore();
     const [loading, setLoading] = useState(false);

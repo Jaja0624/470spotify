@@ -1,16 +1,3 @@
--- The AppUser table provides details on a user.
--- * spotify_uid    : The unique identifier of a user, provided by Spotify.
--- * public_name    : The name of the user as seen publicly. The public name cannot 
---                      be null as they must be identified in a human 
---                      readable way.
--- * session_uid    : The last session that the user is in. This may be null if 
---                      the user has never been to a session.
-create table AppUser (
-    spotify_uid varchar(50),
-    public_name varchar(100) NOT NULL,
-    session_uid bigint references AppSession(session_uid)
-    PRIMARY KEY(spotify_uid)
-);
 
 -- The AppGroup table provides details about a group page excluding group members.
 -- * group_uid      : The unique identifier of a group. New groups are assigned 
@@ -36,8 +23,29 @@ create table AppGroup (
 create table AppSession (
     session_uid SERIAL,
     is_active boolean not NULL,
-    primary key(session_uid)
+    spotify_playlist_uri varchar(55),
+    primary key(session_uid),
+    group_uid bigint,
+    constraint fk_group_uid
+        foreign key(group_uid)
+        references AppGroup(group_uid)
+        on delete set null
 );
+
+-- The AppUser table provides details on a user.
+-- * spotify_uid    : The unique identifier of a user, provided by Spotify.
+-- * public_name    : The name of the user as seen publicly. The public name cannot 
+--                      be null as they must be identified in a human 
+--                      readable way.
+-- * session_uid    : The last session that the user is in. This may be null if 
+--                      the user has never been to a session.
+create table AppUser (
+    spotify_uid varchar(50),
+    public_name varchar(100) NOT NULL,
+    session_uid bigint references AppSession(session_uid),
+    PRIMARY KEY(spotify_uid)
+);
+
 
 -- The AppHistory table provides details about past songs added to a queue in a session.
 -- * date_added     : The date and time of when a song was added to a queue in a 

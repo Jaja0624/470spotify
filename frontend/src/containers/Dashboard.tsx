@@ -12,7 +12,6 @@ import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
 import MemberList from '../components/MemberList'
 
-
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
 interface Props extends RouteComponentProps {}
@@ -122,6 +121,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
         border: "solid 1px black",
+        overflowY: 'auto'
     },
     drawer:{
         overflowY:'auto',

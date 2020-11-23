@@ -7,7 +7,7 @@ import userStore from '../../../store/user'
 
 interface Props extends RouteComponentProps {
     groupData: IGroup,
-    key: number
+    key: string
 }
 
 const GroupListItemSmall: React.FC<Props> = ({history, groupData, key}: Props) => {
@@ -23,9 +23,9 @@ const GroupListItemSmall: React.FC<Props> = ({history, groupData, key}: Props) =
 
     return (
         <ListItem button className={classes.root} key={groupData.id} onClick={() => {setCurrentGroup(groupData.id)}}>
-            <ListItemAvatar>
-                { groupData.img_url 
-                ? <Avatar src={groupData.img_url}/> 
+            <ListItemAvatar  classes={(groupData?.active?.is_active === true) ? {root: classes.avatar} : undefined}>
+                {groupData.img_url 
+                ?  <Avatar src={groupData.img_url}/>
                 : <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
                 }
             </ListItemAvatar>
@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent:'center',
             alignItems:'center',
         },
+        avatar: {
+            backgroundColor: theme.palette.primary.main
+        }
     }),
 );
 

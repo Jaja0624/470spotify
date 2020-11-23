@@ -10,6 +10,13 @@ import { getMembers, leaveGroup } from '../core/server'
 import SpotifyPlayer from 'react-spotify-web-playback';
 import { CallbackState } from 'react-spotify-web-playback/lib/types';
 import Cookies from 'js-cookie';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import StartSessionModal from './StartSessionModal'
+import { createSession } from '../core/server'
+import SessionContainer from './SessionContainer'
+import MiddleContainerHeader from './MiddleContainerHeader'
+const io = require('socket.io-client');
+const socket = io();
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
@@ -18,19 +25,38 @@ interface CustomPropsLol extends RouteComponentProps {
 
 // FC (function component)
 const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
+
+    // when someone else has joined the same group, alert all members currently in session
+    socket.on('connectToSession', function(data : any) {
+        console.log("connectToSession data:", data);
+    });
+
+    const [session, setSession] = useState(false);
+
+    useEffect(() => {
+        console.log("session: " + session);
+        if (session)
+        {
+            console.log("session exists");
+            // send session id too?
+            socket.emit('clientEvent', {'spotify_uid': userState.spotifyProfile.id, 'group_uid': userState.currentGroup?.id});
+        }
+    });
+
     const classes = useStyles();
     const userState = userStore();
     const globalState = globalStore();
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
     const [play, setPlay] = useState(false);
+    const [startSessionModalVisible, setStartSessionModalVisible] = useState(false);
 
     async function leaveGroupAndUpdate() {
         if (userState?.currentGroup?.id) {
-            const res = await leaveGroup(userState.currentGroup?.id.toString(), userState.spotifyProfile.id);
+            const res = await leaveGroup(userState.currentGroup?.id, userState.spotifyProfile.id);
             await userState.getAndUpdateUserGroups()
             console.log("leave", res);
             globalState.setMiddleContainer('notgroup')
-            userState.setCurrentGroup(-1);
+            userState.setCurrentGroup("");
         } else {
             console.log(userState?.currentGroup?.id);
         }
@@ -42,17 +68,44 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         console.groupEnd();
         setPlay(state.isPlaying);
       }, []);
+      
+    const createSessionHandler = async (createNewPlaylist: boolean) => {
+        setStartSessionModalVisible(false)
+        // TBD: handle creating session in backend, setting up playlist on spotify profile...
+        if (userState?.currentGroup?.id) {
+            console.log("create new playlist", createNewPlaylist);
+            try {
+                const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo); 
+                if (res.status == 201) {
+                    await userState.getAndUpdateUserGroups()
+                    globalState.setMiddleContainer('session');
+                }
+            } catch (err) {
+                console.log(err);
+            }
+
+            // send session id instead?
+            setSession(true);
+        }
+    }
 
     const ifhandler = () => {
         if (globalState.middleContainer === 'group' && userState.currentGroup) {
             return (
                 <div>
-                    {userState.currentGroup.id}-
-                    {userState.currentGroup.name}
-
-                    <Button color='primary' variant='contained' onClick={() => {
-                        setInviteModalVisible(true);
-                    }}>Invite Link</Button>
+                    <div style={{display:'flex', alignItems:'center', marginBottom:12}}>
+                        <MiddleContainerHeader/>
+                    </div>
+                    <div>
+                        {userState.currentGroup.id}-
+                        {userState.currentGroup.name}
+                    </div>
+                    
+                    <div>
+                        <Button color='primary' variant='contained' onClick={() => {
+                            setInviteModalVisible(true);
+                        }}>Invite Link</Button>
+                    </div>
 
                     <div>
                         <Button color='primary' variant='contained' onClick={async () => {
@@ -69,16 +122,30 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                     </div>
                     <Button onClick={() => setPlay(false)}>STOP THE MUSIC</Button>
 
+
+                    <div>
+                    <Button variant='text' color='primary' size='large' onClick={() => setStartSessionModalVisible(true)}>
+                        Start Session
+                        <PlayCircleFilledIcon/>
+                    </Button>
+
+                    <StartSessionModal
+                        isOpen={startSessionModalVisible}
+                        cancelHandler={() => setStartSessionModalVisible(false)}
+                        saveHandler={createSessionHandler}
+                        />
+
+                    </div>
                     <GroupInviteLinkModal 
                         isOpen={inviteModalVisible}
                         cancelHandler={() => setInviteModalVisible(false)}
                         />
                 </div>
             )
+        } else if (globalState.middleContainer === 'session') {
+            return <SessionContainer/>
         } else {
-            return (
-                <UserPlaylists/>
-            )
+            return <UserPlaylists/>
         }
     }
 

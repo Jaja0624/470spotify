@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Typography, List, ListItem, TableContainer, Table, TableHead, TableRow, TableCell, TableBody} from '@material-ui/core';
+import { Typography, List, ListItem, IconButton, TableContainer, Table, 
+    TableHead, TableRow, TableCell, TableBody} from '@material-ui/core';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import PauseCircleFilled from '@material-ui/icons/PauseCircleFilled';
 
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
@@ -13,6 +16,12 @@ interface CustomPropsLol extends RouteComponentProps {
 const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) => {
     const classes = useStyles();
     console.log(tracks);
+    const [toggleButton, setToggleButton] = useState(true);
+
+    const playButtonHandler = () => {
+        setToggleButton(!toggleButton)
+        return toggleButton ? <PlayCircleFilledIcon/> : <PauseCircleFilled/>
+    }
     
     return (
         <div className={classes.root}>
@@ -23,6 +32,7 @@ const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) 
                     <Table size='small' aria-label='a dense table'>
                         <TableHead>
                             <TableRow>
+                                <TableCell></TableCell>
                                 <TableCell>Title</TableCell>
                                 <TableCell>Artist</TableCell>
                                 <TableCell>Album</TableCell>
@@ -32,6 +42,11 @@ const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) 
                         <TableBody>
                             {tracks.map((track: any) => (
                                 <TableRow key={track.track.id} hover>
+                                    <TableCell>
+                                        <IconButton onClick={() => playButtonHandler()}>
+                                            {/* {toggleButton ? <PlayCircleFilledIcon/> : <PauseCircleFilled/>} */}
+                                        </IconButton>
+                                    </TableCell>
                                     <TableCell component="th" scope="row">
                                         {track.track.name}
                                     </TableCell>

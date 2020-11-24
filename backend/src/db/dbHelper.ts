@@ -30,7 +30,7 @@ export async function addUser(spotifyUid : string, displayName : string) {
 export async function createGroup(groupName : string, spotifyUid : string) {
     console.log("spotifyUid", spotifyUid);
     console.log("dbHelper: createGroup");
-    db.transaction(function(trx : any) {
+    return await db.transaction(function(trx : any) {
         db('appgroup')
         .insert({group_name: groupName})
         .transacting(trx)
@@ -50,7 +50,7 @@ export async function createGroup(groupName : string, spotifyUid : string) {
 
 export async function joinGroup(groupUid : string, spotifyUid : string) {
     console.log("spotifyUid", spotifyUid);
-    db.transaction(function(trx : any) {
+    return await db.transaction(function(trx : any) {
         db('groupmember')
         .insert({group_uid: BigInt(groupUid), spotify_uid: spotifyUid})
         .then(trx.commit)
@@ -63,7 +63,7 @@ export async function joinGroup(groupUid : string, spotifyUid : string) {
 
 export async function leaveGroup(groupUid : string, spotifyUid : string) {
     console.log("spotifyUid", spotifyUid);
-    db.transaction(function(trx : any) {
+    return await db.transaction(function(trx : any) {
         db('groupmember')
         .where({group_uid: BigInt(groupUid), spotify_uid: spotifyUid})
         .del()

@@ -15,6 +15,7 @@ import StartSessionModal from './StartSessionModal'
 import { createSession } from '../core/server'
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from './MiddleContainerHeader'
+import SpotifyPlayerContainer from './SpotifyPlayerContainer'
 const io = require('socket.io-client');
 const socket = io();
 
@@ -62,12 +63,12 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         }
     }
 
-    const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
-        console.group(`RSWP: ${type}`);
-        console.log(state);
-        console.groupEnd();
-        setPlay(state.isPlaying);
-      }, []);
+    // const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
+    //     console.group(`RSWP: ${type}`);
+    //     console.log(state);
+    //     console.groupEnd();
+    //     setPlay(state.isPlaying);
+    //   }, []);
       
     const createSessionHandler = async (createNewPlaylist: boolean) => {
         setStartSessionModalVisible(false)
@@ -113,12 +114,14 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                         }}>Leave Group</Button>
                     </div>
                     <div>
-                        <SpotifyPlayer
+                        <SpotifyPlayerContainer/>
+                        {/* <SpotifyPlayer
                                 token={Cookies.get('spotifytoken') as string}
                                 uris={["spotify:artist:6HQYnRM4OzToCYPpVBInuU"]}
                                 play={play}
                                 callback={handleCallback}
-                                />
+                                /> */}
+                        
                     </div>
                     <Button onClick={() => setPlay(false)}>STOP THE MUSIC</Button>
 

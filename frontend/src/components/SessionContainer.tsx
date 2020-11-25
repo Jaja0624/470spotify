@@ -45,9 +45,9 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                         <SessionDetails/>
                         <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                     </div>
-                    <div>
+                    {/* <div>
                         <SpotifyPlayerContainer/>
-                    </div>
+                    </div> */}
                 </div>
             )}
         </div>

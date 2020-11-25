@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import userStore from '../store/user'
 import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -7,15 +7,12 @@ import { Button } from '@material-ui/core';
 import UserPlaylists from './UserPlaylists'
 import GroupInviteLinkModal from './GroupInviteLinkModal'
 import { getMembers, leaveGroup } from '../core/server'
-import SpotifyPlayer from 'react-spotify-web-playback';
-import { CallbackState } from 'react-spotify-web-playback/lib/types';
 import Cookies from 'js-cookie';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StartSessionModal from './StartSessionModal'
 import { createSession } from '../core/server'
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from './MiddleContainerHeader'
-import SpotifyPlayerContainer from './SpotifyPlayerContainer'
 const io = require('socket.io-client');
 const socket = io();
 
@@ -48,7 +45,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     const userState = userStore();
     const globalState = globalStore();
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
-    const [play, setPlay] = useState(false);
     const [startSessionModalVisible, setStartSessionModalVisible] = useState(false);
 
     async function leaveGroupAndUpdate() {
@@ -63,13 +59,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         }
     }
 
-    // const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
-    //     console.group(`RSWP: ${type}`);
-    //     console.log(state);
-    //     console.groupEnd();
-    //     setPlay(state.isPlaying);
-    //   }, []);
-      
     const createSessionHandler = async (createNewPlaylist: boolean) => {
         setStartSessionModalVisible(false)
         // TBD: handle creating session in backend, setting up playlist on spotify profile...
@@ -113,19 +102,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                             await leaveGroupAndUpdate();
                         }}>Leave Group</Button>
                     </div>
-                    <div>
-                        <SpotifyPlayerContainer/>
-                        {/* <SpotifyPlayer
-                                token={Cookies.get('spotifytoken') as string}
-                                uris={["spotify:artist:6HQYnRM4OzToCYPpVBInuU"]}
-                                play={play}
-                                callback={handleCallback}
-                                /> */}
-                        
-                    </div>
-                    <Button onClick={() => setPlay(false)}>STOP THE MUSIC</Button>
-
-
                     <div>
                     <Button variant='text' color='primary' size='large' onClick={() => setStartSessionModalVisible(true)}>
                         Start Session

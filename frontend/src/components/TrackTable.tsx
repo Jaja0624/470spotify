@@ -17,6 +17,7 @@ const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) 
     const classes = useStyles();
     console.log(tracks);
     const [toggleButton, setToggleButton] = useState(true);
+    const [URIs, setURIs] = useState<string[]>(['spotify:album:51QBkcL7S3KYdXSSA0zM9R']);
 
     const playButtonHandler = () => {
         setToggleButton(!toggleButton)
@@ -43,8 +44,8 @@ const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) 
                             {tracks.map((track: any) => (
                                 <TableRow key={track.track.id} hover>
                                     <TableCell>
-                                        <IconButton onClick={() => playButtonHandler()}>
-                                            {/* {toggleButton ? <PlayCircleFilledIcon/> : <PauseCircleFilled/>} */}
+                                        <IconButton onClick={() => setToggleButton(!toggleButton)}>
+                                            {toggleButton ? <PlayCircleFilledIcon/> : <PauseCircleFilled/>}
                                         </IconButton>
                                     </TableCell>
                                     <TableCell component="th" scope="row">

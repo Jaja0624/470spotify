@@ -5,40 +5,33 @@ import { List } from '@material-ui/core';
 
 import GroupPlaylistHistoryItem from '../components/GroupPlaylistHistoryItem';
 import ViewSessionPlaylistHistoryModal from './ViewSessionPlaylistHistoryModal';
+import SessionPlaylist from '../types/SessionPlaylist';
 
 //Structure of the props for this component
 interface Props extends RouteComponentProps{
     //no props to send   
 }
 
-// Defines the structure of a song. This is used for the modal which exports the playlist.
-interface Song {
-    songname : string,
-    song_uri : string
-}
-
-//Defines the structure of the playlistHistory state. This is used for each list item.
-interface Playlist {
-    session_uid: number,
-    start_date: Date,
-    participants: Array<String>,
-    songs: Array<Song>
-}
-
 //Temporary, remove when properly retrieving session playlist data.
-const examplePlaylistArray : Array<Playlist> = [
+const examplePlaylistArray : Array<SessionPlaylist> = [
     {
         session_uid: 1,
         start_date: new Date(),
         participants: ["samplePerson1", "samplePerson2"],
         songs: [
             {
+                date_added: new Date(),
+                app_user: "samplePerson1",
                 songname : "song1",
-                song_uri : "someSonguri"
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
             },
             {
+                date_added: new Date(),
+                app_user: "samplePerson2",
                 songname : "song2",
-                song_uri : "someSonguri"
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
             }
         ]
     },
@@ -48,12 +41,18 @@ const examplePlaylistArray : Array<Playlist> = [
         participants: ["samplePerson3", "samplePerson4"],
         songs: [
             {
+                date_added: new Date(),
+                app_user: "samplePerson3",
                 songname : "song3",
-                song_uri : "someSonguri"
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
             },
             {
+                date_added: new Date(),
+                app_user: "samplePerson4",
                 songname : "song4",
-                song_uri : "someSonguri"
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
             }
         ]
     }
@@ -68,11 +67,11 @@ const GroupPlaylistHistory: React.FC<Props> = () => {
     //Assumes the element of a playlist is structured as a Playlist. The playlist
     //is set by any changes from the server.
     //TODO: replace for real data, probably in user store
-    const [sessionPlaylistHistory, setPlaylistHistory] = useState<Array<Playlist>>(examplePlaylistArray);
+    const [sessionPlaylistHistory, setPlaylistHistory] = useState<Array<SessionPlaylist>>(examplePlaylistArray);
 
     //State for the modal that looks at the current playlist. The modal reads the
     //playlist, the GroupPlaylistHistoryItem sets the current playlist.
-    const [currentPlaylist, setPlaylist] = useState<Playlist>(sessionPlaylistHistory[0]);
+    const [currentPlaylist, setPlaylist] = useState<SessionPlaylist>(sessionPlaylistHistory[0]);
 
     //State of the visibility of the modal component.
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -83,7 +82,7 @@ const GroupPlaylistHistory: React.FC<Props> = () => {
     };
 
     //Function used for the items to execute when clicked.
-    const viewModal = (playlist : Playlist) => {
+    const viewModal = (playlist : SessionPlaylist) => {
         console.log("<GroupPlaylistHistory>: playlist was changed", playlist);
         setPlaylist(playlist);
         setIsModalVisible(true);

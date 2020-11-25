@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Typography} from '@material-ui/core';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
+import SessionPlaylist from '../types/SessionPlaylist';
+import Song from '../types/Song';
 
 // Defines the structure of a song. This is used for the modal which exports the playlist.
-interface Song {
-    songname : string,
-    song_uri : string
-}
+// interface Song {
+//     songname : string,
+//     song_uri : string
+// }
 
-//Defines the structure of the playlistHistory state. This is used for each list item.
-interface Playlist {
-    session_uid: number,
-    start_date: Date,
-    participants: Array<String>,
-    songs: Array<Song>
-}
+// //Defines the structure of the playlistHistory state. This is used for each list item.
+// interface Playlist {
+//     session_uid: number,
+//     start_date: Date,
+//     participants: Array<String>,
+//     songs: Array<Song>
+// }
 
 //Structure of the props for this component
 interface Props extends RouteComponentProps {
     isOpen: boolean,
     cancelHandler: () => void, // when user clicks cancel
     successHandler: () => void // save handler
-    playlist: Playlist
+    playlist: SessionPlaylist
 }
 
 
@@ -59,7 +61,7 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
                 />
             </DialogContent>
             <Typography>
-                TODO: Song list items will go here
+                TODO: Song list items will go here asdfasdfasdfasdfasdfasdfasdasdf
             </Typography>
             <DialogActions>
                 <Button onClick={cancelHandler} color="primary" variant='outlined'>

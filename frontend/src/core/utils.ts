@@ -9,3 +9,16 @@ export const extractUris = (trackData: any[]) => {
     return uris;
 }
 
+export const copyFrom = (target: any, array: any[]) => {
+    let newArr = [];
+    let copy = false;
+    for (let i = 0; i < array.length; i++) {    
+        if (array[i] == target) {
+            copy = true
+        }
+        if (copy) {
+            newArr.push(array[i])
+        }
+    }
+    return newArr;
+}

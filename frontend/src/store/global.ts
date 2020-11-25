@@ -17,7 +17,7 @@ type State = {
 
 }
 
-const globalStore = create<State>(set => ({
+const globalStore = create<State>((set, get) => ({
     isGroupDrawerOpen: true,
     hideGroupDrawer: () => {
         console.log('group drawer closed')
@@ -37,7 +37,9 @@ const globalStore = create<State>(set => ({
     },
     tracksToPlay: [],
     setTracksToPlay: (tracks: string[]) => {
+        console.log("old tracks", get().tracksToPlay)
         set({tracksToPlay: tracks})
+        console.log("new tracks set", get().tracksToPlay);
     },
     playing: false,
     setPlaying: (play: boolean) => {
@@ -50,6 +52,5 @@ const globalStore = create<State>(set => ({
         set({playing: false})
     }
 }))
-
 
 export default globalStore;

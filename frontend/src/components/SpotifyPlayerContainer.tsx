@@ -16,7 +16,7 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
     const classes = useStyles();
     // const userState = userStore();
     const globalState = globalStore();
-    const [play, setPlay] = useState(false);
+    const [play, setPlay] = useState(false)
 
     const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
         console.group(`RSWP: ${type}`);
@@ -25,13 +25,24 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
         setPlay(state.isPlaying);
       }, []);
 
+    useEffect(() => {
+        console.log("spotify player re-render")
+        setPlay(true);
+        setPlay(false);
+    }, [globalState.tracksToPlay])
+  
     return (
         <div className={classes.root}>
             <SpotifyPlayer
+                syncExternalDevice
+                persistDeviceSelection
+                // styles={{
+
+                // }}
                 token={Cookies.get('spotifytoken') as string}
                 uris={globalState.tracksToPlay}
-                play={play}
-                callback={handleCallback}
+                play={globalState.playing}
+                callback={handleCallback} // executes everytime something changes in player
                 />
         </div>
     )

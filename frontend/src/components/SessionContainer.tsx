@@ -8,7 +8,6 @@ import SessionDetails from './SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TrackTable from './TrackTable'
 import MiddleContainerHeader from './MiddleContainerHeader'
-import SpotifyPlayerContainer from './SpotifyPlayerContainer'
 
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -45,9 +44,6 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                         <SessionDetails/>
                         <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                     </div>
-                    {/* <div>
-                        <SpotifyPlayerContainer/>
-                    </div> */}
                 </div>
             )}
         </div>

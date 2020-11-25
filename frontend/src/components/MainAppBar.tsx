@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import userStore from '../store/user'
-import { AppBar, Toolbar, Grid, IconButton, Avatar, Typography, Button, MenuItem} from '@material-ui/core';
+import { AppBar, Toolbar, Grid, IconButton, Avatar, Typography, Button, MenuItem, Box} from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -11,6 +11,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
 import Cookies from 'js-cookie';
+import SpotifyPlayerContainer from './SpotifyPlayerContainer'
 
 interface Props extends RouteComponentProps {}
 
@@ -63,13 +64,22 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
-                <Grid style={{flexGrow:1}}>
-                    470
-                    <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
-                        globalState.setMiddleContainer('user')
-                    }}>Home</Button>
-         
+                <Grid style={{flexGrow:1}} container direction='row'>
+                    <Box width={1} display="flex" alignItems='center'>
+                        <Box position='absolute' >
+                            470
+                            <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
+                                globalState.setMiddleContainer('user')
+                            }}>Home</Button>
+                        </Box>
+                        <Box width={1} display='flex' alignItems="center" justifyContent="center">
+                            <Box width='50%'>
+                                <SpotifyPlayerContainer/>
+                            </Box>
+                        </Box>
+                    </Box>
                 </Grid>
+                
                 <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
                     <Grow

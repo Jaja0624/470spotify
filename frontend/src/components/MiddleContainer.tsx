@@ -7,17 +7,19 @@ import { Button } from '@material-ui/core';
 import UserPlaylists from './UserPlaylists'
 import GroupInviteLinkModal from './GroupInviteLinkModal'
 import { getMembers, leaveGroup } from '../core/server'
+import Cookies from 'js-cookie';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StartSessionModal from './StartSessionModal'
 import { createSession } from '../core/server'
-import Cookies from 'js-cookie';
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from './MiddleContainerHeader'
 const io = require('socket.io-client');
 const socket = io();
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
-interface CustomPropsLol extends RouteComponentProps {}
+interface CustomPropsLol extends RouteComponentProps {
+    
+}
 
 // FC (function component)
 const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
@@ -100,7 +102,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                             await leaveGroupAndUpdate();
                         }}>Leave Group</Button>
                     </div>
-
                     <div>
                     <Button variant='text' color='primary' size='large' onClick={() => setStartSessionModalVisible(true)}>
                         Start Session

@@ -65,22 +65,20 @@ const MainAppBar: React.FC<Props> = ({history}) => {
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
                 <Grid style={{flexGrow:1}} container direction='row'>
-                    <Box width={1} display="flex" >
-                        <Box alignSelf="flex-start">
+                    <Box width={1} display="flex" alignItems='center'>
+                        <Box position='absolute' >
                             470
                             <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
                                 globalState.setMiddleContainer('user')
                             }}>Home</Button>
                         </Box>
-                        {/* <Box width={400} alignSelf='right' >
-                            <SpotifyPlayerContainer/>
-                        </Box> */}
+                        <Box width={1} display='flex' alignItems="center" justifyContent="center">
+                            <Box width='50%'>
+                                <SpotifyPlayerContainer/>
+                            </Box>
+                        </Box>
                     </Box>
                 </Grid>
-
-                <Box width={1100} alignSelf='left' >
-                    <SpotifyPlayerContainer/>
-                </Box>
                 
                 <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (

@@ -9,14 +9,13 @@ import { CallbackState } from 'react-spotify-web-playback/lib/types';
 import Cookies from 'js-cookie';
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
-interface CustomPropsLol extends RouteComponentProps {
-
-}
+interface CustomPropsLol extends RouteComponentProps {}
 
 // FC (function component)
 const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
-    const userState = userStore();
+    // const userState = userStore();
+    const globalState = globalStore();
     const [play, setPlay] = useState(false);
 
     const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
@@ -30,7 +29,7 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
         <div className={classes.root}>
             <SpotifyPlayer
                 token={Cookies.get('spotifytoken') as string}
-                uris={["spotify:artist:6HQYnRM4OzToCYPpVBInuU"]}
+                uris={globalState.tracksToPlay}
                 play={play}
                 callback={handleCallback}
                 />

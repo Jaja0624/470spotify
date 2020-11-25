@@ -5,7 +5,8 @@ import { Typography, List, ListItem, IconButton, TableContainer, Table,
     TableHead, TableRow, TableCell, TableBody} from '@material-ui/core';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import PauseCircleFilled from '@material-ui/icons/PauseCircleFilled';
-
+import globalStore from '../store/global'
+import {extractUris} from '../core/utils'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
@@ -14,15 +15,23 @@ interface CustomPropsLol extends RouteComponentProps {
 
 // FC (function component)
 const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) => {
+    const globalState = globalStore();
     const classes = useStyles();
-    console.log(tracks);
+    console.log('playlist tracks', tracks);
     const [toggleButton, setToggleButton] = useState(true);
     const [URIs, setURIs] = useState<string[]>(['spotify:album:51QBkcL7S3KYdXSSA0zM9R']);
 
-    const playButtonHandler = () => {
-        setToggleButton(!toggleButton)
-        return toggleButton ? <PlayCircleFilledIcon/> : <PauseCircleFilled/>
+    const playButtonHandler = (song: string) => {
+        console.log([song])
+        globalState.setTracksToPlay([song])
     }
+
+    useEffect(() => {
+        const trackUris = extractUris(tracks);
+        if (trackUris.length == 0) return;
+        console.log('set tracks', trackUris);
+        globalState.setTracksToPlay(trackUris);
+    }, [])
     
     return (
         <div className={classes.root}>
@@ -44,8 +53,8 @@ const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) 
                             {tracks.map((track: any) => (
                                 <TableRow key={track.track.id} hover>
                                     <TableCell>
-                                        <IconButton onClick={() => setToggleButton(!toggleButton)}>
-                                            {toggleButton ? <PlayCircleFilledIcon/> : <PauseCircleFilled/>}
+                                        <IconButton onClick={() => playButtonHandler(track.track.uri)}>
+                                            <PlayCircleFilledIcon/>
                                         </IconButton>
                                     </TableCell>
                                     <TableCell component="th" scope="row">

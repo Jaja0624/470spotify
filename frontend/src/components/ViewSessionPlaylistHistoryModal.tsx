@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Typography} from '@material-ui/core';
+import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Typography, List} from '@material-ui/core';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
+
 import SessionPlaylist from '../types/SessionPlaylist';
 import Song from '../types/Song';
-
-// Defines the structure of a song. This is used for the modal which exports the playlist.
-// interface Song {
-//     songname : string,
-//     song_uri : string
-// }
-
-// //Defines the structure of the playlistHistory state. This is used for each list item.
-// interface Playlist {
-//     session_uid: number,
-//     start_date: Date,
-//     participants: Array<String>,
-//     songs: Array<Song>
-// }
+import SongListItem from './SongListItem';
 
 //Structure of the props for this component
 interface Props extends RouteComponentProps {
     isOpen: boolean,
     cancelHandler: () => void, // when user clicks cancel
-    successHandler: () => void // save handler
+    successHandler: () => void // additional actions when exporting the playlist
     playlist: SessionPlaylist
 }
 
@@ -46,11 +34,10 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
     };
 
     return (
-        <Dialog open={isOpen} onClose={cancelHandler} aria-labelledby="form-dialog-title">
+        <Dialog open={isOpen} onClose={cancelHandler} aria-labelledby="form-dialog-title" fullWidth={true} scroll="paper">
             <DialogTitle id="form-dialog-title">Export Playlist</DialogTitle>
             <DialogContent>
                 <TextField
-                    autoFocus
                     value={playlistName}
                     onChange={(val) => setPlaylistName(val.target.value)}
                     margin="dense"
@@ -59,10 +46,20 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
                     type="text"
                     fullWidth
                 />
+                <List>
+                    {
+                        playlist.songs.map((song)=>{
+                            return <SongListItem 
+                                song={song} 
+                                isAppUserVisible={true} 
+                                isGroupNameVisible={false} 
+                                isDateAddedVisible={false} 
+                                onClickHandler={() => {}}
+                            />
+                        })
+                    }
+                </List>
             </DialogContent>
-            <Typography>
-                TODO: Song list items will go here asdfasdfasdfasdfasdfasdfasdasdf
-            </Typography>
             <DialogActions>
                 <Button onClick={cancelHandler} color="primary" variant='outlined'>
                     Cancel

@@ -94,7 +94,6 @@ const Dashboard: React.FC<Props> = ({history}) => {
                             ) : (
                                 // <MemberList/>
                                 <Chatroom groupId={user?.currentGroup?.id!} sessionId={user.currentSessionData?.data?.session_uid!}/>
-
                             )}
                         </Grid>
                     </Grid>

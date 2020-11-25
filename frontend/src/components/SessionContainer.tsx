@@ -38,14 +38,15 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             {loading ? (
                 <CircularProgress/>
             ) : (
-                <Box height={300}>
-                    <Box style={{paddingLeft:10}}>
-                        <SessionDetails/>
+                <Box>
+                    <Box height={200}>
+                        <Box style={{paddingLeft:10}} position='bottom'>
+                            <SessionDetails/>
+                        </Box>
                     </Box>
                     <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </Box>
             )}
-
         </div>
     )
 }
@@ -53,6 +54,9 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+        },
+        details: {
+            maxHeight: '80vh'
         },
     }),
 );

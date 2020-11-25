@@ -32,9 +32,9 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
             
             <Box display='flex' width="100%" height="100%" justifyContent='flex-start'>
                 <Box>
-                        <CardMedia
-                            className={classes.cover}
-                            image={imgProp}/>
+                    <CardMedia
+                        className={classes.cover}
+                        image={imgProp}/>
                 </Box>
                 <Box>
                     <Grid container direction='column' alignItems='flex-start' style={{paddingLeft:25}}>

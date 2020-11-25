@@ -36,7 +36,7 @@ const GroupPlaylistHistoryItem: React.FC<Props> = ({history, session_uid, startD
 
     //Formats the date.
     const getDate = (date : Date) => {
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     };
 
     return (

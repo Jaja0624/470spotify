@@ -12,7 +12,7 @@ interface Props extends RouteComponentProps{
     //no props to send   
 }
 
-//Temporary, remove when properly retrieving session playlist data.
+//TODO: Temporary, remove when properly retrieving session playlist data.
 const examplePlaylistArray : Array<SessionPlaylist> = [
     {
         session_uid: 1,
@@ -44,6 +44,48 @@ const examplePlaylistArray : Array<SessionPlaylist> = [
                 date_added: new Date(),
                 app_user: "samplePerson3",
                 songname : "song3",
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
+            },
+            {
+                date_added: new Date(),
+                app_user: "samplePerson4",
+                songname : "song4",
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
+            },
+            {
+                date_added: new Date(),
+                app_user: "samplePerson4",
+                songname : "song4",
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
+            },
+            {
+                date_added: new Date(),
+                app_user: "samplePerson4",
+                songname : "song4",
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
+            },
+            {
+                date_added: new Date(),
+                app_user: "samplePerson4",
+                songname : "song4",
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
+            },
+            {
+                date_added: new Date(),
+                app_user: "samplePerson4",
+                songname : "song4",
+                song_uri : "someSonguri",
+                group_name: "somegroup1"
+            },
+            {
+                date_added: new Date(),
+                app_user: "samplePerson4",
+                songname : "song4",
                 song_uri : "someSonguri",
                 group_name: "somegroup1"
             },

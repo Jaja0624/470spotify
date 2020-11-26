@@ -14,7 +14,9 @@ type State = {
     hideGroupDrawer: () => void,
     openGroupDrawer: () => void
     middleContainer: string, 
+    rightContainer: string,
     setMiddleContainer: (container: string) => void,
+    setRightContainer: (container: string) => void,
     groupInvite: any | undefined,
     setGroupInvite: (groupId?: number) => void,
     tracksToPlay: string[],
@@ -42,8 +44,12 @@ const globalStore = create<State>((set, get) => ({
         set({isGroupDrawerOpen: true})
     },
     middleContainer: 'user',
+    rightContainer: 'member',
     setMiddleContainer: (container: string) => {
         set({middleContainer: container})
+    },
+    setRightContainer: (container: string) => {
+        set({rightContainer: container})
     },
     groupInvite: undefined, // {groupId: groupId}
     setGroupInvite: (groupId?: number) => {

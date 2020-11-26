@@ -4,14 +4,11 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import MainAppBar from '../components/MainAppBar'
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
-import MemberList from '../components/MemberList'
-import Chatroom from '../components/Chat/Chatroom'
 import RightContainer from '../components/RightContainer'
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';

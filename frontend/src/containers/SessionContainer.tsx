@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import userStore from '../store/user'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Button } from '@material-ui/core';
-import globalStore from '../store/global'
-import SessionDetails from './SessionDetails'
+import { Box} from '@material-ui/core';
+import SessionDetails from '../components/SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TrackTable from './TrackTable'
-import MiddleContainerHeader from './MiddleContainerHeader'
+import TrackTable from '../components/TrackTable'
+import MiddleContainerHeader from '../components/MiddleContainerHeader'
 
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -39,12 +38,14 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             {loading ? (
                 <CircularProgress/>
             ) : (
-                <div>
-                    <div className={classes.details}>
-                        <SessionDetails/>
-                        <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
-                    </div>
-                </div>
+                <Box>
+                    <Box height={200}>
+                        <Box style={{paddingLeft:10}}>
+                            <SessionDetails/>
+                        </Box>
+                    </Box>
+                    <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
+                </Box>
             )}
         </div>
     )

@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from 'axios';
+
 var db = require('../db/dbConnection');
 
 const getPlaylistTracks = async (accessToken: string, playlistId: string): Promise<AxiosResponse> => {
@@ -108,7 +109,8 @@ exports.active = async function (req : any, res : any, next : any) {
                     .where({group_uid: BigInt(req.query.groupUid), is_active: true})
                     .select('*')
     if (result) {
-        res.json(result);
+        console.log('active', result[0])
+        res.json(result[0]);
     } else {
         res.json("No Session Active");
     }

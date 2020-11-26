@@ -12,6 +12,7 @@ import globalStore from '../store/global'
 import MiddleContainer from '../components/MiddleContainer';
 import MemberList from '../components/MemberList'
 import Chatroom from '../components/Chat/Chatroom'
+import RightContainer from '../components/RightContainer'
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
@@ -31,6 +32,9 @@ const Dashboard: React.FC<Props> = ({history}) => {
         openGroupDrawer: state.openGroupDrawer,
     }), shallow);
     
+    function isGroupOrSessionMode() {
+        return globalState.middleContainer === 'group' || globalState.middleContainer == 'session'
+    }
     // when frontend loads, it will call the "all group" endpoint every 5s
     useEffect(() => {
         async function scopedGetGroup() {
@@ -59,47 +63,29 @@ const Dashboard: React.FC<Props> = ({history}) => {
                     <Grid item xs={2} className={classes.drawer}>
                         <GroupDrawer/>
                     </Grid>
-                    <Grid item xs={7} className={`${classes.box} ${classes.bigBox}`}>
+                    <Grid item xs={!isGroupOrSessionMode() ? 10 : 7} className={`${classes.box} ${classes.bigBox}`}>
                         <MiddleContainer/>
                     </Grid>
-                    <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            {globalState.middleContainer !== 'group'
-                            ? (
-                                <div>
-                                    <TextField id="songSearch" label="Outlined" variant="outlined" />
-                                    <div>SongName</div>
-                                </div>
-                            ) : (
-                                // <MemberList/>
-                                <Chatroom groupId={user?.currentGroup?.id!} sessionId={user.currentSessionData?.data?.session_uid!}/>
-                            )}
-                    </Grid>
+                    {isGroupOrSessionMode() && (
+                        <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
+                                <RightContainer/>
+                        </Grid>
+                    )}
                 </Grid>
             ) : (
                 <Grid direction='row' container className={classes.container}>
                     <Grid>
                         <GroupDrawerSmall/>
                     </Grid>
-                    <Grid direction='row' className={classes.smallContainer}>
-                        <Grid item xs={9} className={`${classes.box} ${classes.smallBox}`}>
-                            <MiddleContainer/>
-                        </Grid>
-                        <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            {globalState.middleContainer !== 'group'
-                            ? (
-                                <div>
-                                    <TextField id="songSearch" label="Outlined" variant="outlined" />
-                                    <div>SongName</div>
-                                </div>
-                            ) : (
-                                // <MemberList/>
-                                <Chatroom groupId={user?.currentGroup?.id!} sessionId={user.currentSessionData?.data?.session_uid!}/>
-                            )}
-                        </Grid>
+                    <Grid item xs={!isGroupOrSessionMode() ? 12 : 9} className={`${classes.box} ${classes.bigBox}`}>
+                        <MiddleContainer/>
                     </Grid>
-                    
+                    {isGroupOrSessionMode() && (
+                        <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
+                                <RightContainer/>
+                        </Grid>
+                    )}
                 </Grid>
-                
             )}
                 
             

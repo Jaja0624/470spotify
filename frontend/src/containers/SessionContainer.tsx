@@ -3,10 +3,10 @@ import userStore from '../store/user'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Box} from '@material-ui/core';
-import SessionDetails from './SessionDetails'
+import SessionDetails from '../components/SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TrackTable from './TrackTable'
-import MiddleContainerHeader from './MiddleContainerHeader'
+import TrackTable from '../components/TrackTable'
+import MiddleContainerHeader from '../components/MiddleContainerHeader'
 
 interface CustomPropsLol extends RouteComponentProps {}
 

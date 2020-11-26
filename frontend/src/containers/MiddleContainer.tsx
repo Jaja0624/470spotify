@@ -4,15 +4,15 @@ import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Button } from '@material-ui/core';
-import UserPlaylists from './UserPlaylists'
-import GroupInviteLinkModal from './GroupInviteLinkModal'
+import UserPlaylists from '../components/UserPlaylists'
+import GroupInviteLinkModal from '../components/GroupInviteLinkModal'
 import { getMembers, leaveGroup } from '../core/server'
 import Cookies from 'js-cookie';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
-import StartSessionModal from './StartSessionModal'
+import StartSessionModal from '../components/StartSessionModal'
 import { createSession } from '../core/server'
 import SessionContainer from './SessionContainer'
-import MiddleContainerHeader from './MiddleContainerHeader'
+import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps

@@ -8,8 +8,8 @@ import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
-import MiddleContainer from '../components/MiddleContainer';
-import RightContainer from '../components/RightContainer'
+import MiddleContainer from './MiddleContainer';
+import RightContainer from './RightContainer'
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 

@@ -4,8 +4,8 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import globalStore from '../store/global';
 import userStore from '../store/user'
 import MemberList from '../components/MemberList';
-import Chatroom from './Chat/Chatroom'
-import RightContainerHeader from './RightContainerHeader'
+import Chatroom from '../components/Chat/Chatroom'
+import RightContainerHeader from '../components/RightContainerHeader'
 interface Props extends RouteComponentProps{
     //no props to send   
 }

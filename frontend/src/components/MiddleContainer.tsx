@@ -13,8 +13,7 @@ import StartSessionModal from './StartSessionModal'
 import { createSession } from '../core/server'
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from './MiddleContainerHeader'
-const io = require('socket.io-client');
-const socket = io();
+import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {

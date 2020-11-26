@@ -19,7 +19,7 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
         imgProp = userState.currentSessionData.playlist.images[0].url
     }
     
-    if (!userState.currentSessionData.data) {
+    if (!userState.currentSessionData || !userState.currentSessionData.playlist) {
         return (
             <div className={classes.root}>
                 Error. Try refreshing page.
@@ -38,7 +38,7 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
                 </Box>
                 <Box>
                     <Grid container direction='column' alignItems='flex-start' style={{paddingLeft:25}}>
-                        <Typography variant='subtitle1' >Session Id: {userState.currentSessionData.data[0].session_uid}</Typography>
+                        <Typography variant='subtitle1' >Session Id: {userState.currentSessionData.session_uid}</Typography>
                         <Typography variant='subtitle1' style={{fontFamily:'Arial', fontWeight:'bold'}}>PLAYLIST</Typography>
                         <Typography variant='h4' style={{fontWeight:'bold'}} >{userState.currentSessionData.playlist.name}</Typography>
                         {userState.currentSessionData?.playlist?.description ? <Typography variant='h6' color='primary'>{userState.currentSessionData.playlist.description}</Typography> : null}
@@ -47,7 +47,7 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
                                 Created by
                             </Typography>
                             <Typography style={{marginRight: 5, fontWeight:'bold'}} variant='subtitle1' color='primary'>
-                                {userState.currentSessionData.playlist.owner.display_name}
+                                {userState.currentSessionData.playlist?.owner?.display_name}
                             </Typography>
                             <Typography variant='subtitle1'>
                                 - {userState.currentSessionData.playlist.tracks.items.length} songs

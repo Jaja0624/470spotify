@@ -21,10 +21,12 @@ const RightContainerHeader: React.FC<CustomPropsLol> = ({history}: CustomPropsLo
     }
     return (
         <div className={classes.root}>
-            <Button onClick={() => globalState.setRightContainer('member')}>
+            <Button color={globalState.rightContainer == "member" ? 'primary' : 'default'} onClick={() => globalState.setRightContainer('member')}>
                 <Typography style={{fontWeight:'bold'}}>Members</Typography>
             </Button>
-            <Button disabled={userState.currentSessionData?.data[0]?.session_uid ? false : true} onClick={() => globalState.setRightContainer('chat')}>
+            <Button color={globalState.rightContainer == "chat" ? 'primary' : 'default'} 
+                    disabled={userState.currentSessionData && userState.currentSessionData?.session_uid ? false: true} 
+                    onClick={() => globalState.setRightContainer('chat')}>
                 <Typography style={{fontWeight:'bold'}}>Chat</Typography>
             </Button>
         </div>

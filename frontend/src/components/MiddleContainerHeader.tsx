@@ -15,10 +15,10 @@ const MiddleContainerHeader: React.FC<CustomPropsLol> = ({history}: CustomPropsL
 
     return (
         <div className={classes.root}>
-            <Button onClick={() => globalState.setMiddleContainer('group')}>
+            <Button color={globalState.middleContainer == "group" ? 'primary' : 'default'} onClick={() => globalState.setMiddleContainer('group')}>
                 <Typography style={{fontWeight:'bold'}}>Group Page</Typography>
             </Button>
-            <Button onClick={() => globalState.setMiddleContainer('session')}>
+            <Button color={globalState.middleContainer != "group" ? 'primary' : 'default'} onClick={() => globalState.setMiddleContainer('session')}>
                 <Typography style={{fontWeight:'bold'}}>Session If Active (Disable if no session active)</Typography>
             </Button>
         </div>

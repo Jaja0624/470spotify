@@ -40,7 +40,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             ) : (
                 <Box>
                     <Box height={200}>
-                        <Box style={{paddingLeft:10}} position='bottom'>
+                        <Box style={{paddingLeft:10}}>
                             <SessionDetails/>
                         </Box>
                     </Box>

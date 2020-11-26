@@ -20,7 +20,7 @@ export const getGroupsHandler = async (userId: string): Promise<IGroup[]> => {
         const active = await getActive(res.data[i].group_uid, userId);
         if (active) {
             // console.log(active.data[0]);
-            newG.active = active.data[0]
+            newG.active = active.data
         }
         groups.push(newG);
     }

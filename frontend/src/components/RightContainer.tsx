@@ -19,7 +19,7 @@ const RightContainer: React.FC<Props> = () => {
         return (rightContainerState === 'member' ? (
             <MemberList/>
         ): (
-            <Chatroom groupId={userState.currentGroup?.id!} sessionId={userState.currentSessionData.data.session_uid}/>
+            <Chatroom groupId={userState.currentGroup?.id!} sessionId={userState.currentSessionData.session_uid!}/>
         ))
     };
 

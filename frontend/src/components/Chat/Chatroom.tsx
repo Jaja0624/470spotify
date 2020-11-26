@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
-// import userStore from '../store/user'
+import userStore from '../../store/user'
 // import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Typography, Grid, Box} from '@material-ui/core';
 import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
+import { socket } from '../../core/socket'
+import { joinChatData, messageData } from '../../types/socket'
 
-interface IChatMessage {
-    name: string,
-    msg: string
-}
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
     groupId: string,
@@ -18,30 +16,53 @@ interface CustomPropsLol extends RouteComponentProps {
 }
 
 // FC (function component)
-const Chatroom: React.FC<CustomPropsLol> = ({history, groupId, sessionId}: CustomPropsLol) => {
-    const [messages, setMessages] = useState<IChatMessage[]>([
-        {name: 'author', msg:'hey'},
-        {name: 'author', msg:'there'},
-        {name: 'author', msg:'bud'}])
+const Chatroom: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
+    const userState = userStore()
+    const [messages, setMessages] = useState<messageData[]>([])
 
-    const addMsg = (newMsg: string) => {
+    // adds new message to client's chatroom
+    const addNewMessage = (newMsg: messageData) => {
         let m = messages;
-        let newMsgObj: IChatMessage = {
-            name: 'author',
-            msg: newMsg
-        }
-        m.push(newMsgObj);
+        m.push(newMsg);
         setMessages([...m])
-        console.log(m);
+        console.log("updated msgs", m);
+    }
+
+    // sends new message to server via socket
+    const sendNewMessageToServer = (msg: string) => {
+        let newMsgObj: messageData = {
+            group_uid: userState.currentGroup?.id!,
+            type: "msg",
+            author: userState.spotifyProfile.display_name,
+            msg: msg
+        }
+        socket.emit('newMessage', newMsgObj);
     }
     
     const classes = useStyles();
 
+    useEffect(() => {
+        let clientData: joinChatData = {
+            group_uid: userState.currentGroup?.id!,
+            spotify_uid: userState.spotifyProfile.id,
+            name: userState.spotifyProfile.display_name
+        }
+        socket.emit('joinChat', clientData)
+
+        socket.on('newMessage', (data: messageData) => {
+            addNewMessage(data);
+            console.log("new msg", data)
+        })
+
+        return () => {
+            socket.emit('leaveChat', clientData);
+        }
+    }, [])
     return (
         <div className={classes.root}>
             <ChatMessages messages={messages}/>
             <Box className={classes.input}>
-                <ChatInput sendMsg={addMsg}/>
+                <ChatInput sendMsg={sendNewMessageToServer}/>
             </Box>
         </div>
     )

@@ -80,6 +80,8 @@ let io = socket(server);
 const JOIN_CHAT_SOCK_EV = 'joinChat'
 const LEAVE_CHAT_SOCK_EV = 'leaveChat'
 const NEW_MSG_SOCK_ENV = 'newMessage'
+const MSG_TYPE_MSG = 'msg'
+const MSG_TYPE_STATUS = 'status'
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
 io.on("connection", function(socket: any) {
@@ -106,8 +108,8 @@ io.on("connection", function(socket: any) {
       socket.join(chatRoomKey(data.group_uid))
       io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
         group_uid: data.group_uid,
-        type: "status",
-        author: "system",
+        type: MSG_TYPE_STATUS,
+        author: MSG_TYPE_STATUS,
         msg: data.name + " has joined the chat"
       })
     })
@@ -118,8 +120,8 @@ io.on("connection", function(socket: any) {
       socket.leave(chatRoomKey(data.group_uid))
       io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
         group_uid: data.group_uid,
-        type: "status",
-        author: "system",
+        type: MSG_TYPE_STATUS,
+        author: MSG_TYPE_STATUS,
         msg: data.name + " has left the chat"
       })
     })
@@ -128,7 +130,7 @@ io.on("connection", function(socket: any) {
       console.log('newmsg', data);
       io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
         group_uid: data.group_uid,
-        type: "msg",
+        type: MSG_TYPE_MSG,
         author: data.author,
         msg: data.msg
       })

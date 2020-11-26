@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import SSEManagerInstance  from './SSEClientManager';
+import { chatRoomKey } from './utils/socket'
+import { joinChatData, messageData } from './types/socket'
 var db = require('./db/dbConnection');
 
 var spotifyRouter = require('./routes/spotify');
@@ -74,6 +76,12 @@ const server = app.listen(BACKEND_PORT, () => {
 
 let io = socket(server);
 
+
+const JOIN_CHAT_SOCK_EV = 'joinChat'
+const LEAVE_CHAT_SOCK_EV = 'leaveChat'
+const NEW_MSG_SOCK_ENV = 'newMessage'
+const MSG_TYPE_MSG = 'msg'
+const MSG_TYPE_STATUS = 'status'
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
 io.on("connection", function(socket: any) {
@@ -93,4 +101,38 @@ io.on("connection", function(socket: any) {
         // Send this event to everyone in the same group
         io.sockets.in(data.group_uid).emit('connectToSession', 'HEYOOOOOOO');
     });
+
+    socket.on(JOIN_CHAT_SOCK_EV, async function(data: joinChatData) {
+      // req group_uid
+      console.log('joinchat', data);
+      socket.join(chatRoomKey(data.group_uid))
+      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+        group_uid: data.group_uid,
+        type: MSG_TYPE_STATUS,
+        author: MSG_TYPE_STATUS,
+        msg: data.name + " has joined the chat"
+      })
+    })
+
+    socket.on(LEAVE_CHAT_SOCK_EV, async function(data: joinChatData) {
+      console.log('leavechat', data);
+      // req group_uid
+      socket.leave(chatRoomKey(data.group_uid))
+      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+        group_uid: data.group_uid,
+        type: MSG_TYPE_STATUS,
+        author: MSG_TYPE_STATUS,
+        msg: data.name + " has left the chat"
+      })
+    })
+
+    socket.on(NEW_MSG_SOCK_ENV, async function(data: messageData) {
+      console.log('newmsg', data);
+      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+        group_uid: data.group_uid,
+        type: MSG_TYPE_MSG,
+        author: data.author,
+        msg: data.msg
+      })
+    })
 });

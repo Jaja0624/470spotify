@@ -1,5 +1,6 @@
 
 export default interface IChatMessage {
-    name: string,
+    type: "msg" | "session",
+    name?: string,
     msg: string
 }

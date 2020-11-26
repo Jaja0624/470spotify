@@ -13,16 +13,26 @@ interface Props extends RouteComponentProps {
 
 const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
     const classes = useStyles();
+    const currentGroup = userStore(state => state.currentGroup)
+    const currentSession = userStore(state => state.currentSessionData)
     const setMiddleContainer = globalStore(state => state.setMiddleContainer);
+    const setRightContainer = globalStore(state => state.setRightContainer);
     const setCurrentGroup = userStore(state => state.setCurrentGroup);
     
     const groupClickHandler = () => {
         setCurrentGroup(groupData.id);
-        setMiddleContainer('group');
+        if (currentSession.group_uid != groupData.id) {
+            setMiddleContainer('group');
+        } else {
+            setMiddleContainer('session')
+        }
+        if (groupData.id !== currentGroup?.id) {
+            setRightContainer('member');
+        } 
     }
 
     return (
-        <ListItem button className={classes.root} key={groupData.id} onClick={groupClickHandler}>
+        <ListItem button classes={(groupData.id === currentGroup?.id) ? {root:classes.currentGroup} : {root: classes.root}} key={groupData.id} onClick={groupClickHandler}>
             <ListItemAvatar  classes={(groupData?.active?.is_active === true) ? {root: classes.avatar} : undefined}>
                 {groupData.img_url 
                 ?  <Avatar src={groupData.img_url}/>
@@ -43,10 +53,16 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent:'center',
             alignItems:'center',
             width: '100%',
-            
         },
         avatar: {
             backgroundColor: theme.palette.primary.main
+        },
+        currentGroup: {
+            paddingLeft:5,
+            justifyContent:'center',
+            alignItems:'center',
+            width: '100%',
+            backgroundColor: 'blue'
         }
     }),
 );

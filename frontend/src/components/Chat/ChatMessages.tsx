@@ -4,11 +4,10 @@ import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { TextField, Typography, Box } from '@material-ui/core';
-import IChatMessage from '../../types/IChatMessage'
-
+import { messageData } from '../../types/socket'
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
-    messages: IChatMessage[]
+    messages: messageData[]
 }
 
 // FC (function component)
@@ -19,10 +18,16 @@ const ChatMessages: React.FC<CustomPropsLol> = ({history, messages}: CustomProps
         <div className={classes.root}>
             {messages.map(msg => {
                 return (
-                    <Box display='flex' justify-content='flex-start'>
-                        <Typography>{msg.name}: </Typography>
-                        <Typography>{msg.msg}</Typography>
-                    </Box> 
+                    msg.type === 'msg' ? (
+                        <Box display='flex' justify-content='flex-start'>
+                            <Typography style={{marginRight: 4}}>{msg.author}:</Typography>
+                            <Typography>{msg.msg} </Typography>
+                        </Box>
+                    ):(
+                        <Box>
+                            <Typography color='primary'>{msg.msg} </Typography>
+                        </Box>
+                    )
                 )
             })}
             

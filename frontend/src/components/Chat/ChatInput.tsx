@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { TextField } from '@material-ui/core';
-
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
     sendMsg: (newMsg: string) => void

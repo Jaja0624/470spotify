@@ -139,6 +139,7 @@ const GroupPlaylistHistory: React.FC<Props> = ({tabState, index} : Props) => {
                     sessionPlaylistHistory.map((playlistItem:any) => {
                         return(
                             <GroupPlaylistHistoryItem 
+                                key={playlistItem.session_uid}
                                 session_uid={playlistItem.session_uid} 
                                 startDate={playlistItem.start_date} 
                                 participants={playlistItem.participants} 

@@ -33,6 +33,10 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
         successHandler();
     };
 
+    const getSongKey = (song : Song) => {
+        return `${song.date_added.getFullYear()}-${song.date_added.getMonth() + 1}-${song.date_added.getDate()}${song.app_user}`;
+    };
+
     return (
         <Dialog open={isOpen} onClose={cancelHandler} aria-labelledby="form-dialog-title" fullWidth={true} scroll="paper">
             <DialogTitle id="form-dialog-title">Export Playlist</DialogTitle>
@@ -50,6 +54,7 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
                     {
                         playlist.songs.map((song)=>{
                             return <SongListItem 
+                                key={getSongKey(song)}
                                 song={song} 
                                 isAppUserVisible={true} 
                                 isGroupNameVisible={false} 

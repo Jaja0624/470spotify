@@ -37,7 +37,7 @@ const RightContainer: React.FC<Props> = () => {
             <div>
                 <Tabs value={rightContainerState} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
                     scrollButtons="on" >
-                    <Tab icon={<ChatIcon/>} disabled={userState.currentSessionData && userState.currentSessionData?.session_uid ? false: true}/>
+                    <Tab icon={<ChatIcon/>}/>
                     <Tab icon={<PeopleIcon/>}/>
                     <Tab icon={<LibraryMusicIcon/>}/>
                     <Tab icon={<SettingsIcon/>} label="Placeholder"/>

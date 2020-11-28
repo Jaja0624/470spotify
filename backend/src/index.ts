@@ -2,21 +2,32 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import SSEManagerInstance  from './SSEClientManager';
-import { chatRoomKey } from './utils/socket'
+import { chatRoomKey, sessionKey } from './utils/socket'
 import { joinChatData, messageData } from './types/socket'
+import GroupSessionUsers from './GroupSessionUsers'
 var db = require('./db/dbConnection');
-
+import * as dbHelper from './db/dbHelper';
 var spotifyRouter = require('./routes/spotify');
 var userRouter = require('./routes/user');
 var groupRouter = require('./routes/group');
 var sessionRouter = require('./routes/session');
 
+
 import * as SOCKET_STUFF from './constants/socket'
+import LoggedInClients from './LoggedInSocketClients'
+
 
 const BACKEND_PORT = '8080';
 
 const app = express();
-var socket = require('socket.io');
+
+const server = app.listen(BACKEND_PORT, () => {
+  console.log(`App listening on port ${BACKEND_PORT}`);
+  console.log('Press Ctrl+C to quit.');
+});
+
+
+let io = require('./socket').initialize(server);
 
 // debug
 function SOCKETIO_PRINT(...args : any) {
@@ -67,17 +78,13 @@ app.get('/stream', (req, res) => {
   }
 
   let intervalId = setInterval(async () => {
-    console.log('connected clients', SSEManagerInstance.allClientIds());
+    // console.log('connected clients', SSEManagerInstance.allClientIds());
+    console.log('connected clients', LoggedInClients.all())
   }, 5000)
 })
 
-const server = app.listen(BACKEND_PORT, () => {
-    console.log(`App listening on port ${BACKEND_PORT}`);
-    console.log('Press Ctrl+C to quit.');
-});
 
-let io = socket(server);
-
+let groupSessions: {[key: string]: GroupSessionUsers} = {}; 
 
 
 // whenever a user connects on port 3000 via
@@ -100,6 +107,27 @@ io.on("connection", function(socket: any) {
         io.sockets.in(data.group_uid).emit('connectToSession', 'HEYOOOOOOO');
     });
 
+    socket.on('disconnect', () => {
+      console.log('disconnected', socket.id)
+      LoggedInClients.remove(socket.id)
+      
+    })
+
+    socket.on('loggedIn', async function (data: any) {
+      const allGroupsForUser = await dbHelper.getAllGroups(data.spotify_uid);
+
+      // add user to rooms for all their groups
+      for (let i = 0; i < allGroupsForUser.length; i++) {
+        socket.join(allGroupsForUser[i].group_uid)
+      }
+
+      const user = {
+        spotify_uid: data.spotify_uid,
+        pro_pic: data.pro_pic // could be empty string ("")
+      }
+      LoggedInClients.add(socket.id, user);
+    })
+    
     socket.on(SOCKET_STUFF.JOIN_CHAT_EVENT, async function(data: joinChatData) {
       // req group_uid
       console.log('joinchat', data);
@@ -133,4 +161,41 @@ io.on("connection", function(socket: any) {
         msg: data.msg
       })
     })
+
+    socket.on(SOCKET_STUFF.JOIN_SESSION_EVENT, async function (data: joinChatData) {
+      console.log("join session ev");
+      if (!(data.group_uid in groupSessions)) {
+        groupSessions[data.group_uid] = new GroupSessionUsers();
+      } 
+
+      groupSessions[data.group_uid].add(data.spotify_uid);
+      console.log('updated group sessions', groupSessions);
+      socket.join(sessionKey(data.group_uid))
+      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
+        group_uid: data.group_uid,
+        type: SOCKET_STUFF.MSG_TYPE.STATUS,
+        author: SOCKET_STUFF.MSG_TYPE.STATUS,
+        msg: data.name + " has joined the session"
+      })
+    })
+
+    socket.on(SOCKET_STUFF.LEAVE_SESSION_EVENT, async function (data: joinChatData) {
+      console.log("leave session ev");
+      if (data.group_uid in groupSessions) {
+        groupSessions[data.group_uid].delete(data.spotify_uid);
+        // delete session if empty
+        if (groupSessions[data.group_uid].allUsers.length == 0) {
+          delete groupSessions[data.group_uid]
+        }
+      } 
+      console.log('updated group sessions', groupSessions);
+      socket.leave(sessionKey(data.group_uid))
+      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
+        group_uid: data.group_uid,
+        type: SOCKET_STUFF.MSG_TYPE.STATUS,
+        author: SOCKET_STUFF.MSG_TYPE.STATUS,
+        msg: data.name + " has left the session"
+      })
+    })
 });
+

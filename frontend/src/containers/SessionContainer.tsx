@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import userStore from '../store/user'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Box} from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import SessionDetails from '../components/SessionDetails'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TrackTable from '../components/TrackTable'
 import MiddleContainerHeader from '../components/MiddleContainerHeader'
+import { socket } from '../core/socket'
+import { joinChatData } from '../types/socket'
 
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -21,6 +23,25 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
         return await userState.getActiveSession()
 
     }
+
+    const joinSessionHandler = async () => {
+        let clientData: joinChatData = {
+            group_uid: userState.currentGroup?.id!,
+            spotify_uid: userState.spotifyProfile.id,
+            name: userState.spotifyProfile.display_name
+        }
+        socket.emit('joinSession', clientData)
+    }
+
+    const leaveSessionHandler = async () => {
+        let clientData: joinChatData = {
+            group_uid: userState.currentGroup?.id!,
+            spotify_uid: userState.spotifyProfile.id,
+            name: userState.spotifyProfile.display_name
+        }
+        socket.emit('leaveSession', clientData)
+    }
+
     useEffect(() => {
         async function load() {
             const res = await getSession();
@@ -28,6 +49,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
         }
         setLoading(true);
         load();
+
     }, []) 
 
     return (
@@ -43,6 +65,15 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                         <Box style={{paddingLeft:10}}>
                             <SessionDetails/>
                         </Box>
+                        
+                    </Box>
+                    <Box>
+                        <Button variant='contained' color='primary' size='large' onClick={joinSessionHandler}>
+                            Join Session
+                        </Button>
+                        <Button variant='text' style={{color:'red'}} size='large' onClick={leaveSessionHandler}>
+                            Leave Session
+                        </Button>
                     </Box>
                     <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </Box>

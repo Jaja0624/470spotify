@@ -4,18 +4,42 @@ import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Button } from '@material-ui/core';
-import UserPlaylists from './UserPlaylists'
-import GroupInviteLinkModal from './GroupInviteLinkModal'
+import UserPlaylists from '../components/UserPlaylists'
+import GroupInviteLinkModal from '../components/GroupInviteLinkModal'
 import { getMembers, leaveGroup } from '../core/server'
+import Cookies from 'js-cookie';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
-import StartSessionModal from './StartSessionModal'
+import StartSessionModal from '../components/StartSessionModal'
 import { createSession } from '../core/server'
+import SessionContainer from './SessionContainer'
+import MiddleContainerHeader from '../components/MiddleContainerHeader'
+import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
-interface CustomPropsLol extends RouteComponentProps {}
+interface CustomPropsLol extends RouteComponentProps {
+    
+}
 
 // FC (function component)
 const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
+
+    // when someone else has joined the same group, alert all members currently in session
+    socket.on('connectToSession', function(data : any) {
+        console.log("connectToSession data:", data);
+    });
+
+    const [session, setSession] = useState(false);
+
+    useEffect(() => {
+        console.log("session: " + session);
+        if (session)
+        {
+            console.log("session exists");
+            // send session id too?
+            socket.emit('clientEvent', {'spotify_uid': userState.spotifyProfile.id, 'group_uid': userState.currentGroup?.id});
+        }
+    });
+
     const classes = useStyles();
     const userState = userStore();
     const globalState = globalStore();
@@ -34,12 +58,23 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         }
     }
 
-    const createSessionHandler = (createNewPlaylist: boolean) => {
+    const createSessionHandler = async (createNewPlaylist: boolean) => {
         setStartSessionModalVisible(false)
         // TBD: handle creating session in backend, setting up playlist on spotify profile...
         if (userState?.currentGroup?.id) {
             console.log("create new playlist", createNewPlaylist);
-            createSession(userState?.currentGroup?.id, userState?.createSessionInfo); 
+            try {
+                const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo); 
+                if (res.status == 201) {
+                    await userState.getAndUpdateUserGroups()
+                    globalState.setMiddleContainer('session');
+                }
+            } catch (err) {
+                console.log(err);
+            }
+
+            // send session id instead?
+            setSession(true);
         }
     }
 
@@ -47,6 +82,9 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         if (globalState.middleContainer === 'group' && userState.currentGroup) {
             return (
                 <div>
+                    <div style={{display:'flex', alignItems:'center', marginBottom:12}}>
+                        <MiddleContainerHeader/>
+                    </div>
                     <div>
                         {userState.currentGroup.id}-
                         {userState.currentGroup.name}
@@ -63,7 +101,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                             await leaveGroupAndUpdate();
                         }}>Leave Group</Button>
                     </div>
-
                     <div>
                     <Button variant='text' color='primary' size='large' onClick={() => setStartSessionModalVisible(true)}>
                         Start Session
@@ -83,10 +120,10 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                         />
                 </div>
             )
+        } else if (globalState.middleContainer === 'session') {
+            return <SessionContainer/>
         } else {
-            return (
-                <UserPlaylists/>
-            )
+            return <UserPlaylists/>
         }
     }
 

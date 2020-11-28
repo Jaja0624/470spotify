@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import userStore from '../store/user'
-import { AppBar, Toolbar, Grid, IconButton, Avatar, Typography, Button, MenuItem} from '@material-ui/core';
+import { AppBar, Toolbar, Grid, IconButton, Avatar, Typography, Button, MenuItem, Box} from '@material-ui/core';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
@@ -11,6 +11,8 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
 import Cookies from 'js-cookie';
+import SpotifyPlayerContainer from './SpotifyPlayerContainer'
+import Timer from 'react-compound-timer'
 
 interface Props extends RouteComponentProps {}
 
@@ -21,6 +23,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
     const globalState = globalStore();
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const [open, setOpen] = React.useState(false);
+    const [timer, setTimer] = useState(0);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -57,19 +60,64 @@ const MainAppBar: React.FC<Props> = ({history}) => {
 
         prevOpen.current = open;
     }, [open]);
+      
+    function millisToMinutesAndSeconds(millis: number) {
+        var minutes = Math.floor(millis / 60000);
+        var seconds: any = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    }
 
+    const secondsToMinutes = (seconds: number) => {
+        return Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
+    }
 
+    function duration() {
+        if (globalState.prevTrack) {
+            console.log("prev track", globalState.prevTrack)
+            return millisToMinutesAndSeconds(globalState.prevTrack?.durationMs)
+        } else if (globalState.currentTrack) {
+            console.log("curr track", globalState.currentTrack)
+            return millisToMinutesAndSeconds(globalState.currentTrack?.durationMs)
+        } else {
+            return "--"
+        }
+    }
+
+    useEffect(() => {
+        setTimer(0)
+    }, [globalState.currentTrack])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimer(timer => timer+1);
+        }, 1000)
+        return () => {
+            clearInterval(interval);
+        }
+    }, [])
     return (
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
                 <Toolbar>
-                <Grid style={{flexGrow:1}}>
-                    470
-                    <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
-                        globalState.setMiddleContainer('user')
-                    }}>Home</Button>
-         
+                <Grid style={{flexGrow:1}} container direction='row'>
+                    <Box width={1} display="flex" alignItems='center'>
+                        <Box position='absolute' >
+                            470
+                            <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
+                                globalState.setMiddleContainer('user')
+                            }}>Home</Button>
+                        </Box>
+                        {globalState.playing && <Box color='red' position='absolute' left={350} sizeHeight={10} zIndex='999999999999'>
+                                <div>{secondsToMinutes(timer)}/{duration()}</div>
+                            </Box>}
+                        <Box width={1} display='flex' alignItems="center" justifyContent="center">
+                            <Box width='50%'>
+                                <SpotifyPlayerContainer/>
+                            </Box>
+                        </Box>
+                    </Box>
                 </Grid>
+                
                 <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
                     <Grow

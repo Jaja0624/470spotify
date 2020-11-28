@@ -37,7 +37,7 @@ const theme = createMuiTheme({
         backgroundColor: '#1F1F23',
     },
     typography: {
-        fontFamily: 'Comic Sans MS'
+        fontFamily: 'Open Sans'
     },
     shape: {
         borderRadius: 15

@@ -2,7 +2,23 @@ import create from 'zustand';
 import IGroup from '../types/IGroup'
 import Cookies from 'js-cookie';
 import { getGroupsHandler } from '../core/serverhandler'
+import { getActive } from '../core/server'
+import { getPlaylist } from '../core/spotify'
+import { AxiosResponse } from 'axios';
 
+interface ICurrentSessionData {
+    group_uid: string,
+    is_active: boolean,
+    session_uid: number,
+    spotify_playlist_uri: string,
+    playlist: any,
+    key: string
+}
+
+
+type EmptyObject = {
+    [K in any] : never
+}
 
 type State = {
     validateAuthenticated: () => any,
@@ -16,7 +32,9 @@ type State = {
     setUserPlaylists: (playlists: any[]) => void,
     getAndUpdateUserGroups: () => void,
     createSessionInfo: any,
-    setCreateSessionInfo: (info: any) => void
+    setCreateSessionInfo: (info: any) => void,  
+    currentSessionData: ICurrentSessionData | EmptyObject,
+    getActiveSession: () => void
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -59,12 +77,35 @@ const userStore = create<State>((set, get)=> ({
     setUserPlaylists: (playlists: any[]) => {
         set(state => ({userPlaylists: playlists}))
     },
-    createSessionInfo: {},
+    createSessionInfo: {} as any,
     setCreateSessionInfo: (info: any) => {
         set({createSessionInfo:  {
             ...get().createSessionInfo,
             ...info
         }})
+    },
+    currentSessionData: {},
+    getActiveSession: async () => {
+        console.log('getting active session')
+        if (get().currentGroup == undefined) {
+            return;
+        }
+        const sessionData = await getActive(get()?.currentGroup?.id!, get().spotifyProfile.id);
+        if (sessionData && sessionData?.data) {
+            console.log("ACTIVE");
+            const playlistData: AxiosResponse = await getPlaylist(Cookies.get('spotifytoken')!, sessionData?.data?.spotify_playlist_uri)
+            console.log("getActiveSession", "playlist data response", playlistData)
+            // get playlist songs
+            set({currentSessionData: {
+                ...get().currentSessionData,
+                ...sessionData.data,
+                playlist: playlistData.data
+            }})
+            
+            
+            console.log("session + playlist data", get().currentSessionData);
+        }
+
     }
 }))
 

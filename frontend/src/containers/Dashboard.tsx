@@ -4,14 +4,12 @@ import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import MainAppBar from '../components/MainAppBar'
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
 import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
-import MiddleContainer from '../components/MiddleContainer';
-import MemberList from '../components/MemberList';
-import RightContainer from '../components/RightContainer';
+import MiddleContainer from './MiddleContainer';
+import RightContainer from './RightContainer'
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
@@ -31,6 +29,9 @@ const Dashboard: React.FC<Props> = ({history}) => {
         openGroupDrawer: state.openGroupDrawer,
     }), shallow);
     
+    function isGroupOrSessionMode() {
+        return globalState.middleContainer === 'group' || globalState.middleContainer == 'session'
+    }
     // when frontend loads, it will call the "all group" endpoint every 5s
     useEffect(() => {
         async function scopedGetGroup() {
@@ -59,29 +60,29 @@ const Dashboard: React.FC<Props> = ({history}) => {
                     <Grid item xs={2} className={classes.drawer}>
                         <GroupDrawer/>
                     </Grid>
-                    <Grid item xs={7} className={`${classes.box} ${classes.bigBox}`}>
+                    <Grid item xs={!isGroupOrSessionMode() ? 10 : 7} className={`${classes.box} ${classes.bigBox}`}>
                         <MiddleContainer/>
                     </Grid>
-                    <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            <RightContainer/>
-                    </Grid>
+                    {isGroupOrSessionMode() && (
+                        <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
+                                <RightContainer/>
+                        </Grid>
+                    )}
                 </Grid>
             ) : (
                 <Grid direction='row' container className={classes.container}>
                     <Grid>
                         <GroupDrawerSmall/>
                     </Grid>
-                    <Grid direction='row' className={classes.smallContainer}>
-                        <Grid item xs={9} className={`${classes.box} ${classes.smallBox}`}>
-                            <MiddleContainer/>
-                        </Grid>
-                        <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
-                            <RightContainer/>
-                        </Grid>
+                    <Grid item xs={!isGroupOrSessionMode() ? 12 : 9} className={`${classes.box} ${classes.bigBox}`}>
+                        <MiddleContainer/>
                     </Grid>
-                    
+                    {isGroupOrSessionMode() && (
+                        <Grid item xs={3} className={`${classes.box} ${classes.smallBox}`}>
+                                <RightContainer/>
+                        </Grid>
+                    )}
                 </Grid>
-                
             )}
                 
             
@@ -106,6 +107,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
         border: "solid 1px black",
+        overflowY: 'auto'
     },
     drawer:{
         overflowY:'auto',

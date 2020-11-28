@@ -33,30 +33,22 @@ const RightContainer: React.FC<Props> = () => {
 
     //Gets the visible component depending on the state of the middle container
     const getVisibleComponent = (middleContainerState : string) => {
-        if(middleContainerState !== 'group'){
-            return(
-                <div>
-                    <TextField id="songSearch" label="Outlined" variant="outlined" />
-                    <div>TODO: Place songname results from 'Outlined' here</div>
-                </div>
-            );
-        }
-        else {
-            return(
-                <div>
-                    <Tabs value={rightContainerState} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
-                        scrollButtons="on" >
-                        <Tab icon={<ChatIcon/>} disabled={userState.currentSessionData && userState.currentSessionData?.session_uid ? false: true}/>
-                        <Tab icon={<PeopleIcon/>}/>
-                        <Tab icon={<LibraryMusicIcon/>}/>
-                        <Tab icon={<SettingsIcon/>} label="Placeholder"/>
-                    </Tabs>
+        return(
+            <div>
+                <Tabs value={rightContainerState} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
+                    scrollButtons="on" >
+                    <Tab icon={<ChatIcon/>} disabled={userState.currentSessionData && userState.currentSessionData?.session_uid ? false: true}/>
+                    <Tab icon={<PeopleIcon/>}/>
+                    <Tab icon={<LibraryMusicIcon/>}/>
+                    <Tab icon={<SettingsIcon/>} label="Placeholder"/>
+                </Tabs>
+                <div style={{padding:15}}> 
                     <Chatroom groupId={userState.currentGroup?.id!} sessionId={userState.currentSessionData.session_uid!} tabState={rightContainerState} index={0}/>
                     <MemberList tabState={rightContainerState} index={1}/>
                     <GroupPlaylistHistory tabState={rightContainerState} index={2}/>
                 </div>
-            );
-        }
+            </div>
+        );
     };
 
     return (

@@ -50,6 +50,18 @@ export const createSession = async (accessToken: string, groupId: string, spotif
 
 // data.session_uid : new app session
 // data.playlist_id : new playlist created
+// export const endSession = async (accessToken: string, groupId: string, spotifyId: string, ) => {
+//     const body = {
+//         accessToken: accessToken,
+//         groupUid: groupId,
+//         spotifyId,
+//         createSessionInfo
+//     }
+//     return await axios.post('/api/session/stop', body)
+// }
+
+// data.session_uid : new app session
+// data.playlist_id : new playlist created
 export const getActive = async (groupId: string, spotifyId: string) => {
     return await axios.get('/api/session/active', {
         params: {

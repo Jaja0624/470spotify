@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import SSEManagerInstance  from './SSEClientManager';
 import { chatRoomKey, sessionKey } from './utils/socket'
 import { joinChatData, messageData } from './types/socket'
-import GroupSessionUsers from './GroupSessionUsers'
+import GroupSessionUsers from './GenericList'
 var db = require('./db/dbConnection');
 import * as dbHelper from './db/dbHelper';
 var spotifyRouter = require('./routes/spotify');
@@ -15,7 +15,7 @@ var sessionRouter = require('./routes/session');
 
 import * as SOCKET_STUFF from './constants/socket'
 import LoggedInClients from './LoggedInSocketClients'
-
+import SessionRoomManager from './SessionRoomManager'
 
 const BACKEND_PORT = '8080';
 
@@ -82,9 +82,6 @@ app.get('/stream', (req, res) => {
     console.log('connected clients', LoggedInClients.all())
   }, 5000)
 })
-
-
-let groupSessions: {[key: string]: GroupSessionUsers} = {}; 
 
 
 // whenever a user connects on port 3000 via
@@ -164,12 +161,8 @@ io.on("connection", function(socket: any) {
 
     socket.on(SOCKET_STUFF.JOIN_SESSION_EVENT, async function (data: joinChatData) {
       console.log("join session ev");
-      if (!(data.group_uid in groupSessions)) {
-        groupSessions[data.group_uid] = new GroupSessionUsers();
-      } 
-
-      groupSessions[data.group_uid].add(data.spotify_uid);
-      console.log('updated group sessions', groupSessions);
+      SessionRoomManager.addUser(data.group_uid, data.spotify_uid)
+      console.log('updated group sessions', SessionRoomManager.all());
       socket.join(sessionKey(data.group_uid))
       io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
         group_uid: data.group_uid,
@@ -181,14 +174,8 @@ io.on("connection", function(socket: any) {
 
     socket.on(SOCKET_STUFF.LEAVE_SESSION_EVENT, async function (data: joinChatData) {
       console.log("leave session ev");
-      if (data.group_uid in groupSessions) {
-        groupSessions[data.group_uid].delete(data.spotify_uid);
-        // delete session if empty
-        if (groupSessions[data.group_uid].allUsers.length == 0) {
-          delete groupSessions[data.group_uid]
-        }
-      } 
-      console.log('updated group sessions', groupSessions);
+      SessionRoomManager.removeUser(data.group_uid, data.spotify_uid);
+      console.log('updated group sessions', SessionRoomManager);
       socket.leave(sessionKey(data.group_uid))
       io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
         group_uid: data.group_uid,

@@ -67,14 +67,14 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                         </Box>
                         
                     </Box>
-                    <Box>
+                    {userState.currentSessionData.is_active && <Box>
                         <Button variant='contained' color='primary' size='large' onClick={joinSessionHandler}>
                             Join Session
                         </Button>
                         <Button variant='text' style={{color:'red'}} size='large' onClick={leaveSessionHandler}>
                             Leave Session
                         </Button>
-                    </Box>
+                    </Box>}
                     <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </Box>
             )}

@@ -91,7 +91,7 @@ const userStore = create<State>((set, get)=> ({
             return;
         }
         const sessionData = await getActive(get()?.currentGroup?.id!, get().spotifyProfile.id);
-        if (sessionData && sessionData?.data) {
+        if (sessionData && sessionData?.data && sessionData?.data?.spotify_playlist_uri) {
             console.log("ACTIVE");
             const playlistData: AxiosResponse = await getPlaylist(Cookies.get('spotifytoken')!, sessionData?.data?.spotify_playlist_uri)
             console.log("getActiveSession", "playlist data response", playlistData)
@@ -101,11 +101,11 @@ const userStore = create<State>((set, get)=> ({
                 ...sessionData.data,
                 playlist: playlistData.data
             }})
-            
-            
             console.log("session + playlist data", get().currentSessionData);
+        } else {
+            console.log("failed to get an active session. Session results", sessionData);
+            
         }
-
     }
 }))
 

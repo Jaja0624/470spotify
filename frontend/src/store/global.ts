@@ -17,6 +17,8 @@ type State = {
     rightContainer: string,
     setMiddleContainer: (container: string) => void,
     setRightContainer: (container: string) => void,
+    rightContainerIndex: number,
+    setRightContainerIndex: (index: number) => void,
     groupInvite: any | undefined,
     setGroupInvite: (groupId?: number) => void,
     tracksToPlay: string[],
@@ -50,6 +52,10 @@ const globalStore = create<State>((set, get) => ({
     },
     setRightContainer: (container: string) => {
         set({rightContainer: container})
+    },
+    rightContainerIndex: 1,
+    setRightContainerIndex: (index: number) => {
+        set({rightContainerIndex: index})
     },
     groupInvite: undefined, // {groupId: groupId}
     setGroupInvite: (groupId?: number) => {

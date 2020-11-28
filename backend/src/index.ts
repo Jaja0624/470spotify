@@ -83,6 +83,14 @@ app.get('/stream', (req, res) => {
   }, 5000)
 })
 
+function chatStatusUpdate(group_uid: string, msg: string) {
+  io.to(chatRoomKey(group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
+    group_uid: group_uid,
+    type: SOCKET_STUFF.MSG_TYPE.STATUS,
+    author: SOCKET_STUFF.MSG_TYPE.STATUS,
+    msg: msg
+  })
+}
 
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
@@ -129,24 +137,14 @@ io.on("connection", function(socket: any) {
       // req group_uid
       console.log('joinchat', data);
       socket.join(chatRoomKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
-        group_uid: data.group_uid,
-        type: SOCKET_STUFF.MSG_TYPE.STATUS,
-        author: SOCKET_STUFF.MSG_TYPE.STATUS,
-        msg: data.name + " has joined the chat"
-      })
+      chatStatusUpdate(data.group_uid, data.name + " has joined the chat");
     })
 
     socket.on(SOCKET_STUFF.LEAVE_CHAT_EVENT, async function(data: joinChatData) {
       console.log('leavechat', data);
       // req group_uid
       socket.leave(chatRoomKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
-        group_uid: data.group_uid,
-        type: SOCKET_STUFF.MSG_TYPE.STATUS,
-        author: SOCKET_STUFF.MSG_TYPE.STATUS,
-        msg: data.name + " has left the chat"
-      })
+      chatStatusUpdate(data.group_uid, data.name + " has left the chat");
     })
 
     socket.on(SOCKET_STUFF.NEW_MSG_EVENT, async function(data: messageData) {
@@ -164,12 +162,7 @@ io.on("connection", function(socket: any) {
       SessionRoomManager.addUser(data.group_uid, data.spotify_uid)
       console.log('updated group sessions', SessionRoomManager.all());
       socket.join(sessionKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
-        group_uid: data.group_uid,
-        type: SOCKET_STUFF.MSG_TYPE.STATUS,
-        author: SOCKET_STUFF.MSG_TYPE.STATUS,
-        msg: data.name + " has joined the session"
-      })
+      chatStatusUpdate(data.group_uid, data.name + " has joined the session");
     })
 
     socket.on(SOCKET_STUFF.LEAVE_SESSION_EVENT, async function (data: joinChatData) {
@@ -177,12 +170,8 @@ io.on("connection", function(socket: any) {
       SessionRoomManager.removeUser(data.group_uid, data.spotify_uid);
       console.log('updated group sessions', SessionRoomManager);
       socket.leave(sessionKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
-        group_uid: data.group_uid,
-        type: SOCKET_STUFF.MSG_TYPE.STATUS,
-        author: SOCKET_STUFF.MSG_TYPE.STATUS,
-        msg: data.name + " has left the session"
-      })
+      chatStatusUpdate(data.group_uid, data.name + " has left the session");
+
     })
 });
 

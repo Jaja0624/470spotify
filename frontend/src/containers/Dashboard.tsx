@@ -110,6 +110,7 @@ const useStyles = makeStyles((theme: Theme) =>
         overflowY: 'auto'
     },
     drawer:{
+        height:'100%',
         overflowY:'auto',
         backgroundColor: theme.drawer.backgroundColor,
 

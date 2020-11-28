@@ -24,10 +24,8 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-
         root: {
             flexDirection:'row',
-            overflowX:'auto',
             width:'100%',
             height:'100%',
             position:'relative'

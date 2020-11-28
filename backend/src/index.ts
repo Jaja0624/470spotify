@@ -11,6 +11,8 @@ var userRouter = require('./routes/user');
 var groupRouter = require('./routes/group');
 var sessionRouter = require('./routes/session');
 
+import * as SOCKET_STUFF from './constants/socket'
+
 const BACKEND_PORT = '8080';
 
 const app = express();
@@ -77,11 +79,7 @@ const server = app.listen(BACKEND_PORT, () => {
 let io = socket(server);
 
 
-const JOIN_CHAT_SOCK_EV = 'joinChat'
-const LEAVE_CHAT_SOCK_EV = 'leaveChat'
-const NEW_MSG_SOCK_ENV = 'newMessage'
-const MSG_TYPE_MSG = 'msg'
-const MSG_TYPE_STATUS = 'status'
+
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
 io.on("connection", function(socket: any) {
@@ -102,35 +100,35 @@ io.on("connection", function(socket: any) {
         io.sockets.in(data.group_uid).emit('connectToSession', 'HEYOOOOOOO');
     });
 
-    socket.on(JOIN_CHAT_SOCK_EV, async function(data: joinChatData) {
+    socket.on(SOCKET_STUFF.JOIN_CHAT_EVENT, async function(data: joinChatData) {
       // req group_uid
       console.log('joinchat', data);
       socket.join(chatRoomKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
         group_uid: data.group_uid,
-        type: MSG_TYPE_STATUS,
-        author: MSG_TYPE_STATUS,
+        type: SOCKET_STUFF.MSG_TYPE.STATUS,
+        author: SOCKET_STUFF.MSG_TYPE.STATUS,
         msg: data.name + " has joined the chat"
       })
     })
 
-    socket.on(LEAVE_CHAT_SOCK_EV, async function(data: joinChatData) {
+    socket.on(SOCKET_STUFF.LEAVE_CHAT_EVENT, async function(data: joinChatData) {
       console.log('leavechat', data);
       // req group_uid
       socket.leave(chatRoomKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
         group_uid: data.group_uid,
-        type: MSG_TYPE_STATUS,
-        author: MSG_TYPE_STATUS,
+        type: SOCKET_STUFF.MSG_TYPE.STATUS,
+        author: SOCKET_STUFF.MSG_TYPE.STATUS,
         msg: data.name + " has left the chat"
       })
     })
 
-    socket.on(NEW_MSG_SOCK_ENV, async function(data: messageData) {
+    socket.on(SOCKET_STUFF.NEW_MSG_EVENT, async function(data: messageData) {
       console.log('newmsg', data);
-      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
         group_uid: data.group_uid,
-        type: MSG_TYPE_MSG,
+        type: SOCKET_STUFF.MSG_TYPE.MSG,
         author: data.author,
         msg: data.msg
       })

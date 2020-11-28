@@ -12,11 +12,13 @@ import { joinChatData, messageData } from '../../types/socket'
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
     groupId: string,
-    sessionId: number
+    sessionId: number,
+    tabState : number,
+    index : number
 }
 
 // FC (function component)
-const Chatroom: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
+const Chatroom: React.FC<CustomPropsLol> = ({history, groupId, sessionId, tabState, index}: CustomPropsLol) => {
     const userState = userStore()
     const [messages, setMessages] = useState<messageData[]>([])
 
@@ -59,7 +61,7 @@ const Chatroom: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
         }
     }, [])
     return (
-        <div className={classes.root}>
+        <div className={classes.root} hidden={tabState !== index} >
             <ChatMessages messages={messages}/>
             <Box className={classes.input}>
                 <ChatInput sendMsg={sendNewMessageToServer}/>

@@ -24,36 +24,32 @@ const RightContainer: React.FC<Props> = () => {
     const globalState = globalStore();
     const userState = userStore();
 
-    // Determines what component to show for the group.
-    const [rightContainerState, setRightContainerState] = useState(1);
-
     const handleChange = (event : any, newValue: number) => {
-        setRightContainerState(newValue);
+        globalState.setRightContainerIndex(newValue);
     };
 
-    //Gets the visible component depending on the state of the middle container
-    const getVisibleComponent = (middleContainerState : string) => {
-        return(
-            <div>
-                <Tabs value={rightContainerState} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
-                    scrollButtons="on" >
-                    <Tab icon={<ChatIcon/>}/>
-                    <Tab icon={<PeopleIcon/>}/>
-                    <Tab icon={<LibraryMusicIcon/>}/>
-                    <Tab icon={<SettingsIcon/>} label="Placeholder"/>
-                </Tabs>
-                <div style={{padding:15}}> 
-                    <Chatroom groupId={userState.currentGroup?.id!} sessionId={userState.currentSessionData.session_uid!} tabState={rightContainerState} index={0}/>
-                    <MemberList tabState={rightContainerState} index={1}/>
-                    <GroupPlaylistHistory tabState={rightContainerState} index={2}/>
-                </div>
-            </div>
-        );
-    };
+    const rightContainerShow = () => {
+        if (globalState.rightContainerIndex === 0) {
+            return <Chatroom/>
+        } else if (globalState.rightContainerIndex === 1) {
+            return <MemberList/>
+        } else if (globalState.rightContainerIndex === 2) {
+            return <GroupPlaylistHistory/>
+        } else {
+            return <div>Error</div>
+        }
+    }
 
     return (
         <div>
-            {getVisibleComponent(globalState.middleContainer)}
+            <Tabs value={globalState.rightContainerIndex} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
+                scrollButtons="on" >
+                <Tab icon={<ChatIcon/>}/>
+                <Tab icon={<PeopleIcon/>}/>
+                <Tab icon={<LibraryMusicIcon/>}/>
+                <Tab icon={<SettingsIcon/>} label="Placeholder"/>
+            </Tabs>
+            {rightContainerShow()}
         </div>
     );
 };

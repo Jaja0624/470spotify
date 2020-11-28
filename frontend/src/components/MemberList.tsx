@@ -8,10 +8,7 @@ import MemberListItem from './MemberListItem'
 import CircularProgress from '@material-ui/core/CircularProgress';
  
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
-interface CustomPropsLol extends RouteComponentProps {
-    tabState : number,
-    index : number
-}
+interface CustomPropsLol extends RouteComponentProps {}
 
 interface IMems {
     group_uid: string,
@@ -19,7 +16,7 @@ interface IMems {
     spotify_uid: string
 }
 // FC (function component)
-const MemberList: React.FC<CustomPropsLol> = ({history, tabState, index}: CustomPropsLol) => {
+const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
     const userState = userStore();
     const [mems, setMems] = useState<Array<IMems>[]>([]);
@@ -48,14 +45,14 @@ const MemberList: React.FC<CustomPropsLol> = ({history, tabState, index}: Custom
 
     if (loading) {
         return (
-            <div hidden={tabState !== index} id={`simple-tabpanel-${index}`}>
+            <div>
                 <CircularProgress/>
             </div>
         )
     }
 
     return (
-        <div className={classes.root} hidden={tabState !== index} id={`simple-tabpanel-${index}`}>
+        <div className={classes.root}>
             <Typography>
                 Members
             </Typography>

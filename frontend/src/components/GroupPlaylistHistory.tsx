@@ -8,10 +8,7 @@ import ViewSessionPlaylistHistoryModal from './ViewSessionPlaylistHistoryModal';
 import SessionPlaylist from '../types/SessionPlaylist';
 
 //Structure of the props for this component
-interface Props extends RouteComponentProps{
-    tabState: number,
-    index: number
-}
+interface Props extends RouteComponentProps{}
 
 //TODO: Temporary, remove when properly retrieving session playlist data.
 const examplePlaylistArray : Array<SessionPlaylist> = [
@@ -104,7 +101,7 @@ const examplePlaylistArray : Array<SessionPlaylist> = [
 //Shows the history of a group as sessions, represented as a list of past sessions.
 //When a list item is chosen, it opens up a modal that allows the user to view the
 //songs and potentially export it.
-const GroupPlaylistHistory: React.FC<Props> = ({tabState, index} : Props) => {
+const GroupPlaylistHistory: React.FC<Props> = () => {
     //Determines what information to show on the playlist history.
 
     //Assumes the element of a playlist is structured as a Playlist. The playlist
@@ -132,7 +129,7 @@ const GroupPlaylistHistory: React.FC<Props> = ({tabState, index} : Props) => {
     };
 
     return (
-        <div hidden={tabState !== index} id={`simple-tabpanel-${index}`}>
+        <div>
             <TextField id="playlistSearch" label="Search Playlist" variant="outlined" onChange={searchTextFieldChanged}/>
             <List>
                 {

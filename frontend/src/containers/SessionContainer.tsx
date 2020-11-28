@@ -18,19 +18,18 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
     const userState = userStore();
     const [loading, setLoading] = useState(false);
 
-    // executed when component is mounted
-    const getSession = async (): Promise<any> => {
-        return await userState.getActiveSession()
-
-    }
-
     const joinSessionHandler = async () => {
-        let clientData: joinChatData = {
-            group_uid: userState.currentGroup?.id!,
-            spotify_uid: userState.spotifyProfile.id,
-            name: userState.spotifyProfile.display_name
+        if (userState.currentSessionPlaying != -1) {
+            // user already in session 
+        } else {
+            let clientData: joinChatData = {
+                group_uid: userState.currentGroup?.id!,
+                spotify_uid: userState.spotifyProfile.id,
+                name: userState.spotifyProfile.display_name
+            }
+            socket.emit('joinSession', clientData)
+            userState.setCurrentSessionPlaying(userState.currentSessionData.session_uid)
         }
-        socket.emit('joinSession', clientData)
     }
 
     const leaveSessionHandler = async () => {
@@ -40,18 +39,25 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             name: userState.spotifyProfile.display_name
         }
         socket.emit('leaveSession', clientData)
+        userState.setCurrentSessionPlaying(-1);
     }
 
-    useEffect(() => {
-        async function load() {
-            const res = await getSession();
-            setLoading(false);
+    const sessionButtons = () => {
+        if (userState.currentSessionPlaying === userState.currentSessionData.session_uid) {
+            // user is in this session
+            return (
+                <Button variant='text' style={{color:'red'}} size='large' onClick={leaveSessionHandler}>
+                    Leave Session
+                </Button>
+            ) 
+        } else {
+            return (
+                <Button variant='contained' color='primary' size='large' onClick={joinSessionHandler}>
+                    Join Session
+                </Button>
+            )
         }
-        setLoading(true);
-        load();
-
-    }, []) 
-
+    }
     return (
         <div className={classes.root}>
             <div style={{display:'flex', alignItems:'center', marginBottom:12}}>
@@ -68,12 +74,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                         
                     </Box>
                     {userState.currentSessionData.is_active && <Box>
-                        <Button variant='contained' color='primary' size='large' onClick={joinSessionHandler}>
-                            Join Session
-                        </Button>
-                        <Button variant='text' style={{color:'red'}} size='large' onClick={leaveSessionHandler}>
-                            Leave Session
-                        </Button>
+                        {sessionButtons()}
                     </Box>}
                     <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </Box>

@@ -113,6 +113,7 @@ exports.stop = async function (req : any, res : any, next : any) {
     
     // IMPORTANT: USE INTEGER FOR ROOM ID
     io.io().to(parseInt(sessions[0].group_uid)).emit('updateGroup', sessions[0])
+    io.io().to(parseInt(sessions[0].group_uid)).emit('updateSession', sessions[0])
 
     if (sessions.length != 0) {
         // io.

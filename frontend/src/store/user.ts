@@ -34,7 +34,9 @@ type State = {
     createSessionInfo: any,
     setCreateSessionInfo: (info: any) => void,  
     currentSessionData: ICurrentSessionData | EmptyObject,
-    getActiveSession: () => void
+    getActiveSession: () => void,
+    currentSessionPlaying: number,
+    setCurrentSessionPlaying: (session_uid: number) => void,
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -104,8 +106,12 @@ const userStore = create<State>((set, get)=> ({
             console.log("session + playlist data", get().currentSessionData);
         } else {
             console.log("failed to get an active session. Session results", sessionData);
-            
+            set({currentSessionData: {}})
         }
+    },
+    currentSessionPlaying: -1,
+    setCurrentSessionPlaying: (session_uid: number) => {
+        set({currentSessionPlaying: session_uid})
     }
 }))
 

@@ -64,6 +64,11 @@ const Dashboard: React.FC<Props> = ({history}) => {
             await user.getAndUpdateUserGroups();
         })
 
+        socket.on('updateSessions', async () => {
+            console.log("socket on - updateGroup")
+            await user.getActiveSession();
+        })
+
     }, [])
 
     return (

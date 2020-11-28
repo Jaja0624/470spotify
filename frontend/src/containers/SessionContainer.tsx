@@ -9,6 +9,7 @@ import TrackTable from '../components/TrackTable'
 import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import { socket } from '../core/socket'
 import { joinChatData } from '../types/socket'
+import CustomSnackbar from '../components/CustomSnackbar'
 
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -16,11 +17,13 @@ interface CustomPropsLol extends RouteComponentProps {}
 const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
     const userState = userStore();
+    const [error, setError] = useState({state: false, msg: ''})
     const [loading, setLoading] = useState(false);
 
     const joinSessionHandler = async () => {
         if (userState.currentSessionPlaying != -1) {
             // user already in session 
+            setError({state: true, msg: 'Please leave your current session first'})
         } else {
             let clientData: joinChatData = {
                 group_uid: userState.currentGroup?.id!,
@@ -79,6 +82,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                     <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
                 </Box>
             )}
+            <CustomSnackbar open={error.state} text={error.msg} close={() => setError({state: false, msg: ''})} type='error'/>
         </div>
     )
 }

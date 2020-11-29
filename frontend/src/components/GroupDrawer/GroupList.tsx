@@ -37,12 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '10px'
             },
             '*::-webkit-scrollbar-track': {
-            '-webkit-box-shadow': 'inset 0 0 6px rgba(44, 47, 51,0.9)'
+                '-webkit-box-shadow': 'inset 0 0 6px rgba(35, 39, 42, .7)',
+                '-webkit-border-radius': '10px'
             },
             '*::-webkit-scrollbar-thumb': {
-            '-webkit-border-radius': '10px',
-            'border-radius': '10px',
-            'background': 'rgba(44, 47, 51,0.9)' 
+                '-webkit-border-radius': '10px',
+                'border-radius': '10px',
+                'background': 'rgba(44, 47, 51)' 
             }
         }
     }),

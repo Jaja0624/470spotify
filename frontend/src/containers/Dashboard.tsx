@@ -3,6 +3,7 @@ import userStore from '../store/user'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import MainAppBar from '../components/MainAppBar'
+import BottomAppBar from '../components/BottomAppBar'
 import Grid from '@material-ui/core/Grid';
 import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
@@ -84,8 +85,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
                     )}
                 </Grid>
             )}
-                
-            
+            <BottomAppBar/>
         </div>
     )
 }

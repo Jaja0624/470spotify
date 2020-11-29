@@ -24,7 +24,6 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-
         root: {
             flexDirection: 'row',
             overflowX:'auto',
@@ -32,20 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
             height:'100%',
             position: 'relative', 
         },
-        '@global': {
-            '*::-webkit-scrollbar': {
-            width: '10px'
-            },
-            '*::-webkit-scrollbar-track': {
-                '-webkit-box-shadow': 'inset 0 0 6px rgba(35, 39, 42, .7)',
-                '-webkit-border-radius': '10px'
-            },
-            '*::-webkit-scrollbar-thumb': {
-                '-webkit-border-radius': '10px',
-                'border-radius': '10px',
-                'background': 'rgba(44, 47, 51)' 
-            }
-        }
     }),
 );
 

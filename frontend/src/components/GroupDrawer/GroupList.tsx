@@ -14,7 +14,7 @@ const GroupList: React.FC<Props> = ({history}: Props) => {
     const userState = userStore();
 
     return (
-            <List className={classes.root}>
+            <List className={`some-global-class ${classes.root}`}>
               {userState.userGroups.map((groupData: IGroup) => {
                   return (<GroupListItem key={groupData.id} groupData={groupData}/>)
               })}
@@ -26,11 +26,24 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
 
         root: {
-            flexDirection:'row',
+            flexDirection: 'row',
             overflowX:'auto',
             width:'100%',
             height:'100%',
-            position:'relative'
+            position: 'relative', 
+        },
+        '@global': {
+            '*::-webkit-scrollbar': {
+            width: '10px'
+            },
+            '*::-webkit-scrollbar-track': {
+            '-webkit-box-shadow': 'inset 0 0 6px rgba(44, 47, 51,0.9)'
+            },
+            '*::-webkit-scrollbar-thumb': {
+            '-webkit-border-radius': '10px',
+            'border-radius': '10px',
+            'background': 'rgba(44, 47, 51,0.9)' 
+            }
         }
     }),
 );

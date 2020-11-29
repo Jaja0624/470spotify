@@ -3,7 +3,7 @@ import userStore from '../store/user'
 import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Box } from '@material-ui/core';
+import { Box, useTheme } from '@material-ui/core';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import { CallbackState } from 'react-spotify-web-playback/lib/types';
 import Cookies from 'js-cookie';
@@ -19,6 +19,7 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
     const globalState = globalStore();
     const [play, setPlay] = useState(false)
     const [time, setTime] = useState(0)
+    const theme = useTheme();
 
     const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
         console.group(`RSWP: ${type}`);
@@ -40,11 +41,23 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
                 <SpotifyPlayer
                     syncExternalDevice
                     persistDeviceSelection
-                    showSaveIcon 
+                    showSaveIcon
+                    magnifySliderOnHover={true} 
                     token={Cookies.get('spotifytoken') as string}
                     uris={globalState.tracksToPlay}
                     play={globalState.playing}
                     callback={handleCallback} // executes everytime something changes in player
+                    styles={{
+                        bgColor: theme.palette.secondary.main,
+                        color: '#ffffff',
+                        loaderColor: '#ffffff',
+                        sliderColor: theme.palette.primary.main,
+                        savedColor: theme.palette.primary.main,
+                        trackArtistColor: '#cccccc',
+                        trackNameColor: '#ffffff',
+                        sliderHandleColor: '#ffffff',
+                        sliderTrackColor: theme.palette.secondary.light,
+                      }}
                     />
             </Box>
     )}

@@ -3,6 +3,7 @@ import userStore from '../store/user'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import MainAppBar from '../components/MainAppBar'
+import BottomAppBar from '../components/BottomAppBar'
 import Grid from '@material-ui/core/Grid';
 import GroupDrawer from '../components/GroupDrawer/GroupDrawer'
 import GroupDrawerSmall from '../components/GroupDrawer/Small/GroupDrawerSmall'
@@ -103,8 +104,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
                     )}
                 </Grid>
             )}
-                
-            
+            <BottomAppBar/>
         </div>
     )
 }
@@ -112,7 +112,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-        minHeight: '100vh',
+        height: '100vh',
         overflowY: 'hidden' // PREVENT SCROLLING
     },
     smallContainer: {
@@ -122,7 +122,8 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
         flexGrow: 1,
         height:'100vh',
-        paddingTop: 63,
+        paddingTop: 64,
+        paddingBottom: 64,
     },
     box: {
         border: "solid 1px black",

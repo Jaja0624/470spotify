@@ -105,3 +105,10 @@ create table SessionAdmin (
         references AppUser(spotify_uid)
         on delete cascade
 );
+
+-- The AdminCredentials table provides a password for admin login.
+-- * admin_password     : The admin password that is used to verify credentials.
+create table AdminCredentials (
+    admin_password varchar(50) NOT NULL,
+    PRIMARY KEY(admin_password)
+);

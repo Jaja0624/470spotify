@@ -10,34 +10,25 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
-import Cookies from 'js-cookie';
-
-import SpotifyPlayerContainer from './SpotifyPlayerContainer'
-import { socket } from '../core/socket'
-
 
 interface Props extends RouteComponentProps {}
 
-const MainAppBar: React.FC<Props> = ({history}) => {
+const AdminMainAppBar: React.FC<Props> = ({history}) => {
+
     const classes = useStyles();
     const userState = userStore()
     const globalState = globalStore();
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const [open, setOpen] = React.useState(false);
-    const [timer, setTimer] = useState(0);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
     };
 
     const logoutHandler = () => {
-        console.log('logout btn pressed')
-        userState.setSpotifyProfile(undefined);
-        Cookies.remove('spotifytoken');
-        socket.emit('loggedOut')
         history.push('/')
     }
-    
+
     const handleClose = (event: React.MouseEvent<EventTarget>) => {
         if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
             return;
@@ -63,14 +54,6 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         prevOpen.current = open;
     }, [open]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTimer(timer => timer+1);
-        }, 1000)
-        return () => {
-            clearInterval(interval);
-        }
-    }, [])
     return (
         <div className={classes.root}>
             <AppBar color='secondary' position="fixed">
@@ -82,6 +65,11 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                             <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
                                 globalState.setMiddleContainer('user')
                             }}>Home</Button>
+                        </Box>
+
+                        <Box width={1} display='flex' alignItems="center" justifyContent="center">
+                            <Box width='50%'>
+                            </Box>
                         </Box>
                     </Box>
                 </Grid>
@@ -110,11 +98,9 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                     aria-controls={open ? 'menu-list-grow' : undefined}
                     aria-haspopup="true"
                     onClick={handleToggle}>
-                    {userState.spotifyProfile?.images[0] 
-                    ? <Avatar src={userState.spotifyProfile.images[0].url}/>
-                    : <AccountCircleRoundedIcon className={classes.accountIcon}/>}
+                    <AccountCircleRoundedIcon className={classes.accountIcon}/>
                     <Typography variant="h6" className={classes.title}>
-                        {userState.spotifyProfile?.display_name ? userState.spotifyProfile?.display_name : 'Hey There'}
+                        Admin
                     </Typography>
                 </IconButton>
                 </Toolbar>
@@ -122,7 +108,6 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         </div>
     )
 }
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -141,4 +126,4 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default withRouter(MainAppBar) // withRouter enables us to use the router even though this component is not a "Route"
+export default withRouter(AdminMainAppBar) // withRouter enables us to use the router even though this component is not a "Route"

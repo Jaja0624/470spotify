@@ -5,6 +5,7 @@ import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText, Box} from '
 import IGroup from '../../types/IGroup'
 import userStore from '../../store/user'
 import globalStore from '../../store/global'
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
 
 interface Props extends RouteComponentProps {
     groupData: IGroup,
@@ -15,6 +16,7 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
     const classes = useStyles();
     const currentGroup = userStore(state => state.currentGroup)
     const currentSession = userStore(state => state.currentSessionData)
+    const currentSessionPlaying = userStore(state => state.currentSessionPlaying)
     const setMiddleContainer = globalStore(state => state.setMiddleContainer);
     const setRightContainer = globalStore(state => state.setRightContainer);
     const setCurrentGroup = userStore(state => state.setCurrentGroup);
@@ -39,9 +41,9 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
                 : <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
                 }
             </ListItemAvatar>
-            <ListItemText
-                primary={groupData.name}
-            />
+            <ListItemText primary={groupData.name}/>
+            {(groupData?.active?.session_uid === currentSessionPlaying) && <MusicNoteIcon/>}
+
         </ListItem>
     )
 }

@@ -70,7 +70,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             flexGrow:1,
-            flexDirection:'column'
+            flexDirection:'column',
+            padding:15
         },
 
         input: {

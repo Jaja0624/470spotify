@@ -48,8 +48,10 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
         },
         onlineType: { // typography styling for online user
+            paddingLeft: 4
         },
         offlineType: {
+            paddingLeft: 4,
             color: 'grey'
         },
         avatar: {

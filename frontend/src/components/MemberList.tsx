@@ -63,9 +63,6 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
 
     return (
         <div className={classes.root}>
-            <Typography>
-                Members
-            </Typography>
             <List>
                 { mems?.length > 0 &&
                     mems.map((member: any) => {

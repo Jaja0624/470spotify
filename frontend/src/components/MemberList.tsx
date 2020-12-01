@@ -80,6 +80,7 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            padding:15
         },
     }),
 );

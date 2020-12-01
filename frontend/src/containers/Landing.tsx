@@ -1,16 +1,12 @@
 import * as React from 'react';
 import {Button, Checkbox, Container} from '@material-ui/core';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField';
 import userStore from '../store/user'
 import { RouteComponentProps } from 'react-router-dom';
 import { green } from '@material-ui/core/colors';
-import LandingAppBar from '../components/LandingAppBar'
 import Grid from '@material-ui/core/Grid';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import Axios from 'axios';
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 

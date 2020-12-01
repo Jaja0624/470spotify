@@ -2,20 +2,33 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import SSEManagerInstance  from './SSEClientManager';
-import { chatRoomKey } from './utils/socket'
+import { chatRoomKey, sessionKey } from './utils/socket'
 import { joinChatData, messageData } from './types/socket'
+import GroupSessionUsers from './GenericList'
 var db = require('./db/dbConnection');
-
+import * as dbHelper from './db/dbHelper';
 var spotifyRouter = require('./routes/spotify');
 var userRouter = require('./routes/user');
 var groupRouter = require('./routes/group');
 var sessionRouter = require('./routes/session');
 var adminRouter = require('./routes/admin');
 
+
+import * as SOCKET_STUFF from './constants/socket'
+import LoggedInClients from './LoggedInSocketClients'
+import SessionRoomManager from './SessionRoomManager'
+
 const BACKEND_PORT = '8080';
 
 const app = express();
-var socket = require('socket.io');
+
+const server = app.listen(BACKEND_PORT, () => {
+  console.log(`App listening on port ${BACKEND_PORT}`);
+  console.log('Press Ctrl+C to quit.');
+});
+
+
+let io = require('./socket').initialize(server);
 
 // debug
 function SOCKETIO_PRINT(...args : any) {
@@ -55,7 +68,6 @@ app.get('/stream', (req, res) => {
 
   res.on('close', () => {
     console.log('sse closed');
-    clearInterval(intervalId);
     res.end();
     SSEManagerInstance.deleteClient(spotifyId);
   })
@@ -64,28 +76,28 @@ app.get('/stream', (req, res) => {
     console.log("adding", spotifyId)
     SSEManagerInstance.addClient(spotifyId, {res});
   }
-
-  let intervalId = setInterval(async () => {
-    console.log('connected clients', SSEManagerInstance.allClientIds());
-  }, 5000)
 })
 
-const server = app.listen(BACKEND_PORT, () => {
-    console.log(`App listening on port ${BACKEND_PORT}`);
-    console.log('Press Ctrl+C to quit.');
-});
+function chatStatusUpdate(group_uid: string, msg: string) {
+  io.to(chatRoomKey(group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
+    group_uid: group_uid,
+    type: SOCKET_STUFF.MSG_TYPE.STATUS,
+    author: SOCKET_STUFF.MSG_TYPE.STATUS,
+    msg: msg
+  })
+}
 
-let io = socket(server);
+// ROOM KEYS USED THUS FAR
+// groupId: number
+// sessionKey(groupId): string
+// chatRoomKey(groupId): string
+// All users join all their groups rooms on log in
+// So you can request client to update as needed
 
-
-const JOIN_CHAT_SOCK_EV = 'joinChat'
-const LEAVE_CHAT_SOCK_EV = 'leaveChat'
-const NEW_MSG_SOCK_ENV = 'newMessage'
-const MSG_TYPE_MSG = 'msg'
-const MSG_TYPE_STATUS = 'status'
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
 io.on("connection", function(socket: any) {
+    let socketSpotifyUid: string;
     SOCKETIO_PRINT("a user connected", socket.id);
     socket.on('clientEvent', async function(data : any) {
 
@@ -103,37 +115,100 @@ io.on("connection", function(socket: any) {
         io.sockets.in(data.group_uid).emit('connectToSession', 'HEYOOOOOOO');
     });
 
-    socket.on(JOIN_CHAT_SOCK_EV, async function(data: joinChatData) {
+    socket.on('disconnect', () => {
+      console.log('disconnected', socket.id)
+      const userData = LoggedInClients.remove(socket.id)
+      if (socketSpotifyUid && socketSpotifyUid.length != 0) {
+        console.log('before updated group sessions', SessionRoomManager.all());
+        let groupId = SessionRoomManager.removeUserAllGroups(socketSpotifyUid);
+        console.log('updated group sessions', SessionRoomManager.all());
+        if (groupId.length > 0) {
+          console.log("Disconnected user leaving session", socketSpotifyUid, userData, groupId)
+          socket.leave(sessionKey(groupId))
+          chatStatusUpdate(groupId, socketSpotifyUid + " has disconnected");
+          io.to(parseInt(groupId)).emit('updateMembers')
+        }
+      } 
+    })
+
+    socket.on('loggedOut', () => {
+      console.log("logged out socket ev")
+      const userData = LoggedInClients.remove(socket.id)
+      if (socketSpotifyUid && socketSpotifyUid.length != 0) {
+        console.log('before updated group sessions', SessionRoomManager.all());
+        let groupId = SessionRoomManager.removeUserAllGroups(socketSpotifyUid);
+        console.log('updated group sessions', SessionRoomManager.all());
+        if (groupId.length > 0) {
+          console.log("Disconnected user leaving session", socketSpotifyUid, userData, groupId)
+          socket.leave(sessionKey(groupId))
+          chatStatusUpdate(groupId, socketSpotifyUid + " has disconnected");
+          io.to(parseInt(groupId)).emit('updateMembers')
+        }
+      } 
+    })
+
+    socket.on('loggedIn', async function (data: any) {
+      console.log("loggedIn ev", data)
+      socketSpotifyUid = data.spotify_uid;
+      const allGroupsForUser = await dbHelper.getAllGroups(data.spotify_uid);
+
+      // add user to rooms for all their groups
+      // enables us to force client to update when a group state changes
+      for (let i = 0; i < allGroupsForUser.length; i++) {
+        console.log("user " + data.spotify_uid + " joined group socket room " + allGroupsForUser[i].group_uid)
+        console.log(typeof(allGroupsForUser[i].group_uid))
+        socket.join(allGroupsForUser[i].group_uid)
+        io.to(parseInt(allGroupsForUser[i].group_uid)).emit('updateMembers')
+      }
+
+      const user = {
+        spotify_uid: data.spotify_uid,
+        pro_pic: data.pro_pic // could be empty string ("")
+      }
+      LoggedInClients.add(socket.id, user);
+    })
+    
+    socket.on(SOCKET_STUFF.JOIN_CHAT_EVENT, async function(data: joinChatData) {
       // req group_uid
       console.log('joinchat', data);
       socket.join(chatRoomKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
-        group_uid: data.group_uid,
-        type: MSG_TYPE_STATUS,
-        author: MSG_TYPE_STATUS,
-        msg: data.name + " has joined the chat"
-      })
+      chatStatusUpdate(data.group_uid, data.name + " has joined the chat");
     })
 
-    socket.on(LEAVE_CHAT_SOCK_EV, async function(data: joinChatData) {
+    socket.on(SOCKET_STUFF.LEAVE_CHAT_EVENT, async function(data: joinChatData) {
       console.log('leavechat', data);
       // req group_uid
       socket.leave(chatRoomKey(data.group_uid))
-      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
-        group_uid: data.group_uid,
-        type: MSG_TYPE_STATUS,
-        author: MSG_TYPE_STATUS,
-        msg: data.name + " has left the chat"
-      })
+      chatStatusUpdate(data.group_uid, data.name + " has left the chat");
     })
 
-    socket.on(NEW_MSG_SOCK_ENV, async function(data: messageData) {
+    socket.on(SOCKET_STUFF.NEW_MSG_EVENT, async function(data: messageData) {
       console.log('newmsg', data);
-      io.to(chatRoomKey(data.group_uid)).emit(NEW_MSG_SOCK_ENV, {
+      io.to(chatRoomKey(data.group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
         group_uid: data.group_uid,
-        type: MSG_TYPE_MSG,
+        type: SOCKET_STUFF.MSG_TYPE.MSG,
         author: data.author,
         msg: data.msg
       })
     })
+
+    socket.on(SOCKET_STUFF.JOIN_SESSION_EVENT, async function (data: joinChatData) {
+      console.log("join session ev");
+      SessionRoomManager.addUser(data.group_uid, data.spotify_uid)
+      console.log('updated group sessions', SessionRoomManager.all());
+      socket.join(sessionKey(data.group_uid))
+      chatStatusUpdate(data.group_uid, data.name + " has joined the session");
+      io.to(data.group_uid).emit('updateMembers')
+    })
+
+    socket.on(SOCKET_STUFF.LEAVE_SESSION_EVENT, async function (data: joinChatData) {
+      console.log("leave session ev", data);
+      console.log('before updated group sessions', SessionRoomManager.all());
+      SessionRoomManager.removeUser(data.group_uid, data.spotify_uid);
+      console.log('updated group sessions', SessionRoomManager.all());
+      socket.leave(sessionKey(data.group_uid))
+      chatStatusUpdate(data.group_uid, data.name + " has left the session");
+      io.to(data.group_uid).emit('updateMembers')
+    })
 });
+

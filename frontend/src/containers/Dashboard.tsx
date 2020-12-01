@@ -10,6 +10,7 @@ import shallow from 'zustand/shallow'
 import globalStore from '../store/global'
 import MiddleContainer from './MiddleContainer';
 import RightContainer from './RightContainer'
+import { socket } from '../core/socket'
 
 const REACT_APP_BACKEND = process.env.REACT_APP_BACKEND || '';
 
@@ -50,6 +51,24 @@ const Dashboard: React.FC<Props> = ({history}) => {
             console.log(JSON.parse(ev.data));
             await user.getAndUpdateUserGroups()
         })
+
+  
+        if (user.spotifyProfile.images.length != 0) {
+            socket.emit('loggedIn', {spotify_uid: user.spotifyProfile.id, pro_pic: user.spotifyProfile?.images[0]?.url})
+        } else {
+            socket.emit('loggedIn', {spotify_uid: user.spotifyProfile.id, pro_pic: ''})
+        }
+
+        socket.on('updateGroup', async () => {
+            console.log("socket on - updateGroup")
+            await user.getAndUpdateUserGroups();
+        })
+
+        socket.on('updateSessions', async () => {
+            console.log("socket on - updateGroup")
+            await user.getActiveSession();
+        })
+
     }, [])
 
     return (
@@ -110,6 +129,7 @@ const useStyles = makeStyles((theme: Theme) =>
         overflowY: 'auto'
     },
     drawer:{
+        height:'100%',
         overflowY:'auto',
         backgroundColor: theme.drawer.backgroundColor,
 

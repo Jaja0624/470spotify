@@ -12,7 +12,7 @@ import MenuList from '@material-ui/core/MenuList';
 import globalStore from '../store/global'
 import Cookies from 'js-cookie';
 import SpotifyPlayerContainer from './SpotifyPlayerContainer'
-import Timer from 'react-compound-timer'
+import { socket } from '../core/socket'
 
 interface Props extends RouteComponentProps {}
 
@@ -33,6 +33,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         console.log('logout btn pressed')
         userState.setSpotifyProfile(undefined);
         Cookies.remove('spotifytoken');
+        socket.emit('loggedOut')
         history.push('/')
     }
     

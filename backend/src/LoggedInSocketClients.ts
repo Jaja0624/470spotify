@@ -1,9 +1,14 @@
 
 interface userData {
+    name?: string,
     spotify_uid: string,
     pro_pic: string // url
 }
 
+// Maps socket ids to user
+
+// key: socket id
+// value: userData
 class SocketClientManager {
     users: any;
     constructor() {
@@ -22,11 +27,11 @@ class SocketClientManager {
     }
 
     getUser(spotify_uid: string) {
-        Object.entries((user: userData) => {
-            if (user.spotify_uid === spotify_uid) {
-                return user
+        for (const socketId in this.users) {
+            if (this.users[socketId].spotify_uid === spotify_uid) {
+                return this.users[socketId]
             }
-        })
+        }
         return undefined
     }
 

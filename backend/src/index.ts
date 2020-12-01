@@ -130,6 +130,22 @@ io.on("connection", function(socket: any) {
       } 
     })
 
+    socket.on('loggedOut', () => {
+      console.log("logged out socket ev")
+      const userData = LoggedInClients.remove(socket.id)
+      if (socketSpotifyUid && socketSpotifyUid.length != 0) {
+        console.log('before updated group sessions', SessionRoomManager.all());
+        let groupId = SessionRoomManager.removeUserAllGroups(socketSpotifyUid);
+        console.log('updated group sessions', SessionRoomManager.all());
+        if (groupId.length > 0) {
+          console.log("Disconnected user leaving session", socketSpotifyUid, userData, groupId)
+          socket.leave(sessionKey(groupId))
+          chatStatusUpdate(groupId, socketSpotifyUid + " has disconnected");
+          io.to(parseInt(groupId)).emit('updateMembers')
+        }
+      } 
+    })
+
     socket.on('loggedIn', async function (data: any) {
       console.log("loggedIn ev", data)
       socketSpotifyUid = data.spotify_uid;
@@ -141,6 +157,7 @@ io.on("connection", function(socket: any) {
         console.log("user " + data.spotify_uid + " joined group socket room " + allGroupsForUser[i].group_uid)
         console.log(typeof(allGroupsForUser[i].group_uid))
         socket.join(allGroupsForUser[i].group_uid)
+        io.to(parseInt(allGroupsForUser[i].group_uid)).emit('updateMembers')
       }
 
       const user = {

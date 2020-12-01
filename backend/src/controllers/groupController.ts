@@ -87,10 +87,13 @@ exports.members = async function (req : any, res : any, next : any) {
                     if (usersInSession && usersInSession.includes(result[i].spotify_uid)) {
                         result[i].in_session = true
                     }
+                    
                     const userLoggedIn: userData | undefined = LoggedInClients.getUser(result[i].spotify_uid)
-                    console.log("logged in users", LoggedInClients.all());
                     if (userLoggedIn) {
                         result[i].pro_pic = userLoggedIn!.pro_pic
+                        result[i].online = true
+                    } else {
+                        result[i].online = false
                     }
                 }
             }

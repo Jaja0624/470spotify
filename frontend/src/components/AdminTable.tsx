@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import globalStore from '../store/global';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { withStyles, makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { getTable } from '../core/admin'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,6 +15,16 @@ import Paper from '@material-ui/core/Paper';
 interface CustomPropsLol extends RouteComponentProps {
     tabIndex: number
 }
+
+const StyledTableCell = withStyles((theme) => ({
+    head: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
+    },
+    body: {
+        fontSize: 14,
+    },
+}))(TableCell);
 
 // FC (function component)
 const AdminTable: React.FC<CustomPropsLol> = ({history, tabIndex}: CustomPropsLol) => {
@@ -57,7 +67,7 @@ const AdminTable: React.FC<CustomPropsLol> = ({history, tabIndex}: CustomPropsLo
                             <TableRow>
                             {
                                 tableHeader.map((item : any, index : any) => {
-                                    return (<TableCell key={index}>{item}</TableCell>)
+                                    return (<StyledTableCell key={index}>{item}</StyledTableCell>)
                                 })
                             }
                             </TableRow>
@@ -69,7 +79,7 @@ const AdminTable: React.FC<CustomPropsLol> = ({history, tabIndex}: CustomPropsLo
                                 <TableRow>
                                 {
                                     tableHeader.map((item : any) => {
-                                        return (<TableCell> {row[item]} </TableCell>)
+                                        return (<StyledTableCell> {row[item]} </StyledTableCell>)
                                     })
                                 }
                                 </TableRow>)

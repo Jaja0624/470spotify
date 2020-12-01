@@ -82,3 +82,10 @@ export async function getAllMembers(groupUid : string) {
                     .join('appuser as au', 'gm.spotify_uid', 'au.spotify_uid')
                     .select('*')
 }
+
+export async function getAdminCredentials(password : string) {
+    return await db
+                 .select('*')
+                 .from('admincredentials')
+                 .where({admin_password: password})
+}

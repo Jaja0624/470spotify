@@ -10,6 +10,7 @@ var spotifyRouter = require('./routes/spotify');
 var userRouter = require('./routes/user');
 var groupRouter = require('./routes/group');
 var sessionRouter = require('./routes/session');
+var adminRouter = require('./routes/admin');
 
 const BACKEND_PORT = '8080';
 
@@ -33,6 +34,7 @@ app.use('/api/spotify', spotifyRouter);  // For all paths that start with /api/s
 app.use('/api/user', userRouter);        // For all paths that start with /api/user
 app.use('/api/group', groupRouter);      // For all paths that start with /api/group
 app.use('/api/session', sessionRouter);  // For all paths that start with /api/session
+app.use('/api/admin', adminRouter);      // For all paths that start with /api/admin
 
 // Set Content-Type for all responses for these routes.
 app.use((req, res, next) => {

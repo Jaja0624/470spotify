@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import globalStore from '../store/global';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { getTable } from '../core/admin'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
@@ -9,10 +18,77 @@ interface CustomPropsLol extends RouteComponentProps {
 
 // FC (function component)
 const AdminTable: React.FC<CustomPropsLol> = ({history, tabIndex}: CustomPropsLol) => {
+    const globalState = globalStore();
     const classes = useStyles();
 
+    const [tableHeader, setTableHeader] = useState([]);
+    const [tableData, setTableData] = useState([]);
+
+    async function getTableData() {
+        const data = await getTable(globalState.adminTabIndex);
+        var tmp = data.data;
+        if (tmp.length > 0) {
+            var tableHeaderTmp : any = [];
+
+            tableHeaderTmp = Object.keys(tmp[0]);
+
+            setTableHeader(tableHeaderTmp);
+            setTableData(tmp);
+        }
+        else {
+            setTableHeader([]);
+            setTableData([]);
+        }
+    }
+    useEffect(() => {
+        async function scopedPull() {
+            await getTableData();
+        }
+        scopedPull();
+    }, [globalState.adminTabIndex])
+
+
+    function getAdminTableContent(tableHeader : any) {
+        if (tableHeader.length > 0) {
+            return (
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                            {
+                                tableHeader.map((item : any, index : any) => {
+                                    return (<TableCell key={index}>{item}</TableCell>)
+                                })
+                            }
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {
+                            tableData.map((row : any) => {
+                            return (
+                                <TableRow>
+                                {
+                                    tableHeader.map((item : any) => {
+                                        return (<TableCell> {row[item]} </TableCell>)
+                                    })
+                                }
+                                </TableRow>)
+                            })
+                        }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )
+        }
+        else {
+            return (
+                <div> DB table empty </div>
+            )
+        }
+    }
     return (
         <div className={classes.root}>
+            {getAdminTableContent(tableHeader)}
         </div>
     )
 }

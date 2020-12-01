@@ -112,7 +112,7 @@ const Dashboard: React.FC<Props> = ({history}) => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-        minHeight: '100vh',
+        height: '100vh',
         overflowY: 'hidden' // PREVENT SCROLLING
     },
     smallContainer: {
@@ -122,7 +122,8 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
         flexGrow: 1,
         height:'100vh',
-        paddingTop: 63,
+        paddingTop: 64,
+        paddingBottom: 64,
     },
     box: {
         border: "solid 1px black",

@@ -40,9 +40,11 @@ const Landing: React.FC<Props> = ({history}) => {
                 </Button>
 
                 <Typography variant="body2" gutterBottom className={`${classes.typography}`}>
-                    <Link className={`${classes.adminLogin}`}> 
+                    <Button id="admin-login-btn" className={`${classes.adminLogin}`} color="primary" onClick={() => {
+                        history.push('/admin');
+                    }}>
                         admin login
-                    </Link>
+                    </Button>
                 </Typography>
 
                 {/* <TextField className={`${classes.input}`} id="login-user" type="text" label="Username" variant="outlined" />

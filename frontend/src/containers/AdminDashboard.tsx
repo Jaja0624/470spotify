@@ -5,6 +5,7 @@ import AdminMainAppBar from '../components/AdminMainAppBar'
 import { Tab, Tabs } from '@material-ui/core';
 import globalStore from '../store/global';
 import userStore from '../store/user';
+import AdminTable from '../components/AdminTable';
 
 interface Props extends RouteComponentProps {}
 
@@ -18,7 +19,7 @@ const AdminDashboard: React.FC<Props> = ({history}) => {
     };
 
     const adminTableComponentShow = () => {
-        // TODO: populate tables for each DB table
+        return <AdminTable tabIndex={globalState.adminTabIndex} />
     }
 
     return (

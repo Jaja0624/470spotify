@@ -34,6 +34,7 @@ class AdminLoginScreen extends Component <any, any> {
             this.setState({open: true,
                            message: "You have successfully Logged In!",
                            verified: true});
+            this.props.history.push('/adminapp');
         }
         else {
             return this.setState({open: true,

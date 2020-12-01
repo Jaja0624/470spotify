@@ -11,8 +11,8 @@ class GenericList {
         this.list.push(item);
     }
 
-    delete(item: string) {
-        this.list = this.list.filter(item => item === item)
+    delete(target: string) {
+        this.list = this.list.filter(item => item !== target)
     }
     
     allItems() {

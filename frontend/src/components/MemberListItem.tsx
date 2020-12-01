@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText} from '@material-ui/core';
-
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
 
 interface Props extends RouteComponentProps {
     memberData: any, 
@@ -14,9 +14,9 @@ const MemberListItem: React.FC<Props> = ({history, memberData, key}: Props) => {
 
     return (
         <ListItem button className={classes.root} key={key}>
-            <ListItemText
-                primary={memberData.public_name}
-            />
+            <ListItemText primary={memberData.public_name}/>
+            {memberData?.in_session && <MusicNoteIcon/>}
+
         </ListItem>
     )
 }

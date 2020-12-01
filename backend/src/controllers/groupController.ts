@@ -1,5 +1,7 @@
 import * as db from '../db/dbHelper';
 import SSEManagerInstance from '../SSEClientManager'
+import SessionRooms from '../SessionRoomManager'
+import LoggedInClients from '../LoggedInSocketClients'
 
 exports.create = async function (req : any, res : any, next : any) {
     console.log("groupController exports.create req: " + req + " and " + JSON.stringify(req.body));
@@ -63,6 +65,10 @@ exports.leave = async function (req : any, res : any, next : any) {
     }
 }
 
+interface userData {
+    spotify_uid: string,
+    pro_pic: string // url
+}
 
 exports.members = async function (req : any, res : any, next : any) {
     console.log("groupController exports.members req")
@@ -73,6 +79,21 @@ exports.members = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.getAllMembers(req.query.groupId);
+            if (result.length != 0) {
+                const groupId = result[0].group_uid
+                const usersInSession = SessionRooms.usersInSession(groupId)?.allItems();
+                console.log("users in session", usersInSession);
+                for (let i = 0; i < result.length; i++) {
+                    if (usersInSession && usersInSession.includes(result[i].spotify_uid)) {
+                        result[i].in_session = true
+                    }
+                    const userLoggedIn: userData | undefined = LoggedInClients.getUser(result[i].spotify_uid)
+                    console.log("logged in users", LoggedInClients.all());
+                    if (userLoggedIn) {
+                        result[i].pro_pic = userLoggedIn!.pro_pic
+                    }
+                }
+            }
             console.log('trx result', result)
             res.json(result);
         } catch (err) {

@@ -6,6 +6,7 @@ import { Typography, List, ListItem } from '@material-ui/core';
 import { getMembers } from '../core/server'
 import MemberListItem from './MemberListItem'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { socket } from '../core/socket'
  
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -27,8 +28,11 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
         if (userState?.currentGroup?.id) {
             const mems = await getMembers(userState.currentGroup?.id.toString());
             console.log("<MemberList>: New member list data taken from the backend: ", mems);
-            console.log()
-            setMems(mems.data);
+            if (mems.status === 200) {
+                setMems(mems.data);
+            } else {
+                console.log("error getting member list", mems);
+            }
         } else {
             console.log(`<MemberList>: The current group might be null: ${userState?.currentGroup?.id}`);
         }
@@ -42,6 +46,12 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
         }
         scopedPull();
     }, [userState.currentGroup])
+
+    useEffect(() => {
+        socket.on('updateMembers', async () => {
+            await pullMembers();
+        })
+    }, [])
 
     if (loading) {
         return (
@@ -57,7 +67,7 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
                 Members
             </Typography>
             <List>
-                {
+                { mems?.length > 0 &&
                     mems.map((member: any) => {
                         return (<MemberListItem key={member.public_name} memberData={member} />)
                     })

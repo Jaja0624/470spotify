@@ -85,6 +85,7 @@ exports.create = async function (req: any, res: any, next: any) {
 
             const result = await addTracksToPlaylist(req.body.accessToken, newPlaylist.data.id, trackUris);
             res.status(201);
+            io.io().to(parseInt(req.body.groupUid)).emit('updateGroup', results[0])
             res.json({
                 'session_uid':results[0],
                 'playlist_id': newPlaylist.data.id

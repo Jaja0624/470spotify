@@ -89,3 +89,39 @@ export async function getAdminCredentials(password : string) {
                  .from('admincredentials')
                  .where({admin_password: password})
 }
+
+export async function getAppUser() {
+    return await db
+                 .select('*')
+                 .from('appuser')
+}
+
+export async function getAppGroup() {
+    return await db
+                 .select('*')
+                 .from('appgroup')
+}
+
+export async function getGroupMember() {
+    return await db
+                 .select('*')
+                 .from('groupmember')
+}
+
+export async function getAppSession() {
+    return await db
+                 .select('*')
+                 .from('appsession')
+}
+
+export async function getSessionAdmin() {
+    return await db
+                 .select('*')
+                 .from('sessionadmin')
+}
+
+export async function getAppHistory() {
+    return await db
+                 .select('*')
+                 .from('apphistory')
+}

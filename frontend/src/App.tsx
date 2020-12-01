@@ -10,6 +10,8 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from './core/theme';
 import AuthLoadingScreen from './containers/AuthLoadingScreen'
 import InvitedUserScreen from './containers/InvitedUserScreen'
+import AdminLoginScreen from './containers/AdminLoginScreen'
+import AdminDashboard from './containers/AdminDashboard'
 
 const App: React.FC = () => {
 	
@@ -22,6 +24,8 @@ const App: React.FC = () => {
 					<AuthenticatedRoute exact path='/app' component={Dashboard}/>
 					<Route exact path='/invite' component={InvitedUserScreen}/>
                     <Route exact path='/authloader' component={AuthLoadingScreen}/>
+                    <Route exact path='/admin' component={AdminLoginScreen}/>
+                    <Route exact path='/adminapp' component={AdminDashboard}/>
 					<Route exact path='*' component={NotFound}/>
 				</Switch>
 			</BrowserRouter>

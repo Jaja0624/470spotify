@@ -2,6 +2,7 @@ import * as db from '../db/dbHelper';
 import SSEManagerInstance from '../SSEClientManager'
 import SessionRooms from '../SessionRoomManager'
 import LoggedInClients from '../LoggedInSocketClients'
+const io = require('../socket')
 
 exports.create = async function (req : any, res : any, next : any) {
     console.log("groupController exports.create req: " + req + " and " + JSON.stringify(req.body));
@@ -33,7 +34,11 @@ exports.join = async function (req : any, res : any, next : any) {
             // get spotify_uids as list
             const groupMembersIdArray = groupMembers.map((mem: any) => mem.spotify_uid);
             // tell everyone in this group to update groups
-            SSEManagerInstance.sendMessage(groupMembersIdArray, 'a user just joined ur group man', 'updateGroup');
+            // SSEManagerInstance.sendMessage(groupMembersIdArray, 'a user just joined ur group man', 'updateGroup');
+            io.io().join(parseInt(req.body.groupId))
+            io.io().to(parseInt(req.body.group_uid)).emit('updateMembers')
+            io.io().to(parseInt(req.body.group_uid)).emit('updateSessions')
+
             console.log('trx result', result)
             res.json(result);
         } catch (err) {

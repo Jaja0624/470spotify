@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import userStore from '../store/user'
-import { Button, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Typography} from '@material-ui/core';
+import { Button, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Typography, FormControl, FormControlLabel, Radio, RadioGroup} from '@material-ui/core';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles'
 import UserPlaylists from './UserPlaylists'
@@ -15,17 +15,26 @@ interface Props extends RouteComponentProps {
 const StartSessionModal: React.FC<Props> = ({history, isOpen, cancelHandler, saveHandler}: Props) => {
     const classes = useStyles();
     const [newPlaylistChecked, setNewPlaylistChecked] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewPlaylistChecked(event.target.checked);
     };
-
+    
     return (
         <Dialog open={isOpen} onClose={cancelHandler} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Start a new session</DialogTitle>
             <DialogContent>
                 <Typography>Select From Playlist</Typography>
                 <UserPlaylists selectable={true}/>
+            </DialogContent>
+            <DialogContent style={{paddingTop: 15, paddingBottom: 15}}>
+                <FormControl>
+                    <RadioGroup defaultValue='public' aria-label='public' style={{flexDirection:'row'}}>
+                        <FormControlLabel value='public' control={<Radio/>} label='Public'/>
+                        <FormControlLabel value='private' control={<Radio/>} label='Private'/>
+                    </RadioGroup>
+                </FormControl>
             </DialogContent>
             <DialogActions>
                 <Typography>Create New Playlist</Typography>

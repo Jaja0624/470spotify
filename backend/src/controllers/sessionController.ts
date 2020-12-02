@@ -61,14 +61,11 @@ exports.create = async function (req: any, res: any, next: any) {
             // TODO...
             // Create admin
             if (!results) {
+                res.status(500)
+                res.json('error')
                 return;
-            }
-            console.log("CREATE SESSION RESULT")
-            console.log("create session spotify id", req.body.spotifyId);
-            console.log("create session access token ", req.body.accessToken);
-            console.log("groupuid", req.body.groupUid);
-            console.log("createSessionInfo", req.body.createSessionInfo);
-            console.log("playlist id", req.body.createSessionInfo.playlistData.id)
+            } 
+
             const tracks = await getPlaylistTracks(req.body.accessToken, req.body.createSessionInfo.playlistData.id)
             const trackUris = [];
             for (let i = 0; i < tracks.data.items.length; i++) {
@@ -86,6 +83,8 @@ exports.create = async function (req: any, res: any, next: any) {
             const result = await addTracksToPlaylist(req.body.accessToken, newPlaylist.data.id, trackUris);
             res.status(201);
             io.io().to(parseInt(req.body.groupUid)).emit('updateGroup', results[0])
+            io.io().to(parseInt(req.body.groupUid)).emit('updateSessions')
+
             res.json({
                 'session_uid':results[0],
                 'playlist_id': newPlaylist.data.id

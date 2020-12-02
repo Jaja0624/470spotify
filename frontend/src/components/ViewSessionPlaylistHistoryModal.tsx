@@ -11,7 +11,7 @@ interface Props extends RouteComponentProps {
     isOpen: boolean,
     cancelHandler: () => void, // when user clicks cancel
     successHandler: () => void // additional actions when exporting the playlist
-    playlist: SessionPlaylist
+    playlist: SessionPlaylist | undefined // playlist potentially undefined if the group has never had a session .. this is okay since a modal will never be showed if there is no playlist to begin with
 }
 
 
@@ -19,22 +19,24 @@ interface Props extends RouteComponentProps {
 //A modal to view the songs of a selected playlist, allowing the user to name a playlist if they choose to export the songs.
 const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, cancelHandler, successHandler, playlist}: Props) => {
     //The name of the playlist that may be exported. By default, it is the playlist session_uid
-    const [playlistName, setPlaylistName] = useState(`${playlist.session_uid}`);
+    const [playlistName, setPlaylistName] = useState(`${playlist?.session_uid}`);
     
     //Updates the playlist name to be the default when the isOpen prob has updated
     useEffect(() => {
-        setPlaylistName(`${playlist.session_uid}`);
+        setPlaylistName(`${playlist?.session_uid}`);
     }, [isOpen])
 
     //Exports a playlist, as well as doing other actions based on the success handler.
-    const exportHandler = (songs: Array<Song>) => {
+    const exportHandler = (songs: Array<Song> | undefined) => {
         console.log("<ViewSessionPlaylistHistoryModal>: export the songs", songs);
         //TODO: make implementation of exporting the playlist here using the songs and playlistName
         successHandler();
     };
 
+    //Gets the key  to a SongListItem
     const getSongKey = (song : Song) => {
-        return `${song.date_added.getFullYear()}-${song.date_added.getMonth() + 1}-${song.date_added.getDate()}${song.app_user}`;
+        var curDate = new Date(song.date_added);
+        return `${curDate.getTime()}${song.app_user}`;
     };
 
     return (
@@ -52,7 +54,7 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
                 />
                 <List>
                     {
-                        playlist.songs.map((song)=>{
+                        playlist?.songs.map((song)=>{
                             return <SongListItem 
                                 key={getSongKey(song)}
                                 song={song} 
@@ -69,7 +71,7 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
                 <Button onClick={cancelHandler} color="primary" variant='outlined'>
                     Cancel
                 </Button>
-                <Button onClick={() => exportHandler(playlist.songs)} color="primary" variant='contained'>
+                <Button onClick={() => exportHandler(playlist?.songs)} color="primary" variant='contained'>
                     Export Playlist
                 </Button>
             </DialogActions>

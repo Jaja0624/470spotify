@@ -36,7 +36,8 @@ const GroupPlaylistHistoryItem: React.FC<Props> = ({history, session_uid, startD
 
     //Formats the date.
     const getDate = (date : Date) => {
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        var curDate = new Date(date);
+        return `${curDate.getFullYear()}-${curDate.getMonth() + 1}-${curDate.getDate()}`;
     };
 
     return (
@@ -45,12 +46,7 @@ const GroupPlaylistHistoryItem: React.FC<Props> = ({history, session_uid, startD
                 primary={getDate(startDate)}
             />
             <Typography className={classes.small}>
-                with
-                {
-                    participants.map((participant, index, arr) => {
-                        return ` ${participant}${arr.length - 1 === index ? '' : ','}`;
-                    })
-                }
+                with {participants}
             </Typography>
         </ListItem>
     )

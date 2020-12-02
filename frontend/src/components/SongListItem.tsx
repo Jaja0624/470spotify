@@ -38,11 +38,13 @@ const SongListItem: React.FC<Props> = ({history, song, isAppUserVisible, isGroup
     const classes = useStyles();
 
     const getSongKey = (song: Song) => {
-        return `${song.date_added.getTime()}${song.app_user}`;
+        var curDate = new Date(song.date_added);
+        return `${curDate.getTime()}${song.app_user}`;
     };
 
     const getDate = (date : Date) => {
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+        var curDate = new Date(date);
+        return `${curDate.getFullYear()}-${curDate.getMonth() + 1}-${curDate.getDate()} ${curDate.getHours()}:${curDate.getMinutes()}`;
     }
 
     const getDescription = (song: Song, isAppUserVisible : boolean, isGroupNameVisible : boolean, isDateAddedVisible : boolean) => {

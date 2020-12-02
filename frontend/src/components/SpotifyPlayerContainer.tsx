@@ -23,6 +23,7 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
 
     const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
         console.group(`RSWP: ${type}`);
+        console.log('tracksToPlay', globalState.getTracksToPlay())
         console.log(state);
         console.groupEnd();
         globalState.resetPlayTimer();
@@ -30,8 +31,6 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
         globalState.setCurrentTrack(state.track);
       }, []);
 
-
- 
     useEffect(() => {
         console.log("spotify player re-render")
     }, [globalState.tracksToPlay])
@@ -39,6 +38,7 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
     return (
             <Box id='hhhh' width={1}>
                 <SpotifyPlayer
+                    offset={globalState.playerOffset}
                     syncExternalDevice
                     persistDeviceSelection
                     showSaveIcon

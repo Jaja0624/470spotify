@@ -22,7 +22,8 @@ const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) 
         return extractUris(tracks);
     }
     const playButtonHandler = (trackUri: string) => {
-        globalState.setTracksToPlay(copyFrom(trackUri, extractTrackUris()))
+        const index = tracks.findIndex((track: any) => track.track.uri === trackUri)
+        globalState.setPlayerOffset(index)
         if (globalState.playing != true) {
             globalState.setPlaying(true);
         }

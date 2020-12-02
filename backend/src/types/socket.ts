@@ -17,8 +17,7 @@ export interface playerState {
     isPlaying: boolean,
     track: any, // current track being played
     nextTracks: [],
-    prevTracks: [],
+    previousTracks: [],
     position: number,
     [key: string]: any // rest
-
 }

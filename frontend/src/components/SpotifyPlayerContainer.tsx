@@ -45,7 +45,18 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
                     globalState.setPlaying(true);
                     console.log("changed track")
                 } else {
-                    console.log("COULD NOT FIND TRACK WTF", globalState.getTracksToPlay(), typeof(data.track.uri))
+                    console.log("not in playlist", data)
+                    let newTracksToPlay = []
+                    // for (let i =0 ; i < data.previousTracks.length; i++) {
+                    //     newTracksToPlay.push(data.previousTracks[i].uri)
+                    // }
+                    newTracksToPlay.push(data.track.uri)
+                    for (let i =0 ; i < data.nextTracks.length; i++) {
+                        newTracksToPlay.push(data.nextTracks[i].uri)
+                    }
+                    // const newTracksToPlay = data.previousTracks.concat([data.track]).concat(data.nextTracks)
+                    globalState.setTracksToPlay(newTracksToPlay);
+                    // globalState.setPlayerOffset(data.previousTracks.length+1)
                 }
             }
 

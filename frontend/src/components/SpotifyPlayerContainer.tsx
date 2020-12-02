@@ -40,11 +40,13 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
                 return;
             } else if (data.isPlaying === true) {
                 const indexOfTrack = globalState.getTracksToPlay().findIndex((trackUri: string) => trackUri === data.track.uri)
-                if (indexOfTrack > 0) {
+                if (indexOfTrack !== -1) {
                     globalState.setPlayerOffset(indexOfTrack);
                     globalState.setPlaying(true);
                     console.log("changed track")
-                } 
+                } else {
+                    console.log("COULD NOT FIND TRACK WTF", globalState.getTracksToPlay(), typeof(data.track.uri))
+                }
             }
 
         })

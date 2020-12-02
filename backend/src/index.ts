@@ -3,8 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import SSEManagerInstance  from './SSEClientManager';
 import { chatRoomKey, sessionKey } from './utils/socket'
-import { joinChatData, messageData } from './types/socket'
-import GroupSessionUsers from './GenericList'
+import { joinChatData, messageData, playerState} from './types/socket'
 var db = require('./db/dbConnection');
 import * as dbHelper from './db/dbHelper';
 var spotifyRouter = require('./routes/spotify');
@@ -197,6 +196,7 @@ io.on("connection", function(socket: any) {
       SessionRoomManager.addUser(data.group_uid, data.spotify_uid)
       console.log('updated group sessions', SessionRoomManager.all());
       socket.join(sessionKey(data.group_uid))
+    
       chatStatusUpdate(data.group_uid, data.name + " has joined the session");
       io.to(data.group_uid).emit('updateMembers')
     })
@@ -209,6 +209,15 @@ io.on("connection", function(socket: any) {
       socket.leave(sessionKey(data.group_uid))
       chatStatusUpdate(data.group_uid, data.name + " has left the session");
       io.to(data.group_uid).emit('updateMembers')
+    })
+
+    socket.on(SOCKET_STUFF.SESSION_MUSIC_CHANGE, async function (newState: playerState) {
+      console.log(SOCKET_STUFF.SESSION_MUSIC_CHANGE, newState)
+      const groupId = SessionRoomManager.findGroup(socketSpotifyUid)
+      if (groupId > 0) {
+        console.log("player update", groupId)
+        io.to(sessionKey(groupId)).emit(SOCKET_STUFF.UPDATE_PLAYER, newState)
+      }
     })
 });
 

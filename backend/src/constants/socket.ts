@@ -8,6 +8,10 @@ export const NEW_MSG_EVENT = 'newMessage'
 
 export const JOIN_SESSION_EVENT = 'joinSession';
 export const LEAVE_SESSION_EVENT = 'leaveSession'
+
+export const SESSION_MUSIC_CHANGE = 'sessionMusicChange'; // Sent from client when player updates play, stop, next
+export const UPDATE_PLAYER = 'updatePlayer' // Sent to client to tell them to update player
+// spotify track uri
 // event keys ===
 
 

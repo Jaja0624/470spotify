@@ -11,3 +11,14 @@ export interface messageData {
     author: string,
     msg: string
 }
+
+export interface playerState {
+    isActive: boolean,
+    isPlaying: boolean,
+    track: any, // current track being played
+    nextTracks: [],
+    prevTracks: [],
+    position: number,
+    [key: string]: any // rest
+
+}

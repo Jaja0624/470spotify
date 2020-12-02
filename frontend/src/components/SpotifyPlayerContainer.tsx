@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import userStore from '../store/user'
 import globalStore from '../store/global'
+import userStore from '../store/user'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Box, useTheme } from '@material-ui/core';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import { CallbackState } from 'react-spotify-web-playback/lib/types';
 import Cookies from 'js-cookie';
-import Timer from 'react-compound-timer'
+import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -15,7 +15,7 @@ interface CustomPropsLol extends RouteComponentProps {}
 // FC (function component)
 const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
-    // const userState = userStore();
+    const userState = userStore();
     const globalState = globalStore();
     const [play, setPlay] = useState(false)
     const [time, setTime] = useState(0)
@@ -29,8 +29,26 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
         globalState.resetPlayTimer();
         globalState.setPlaying(state.isPlaying);
         globalState.setCurrentTrack(state.track);
+        socket.emit('sessionMusicChange', state)
       }, []);
 
+    useEffect(() => {
+        socket.on('updatePlayer', (data: any) => {
+            console.log("updatePlayer", data)
+            if (data.isPlaying === false) {
+                globalState.setPlaying(false);
+                return;
+            } else if (data.isPlaying === true) {
+                const indexOfTrack = globalState.getTracksToPlay().findIndex((trackUri: string) => trackUri === data.track.uri)
+                if (indexOfTrack > 0) {
+                    globalState.setPlayerOffset(indexOfTrack);
+                    globalState.setPlaying(true);
+                    console.log("changed track")
+                } 
+            }
+
+        })
+    }, [])
     useEffect(() => {
         console.log("spotify player re-render")
     }, [globalState.tracksToPlay])

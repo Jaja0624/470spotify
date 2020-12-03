@@ -41,3 +41,13 @@ values
 alter table AppSession add column description varchar(200)
 alter table AppSession add column public boolean default true
 ALTER TABLE AppSession ALTER COLUMN public SET NOT NULL;
+
+-- issue 54
+alter table appgroup add column date_created timestamp;
+alter table appgroup add column last_modified timestamp;
+alter table appsession add column date_created timestamp;
+alter table appsession add column last_modified timestamp;
+alter table appuser add column date_created timestamp;
+alter table appuser add column last_modified timestamp;
+alter table groupmember add column date_joined timestamp;
+alter table sessionadmin add column date_added timestamp;

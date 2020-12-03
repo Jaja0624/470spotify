@@ -31,7 +31,6 @@ type State = {
     setCurrentTrack: (track: ITrack) => void,
     playTimer: number,
     resetPlayTimer: () => void,
-    prevTrack: ITrack | null,
     adminTabIndex: number,
     setAdminTabIndex: (index: number) => void, 
     playerOffset: number,
@@ -88,12 +87,8 @@ const globalStore = create<State>((set, get) => ({
         set({playTimer: 0})
     },
     currentTrack: null,
-    prevTrack: null,
     setCurrentTrack: (track: ITrack) => {
         console.log("setting track", track);
-        if (get().prevTrack) {
-            set({prevTrack: get().currentTrack})
-        }
         set({currentTrack: track})
     },
     adminTabIndex: 0,

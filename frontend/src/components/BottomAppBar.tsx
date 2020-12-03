@@ -36,21 +36,17 @@ const BottomAppBar: React.FC<Props> = ({history}) => {
         return Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
     }
 
+    const updateTimer = (positionMs: number) => {
+        setTimer((positionMs/1000.0)-1)
+    }
+
     function duration() {
-        if (globalState.prevTrack) {
-            // console.log("prev track", globalState.prevTrack)
-            return millisToMinutesAndSeconds(globalState.prevTrack?.durationMs)
-        } else if (globalState.currentTrack) {
-            // console.log("curr track", globalState.currentTrack)
+        if (globalState.currentTrack) {
             return millisToMinutesAndSeconds(globalState.currentTrack?.durationMs)
         } else {
             return "--"
         }
     }
-
-    useEffect(() => {
-        setTimer(0)
-    }, [globalState.currentTrack])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -71,7 +67,7 @@ const BottomAppBar: React.FC<Props> = ({history}) => {
                                 </Box>}
                             <Box width={1} display='flex' alignItems="center" justifyContent="center">
                                 <Box width='100%'>
-                                    <SpotifyPlayerContainer/>
+                                    <SpotifyPlayerContainer seekPositionChangeHandler={updateTimer}/>
                                 </Box>
                             </Box>
                         </Box>

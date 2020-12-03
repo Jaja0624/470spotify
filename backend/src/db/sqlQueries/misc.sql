@@ -37,3 +37,7 @@ values
 ('1999-01-08 04:06:30', 'up89ecq6ac5e1bgtrpe9f144u', 3, 4, 34),--migs, with session 4, spoon group, random uri?
 ('1999-01-08 04:06:36', '12141627997', 1, 4, 34);
 
+--alter appsession and add public attribute and description attribute
+alter table AppSession add column description varchar(200)
+alter table AppSession add column public boolean default true
+ALTER TABLE AppSession ALTER COLUMN public SET NOT NULL;

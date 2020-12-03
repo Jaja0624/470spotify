@@ -1,9 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
+import SessionRooms from '../SessionRoomManager'
 const io = require('../socket')
 
-
 var db = require('../db/dbConnection');
-
 
 const getPlaylistTracks = async (accessToken: string, playlistId: string): Promise<AxiosResponse> => {
     return await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
@@ -45,6 +44,14 @@ const unfollowPlaylist = async (accessToken: string, playlistId: string): Promis
     return await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, headers)
 }
 
+const getPlaylistData = async (accessToken: string, playlistId: string): Promise<AxiosResponse> => {
+    return await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+}
+
 // also create admin (TBD)
 // 
 exports.create = async function (req: any, res: any, next: any) {
@@ -68,8 +75,8 @@ exports.create = async function (req: any, res: any, next: any) {
             }
 
             const results = await db('appsession')
-                                    .insert({is_active:true, group_uid: BigInt(req.body.groupUid)}, 'session_uid')
-                                    ;
+                                    .insert({is_active:true, group_uid: BigInt(req.body.groupUid), public: req.body.isPublic}, 'session_uid');
+
             // TODO...
             // Create admin
             if (!results) {
@@ -164,6 +171,41 @@ exports.active = async function (req : any, res : any, next : any) {
     } else {
         res.json("No Session Active");
     }
+}
+
+exports.activeAll = async function (req: any, res: any, next: any) {
+    if (!req.query.accessToken) {
+        res.status(400)
+        res.json('missing token')
+    }
+    try {
+        const result = await db('appsession as as')
+            .where({public: true, is_active: true})
+            .join('appgroup as ag', 'as.group_uid', 'ag.group_uid')
+            .select('*')
+        for (let i = 0; i < result.length; i++) {
+            if (result[i].spotify_playlist_uri == null) {
+                result.splice(i, 1)
+            }
+        }
+        for (let i = 0; i < result.length; i++) {
+            const playlistData: AxiosResponse = await getPlaylistData(req.query.accessToken, result[i].spotify_playlist_uri)    
+            result[i]['playlist'] = playlistData.data
+            try {
+                const usersInSession = SessionRooms.usersInSession(result[i].group_uid.toString())?.allItems();
+                result[i]['usersCount'] = usersInSession.length
+            } catch (err) {
+                // no users in session even though it's active
+            }
+
+        }
+        res.status(200)
+        res.json(result)
+
+    } catch (err) {
+        res.status(500)
+    }
+
 }
 
 

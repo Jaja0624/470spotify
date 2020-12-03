@@ -3,8 +3,7 @@ import userStore from '../store/user'
 import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Button, CircularProgress, Snackbar } from '@material-ui/core';
-import UserPlaylists from '../components/UserPlaylists'
+import { Button, CircularProgress, Box, Typography} from '@material-ui/core';
 import GroupInviteLinkModal from '../components/GroupInviteLinkModal'
 import { getMembers, leaveGroup } from '../core/server'
 import Cookies from 'js-cookie';
@@ -15,6 +14,7 @@ import { createSession, endSession} from '../core/server'
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import CustomSnackbar from '../components/CustomSnackbar'
+import PublicLiveSessions from './PublicLiveSessions'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -172,7 +172,14 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         } else if (globalState.middleContainer === 'session') {
             return <SessionContainer/>
         } else {
-            return <UserPlaylists/>
+            return (
+                <Box height="100%" width="100%">
+                    <Typography>Browse Other Public Sessions</Typography>
+                    <Box>
+                        <PublicLiveSessions/>
+                    </Box>
+                </Box>
+            )
         }
     }
 

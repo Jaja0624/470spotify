@@ -115,6 +115,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
 
                 <Button className={classes.title}
                         onClick={() => {
+                            userState.setSearchQuery('')
                             globalState.setMiddleContainer('user')
                         }}>
                     Home
@@ -132,6 +133,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                                    if (event.key=='Enter')
                                        handleSpotifySearch();
                                }}
+                               value={userState.searchQuery}
                     />
                     <IconButton type="submit"
                                 className={classes.iconButton}

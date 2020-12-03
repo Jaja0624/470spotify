@@ -24,7 +24,8 @@ create table AppSession (
     session_uid SERIAL,
     is_active boolean not NULL,
     spotify_playlist_uri varchar(55),
-    public boolean not NULL DEFAULT false,
+    public boolean not NULL DEFAULT true,
+    description varchar(200),
     primary key(session_uid),
     group_uid bigint,
     constraint fk_group_uid

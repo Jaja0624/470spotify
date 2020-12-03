@@ -5,10 +5,14 @@
 -- * group_name     : The name of a group. The name of a group cannot be null as
 --                      it must be identified in a human readable way.
 -- * description    : The description of a group.
+-- * date_created   : The date that the group was created.
+-- * date_modified  : The date that the group details were modified.
 create table AppGroup (
     group_uid SERIAL, 
     group_name varchar(50) not NULL,
     description varchar(150),
+    date_created timestamp,
+    last_modified timestamp,
     primary key(group_uid)
 );
 
@@ -20,6 +24,8 @@ create table AppGroup (
 --                      session is dead and cannot be accessed. This attribute exists 
 --                      since the paradigm (currently) is to keep sessions even 
 --                      when they are no longer useful.
+-- * date_created   : The date that the session was created.
+-- * date_modified  : The date that the session details were modified.
 create table AppSession (
     session_uid SERIAL,
     is_active boolean not NULL,
@@ -28,6 +34,8 @@ create table AppSession (
     description varchar(200),
     primary key(session_uid),
     group_uid bigint,
+    date_created timestamp,
+    last_modified timestamp,
     constraint fk_group_uid
         foreign key(group_uid)
         references AppGroup(group_uid)
@@ -41,10 +49,14 @@ create table AppSession (
 --                      readable way.
 -- * session_uid    : The last session that the user is in. This may be null if 
 --                      the user has never been to a session.
+-- * date_created   : The date that the app account was created.
+-- * date_modified  : The date that the app account details were modified.
 create table AppUser (
     spotify_uid varchar(50),
     public_name varchar(100) NOT NULL,
     session_uid bigint references AppSession(session_uid),
+    date_created timestamp,
+    last_modified timestamp,
     PRIMARY KEY(spotify_uid)
 );
 
@@ -80,10 +92,12 @@ create table AppHistory (
 -- group. This table exists to provide many-to-many relationships.
 -- * group_uid      : The unique identifier of a group.
 -- * spotify_uid    : The unique identifier of a user, associated with the group.
+-- * date_joined    : The timestamp date that the user has joined a group.
 create table GroupMember (
     group_uid bigint,
     spotify_uid varchar(50),
     primary key(group_uid, spotify_uid),
+    date_joined timestamp,
     constraint fk_group_uid
         foreign key(group_uid)
         references AppGroup(group_uid)
@@ -98,9 +112,11 @@ create table GroupMember (
 -- sessions. This table exists to provide many-to-many relationships.
 -- * session_uid    : The unique identifier of a session.
 -- * spotify_uid    : the unique identifier of a user who is an admin in the session.
+-- * date_added     : The date that a user was added as admin of a session.
 create table SessionAdmin (
     session_uid bigint references AppSession(session_uid),
     spotify_uid varchar(50),
+    date_added timestamp,
     primary key(session_uid, spotify_uid),
     constraint fk_spotify_uid
         foreign key(spotify_uid)

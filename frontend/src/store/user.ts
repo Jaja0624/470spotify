@@ -32,6 +32,8 @@ type State = {
     setCurrentSessionPlaying: (session_uid: number) => void,
     allPublicSessions: ISessionData[],
     getAllPublicSessions: () => void
+    searchQuery: string,
+    setSearchQuery: (query: string) => void,
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -116,9 +118,11 @@ const userStore = create<State>((set, get)=> ({
         } catch (err) {
             console.log('all public sessions', err)
         }
-
+    },
+    searchQuery: '',
+    setSearchQuery: (query: string) => {
+        set({searchQuery: query})
     }
 }))
-
 
 export default userStore;

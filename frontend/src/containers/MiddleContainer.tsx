@@ -10,10 +10,10 @@ import { getMembers, leaveGroup } from '../core/server'
 import Cookies from 'js-cookie';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StartSessionModal from '../components/StartSessionModal'
+import EndSessionModal from '../components/EndSessionModal'
 import { createSession, endSession} from '../core/server'
 import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from '../components/MiddleContainerHeader'
-import { socket } from '../core/socket'
 import CustomSnackbar from '../components/CustomSnackbar'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
@@ -26,8 +26,10 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     const globalState = globalStore();
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
     const [startSessionModalVisible, setStartSessionModalVisible] = useState(false);
+    const [endSessionModalVisible, setEndSessionModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState({state: false, msg: ''});
+    const [success, setSuccess] = useState({state: false, msg: ''});
 
     async function leaveGroupAndUpdate() {
         if (userState?.currentGroup?.id) {
@@ -41,51 +43,56 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         }
     }
 
-    const createSessionHandler = async (createNewPlaylist: boolean) => {
-        setStartSessionModalVisible(false)
-        // TBD: handle creating session in backend, setting up playlist on spotify profile...
-        if (userState?.currentGroup?.id) {
+    const createSessionHandler = async (createNewPlaylist: boolean, isPublic: boolean) => {
+        if (userState?.currentGroup?.id && userState.spotifyProfile.id && userState?.createSessionInfo) {
+            setStartSessionModalVisible(false)
             console.log("create new playlist", createNewPlaylist);
             try {
-                const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo); 
+                const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo, createNewPlaylist, isPublic); 
                 if (res.status == 201) {
                     await userState.getAndUpdateUserGroups()
                     await userState.getActiveSession()
                     globalState.setMiddleContainer('session');
+                    setSuccess({state: true, msg: 'Success! Session created'})
+                } else {
+                    setError({state: true, msg: 'Creating session failed'})
                 }
             } catch (err) {
+                setError({state: true, msg: 'Creating session failed'})
                 console.log(err);
             }
-
+        } else {
+            setError({state: true, msg: 'Something went wrong'})
         }
     }
 
-    const sessionActiveCheck = () => {
+    const sessionActiveCheck = async () => {
         for (let i = 0; i < userState.userGroups.length; i++) {
             if (userState.currentGroup?.id === userState.userGroups[i].id && userState.userGroups[i]?.active?.is_active) {
-                setError({state: true, msg: 'A session is already active'})
-                return;
+                await userState.getActiveSession()
+                if (userState.currentGroup?.id === userState.userGroups[i].id && userState.userGroups[i]?.active?.is_active) {
+                    setError({state: true, msg: 'A session is already active'})
+                    return;
+                }
             }
         }
         setStartSessionModalVisible(true)
     }
 
-    const endSessionHandler = async () => {
+    const endSessionHandler = async (unfollow: boolean) => {
         console.log("end sesh", userState.currentSessionData.session_uid)
-        const res = await endSession(userState.currentSessionData.session_uid);
-        console.log(res)
+        const res = await endSession(Cookies.get('spotifytoken')!, userState.currentSessionData.session_uid, unfollow, userState.currentSessionData.playlist.id);
         if (res.status === 200) {
-            console.log("end session success")
-            // update active sessions state
-            await userState.getActiveSession()
             // if it was the users playing session then 
             if (userState.currentSessionPlaying === userState.currentSessionData.session_uid) {
                 userState.setCurrentSessionPlaying(-1);
             }
+            setSuccess({state: true, msg: 'Success: Session ended'})
         } else {
             console.log(res.data)
             setError({state: true, msg: 'Session end failed'})
         }
+        setEndSessionModalVisible(false);
     }
 
     useEffect(() => {
@@ -107,7 +114,7 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
             ) 
         } else {
             return (
-                <Button variant='text' style={{color:'red'}} size='large' onClick={endSessionHandler}>
+                <Button variant='text' style={{color:'red'}} size='large' onClick={() => setEndSessionModalVisible(true)}>
                     End Session
                 </Button>
             )
@@ -143,7 +150,10 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
                     <div>
                     {sessionButtons()}
                     
-                    
+                    <EndSessionModal
+                        isOpen={endSessionModalVisible}
+                        cancelHandler={() => setEndSessionModalVisible(false)}
+                        saveHandler={endSessionHandler}/>
 
                     <StartSessionModal
                         isOpen={startSessionModalVisible}
@@ -168,6 +178,7 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     return (
         <div className={classes.root}>
             <CustomSnackbar open={error.state} text={error.msg} close={() => setError({state: false, msg: ''})} type='error'/>
+            <CustomSnackbar open={success.state} text={success.msg} close={() => setSuccess({state: false, msg: ''})} type='success'/>
             {ifhandler()}
         </div>
     )

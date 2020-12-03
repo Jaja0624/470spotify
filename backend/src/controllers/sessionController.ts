@@ -38,12 +38,24 @@ const addTracksToPlaylist = async (accessToken: string, playlistId: string, trac
     return await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, body, headers)
 }
 
+const unfollowPlaylist = async (accessToken: string, playlistId: string): Promise<AxiosResponse> => {
+    const headers = {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    }
+    return await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, headers)
+}
+
 // also create admin (TBD)
 // 
 exports.create = async function (req: any, res: any, next: any) {
-    if (!req.body.spotifyId || !req.body.groupUid || !req.body.createSessionInfo || !req.body.accessToken) {
+    console.log("creating session data", req.body)
+    if (!req.body.spotifyId 
+        || !req.body.groupUid 
+        || !req.body.createSessionInfo 
+        || !req.body.accessToken 
+        || (!req.body.createSessionInfo.playlistData && req.body.createNewPlaylist === false)) {
         res.status(400)
-        res.send('missing parameters');
+        res.send('missing or invalid parameters');
     } else {
         try {
             // check if session already exists and is active
@@ -101,24 +113,37 @@ exports.create = async function (req: any, res: any, next: any) {
 // ends session
 // kicks everyone else out of the session 
 exports.stop = async function (req : any, res : any, next : any) {
-    if (!req.query.sessionUid) {
+    if (!req.body.sessionUid) {
         res.status(400)
         res.send('missing parameters');
         return;
     } 
-    const sessions = await db('appsession')
-                    .where({session_uid: req.query.sessionUid})
-                    .update({is_active: false})
-                    .returning('*')
-    
-    // IMPORTANT: USE INTEGER FOR ROOM ID
-    io.io().to(parseInt(sessions[0].group_uid)).emit('updateGroup', sessions[0])
-    io.io().to(parseInt(sessions[0].group_uid)).emit('updateSession', sessions[0])
+    console.log("stop session", req.body)
+    try {
+        const sessions = await db('appsession')
+                                .where({session_uid: req.body.sessionUid})
+                                .update({is_active: false})
+                                .returning('*')
 
-    if (sessions.length != 0) {
-        // io.
-        res.json(sessions);
+        // IMPORTANT: USE INTEGER FOR ROOM ID
+        io.io().to(parseInt(sessions[0].group_uid)).emit('updateGroup', sessions[0])
+        io.io().to(parseInt(sessions[0].group_uid)).emit('updateSessions', sessions[0])
+
+        if (req.body.unfollow === true) {
+            await unfollowPlaylist(req.body.accessToken, req.body.playlistId)
+        }
+        if (sessions.length != 0) {
+            res.status(200)
+            res.json(sessions);
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500)
+        res.json('err')
     }
+
+
+
 }
 
 // tries to find an active session for this group

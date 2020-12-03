@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import userStore from '../store/user'
 import { Button, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Typography, FormControl, FormControlLabel, Radio, RadioGroup} from '@material-ui/core';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles'
 import UserPlaylists from './UserPlaylists'
+import CustomSnackbar from './CustomSnackbar'
 
 interface Props extends RouteComponentProps {
     isOpen: boolean,
     cancelHandler: () => void, // when user clicks cancel
-    saveHandler: (createNewPlaylist: boolean) => void // save handler
+    saveHandler: (createNewPlaylist: boolean, isPublic: boolean) => void // save handler
 }
 
 // create group popup
@@ -16,11 +16,19 @@ const StartSessionModal: React.FC<Props> = ({history, isOpen, cancelHandler, sav
     const classes = useStyles();
     const [newPlaylistChecked, setNewPlaylistChecked] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isPublic, setIsPublic] = useState(true)
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewPlaylistChecked(event.target.checked);
     };
     
+    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value === 'public') {
+            setIsPublic(true)
+        } else {
+            setIsPublic(false);
+        }
+    }
     return (
         <Dialog open={isOpen} onClose={cancelHandler} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Start a new session</DialogTitle>
@@ -30,7 +38,10 @@ const StartSessionModal: React.FC<Props> = ({history, isOpen, cancelHandler, sav
             </DialogContent>
             <DialogContent style={{paddingTop: 15, paddingBottom: 15}}>
                 <FormControl>
-                    <RadioGroup defaultValue='public' aria-label='public' style={{flexDirection:'row'}}>
+                    <RadioGroup defaultValue='public' 
+                                aria-label='public' 
+                                onChange={handleRadioChange}
+                                style={{flexDirection:'row'}}>
                         <FormControlLabel value='public' control={<Radio/>} label='Public'/>
                         <FormControlLabel value='private' control={<Radio/>} label='Private'/>
                     </RadioGroup>
@@ -42,7 +53,7 @@ const StartSessionModal: React.FC<Props> = ({history, isOpen, cancelHandler, sav
                 <Button onClick={cancelHandler} color="primary" variant='outlined'>
                     Cancel
                 </Button>
-                <Button onClick={() => saveHandler(newPlaylistChecked)} color="primary" variant='contained'>
+                <Button onClick={() => saveHandler(newPlaylistChecked, isPublic)} color="primary" variant='contained'>
                     Start
                 </Button>
             </DialogActions>

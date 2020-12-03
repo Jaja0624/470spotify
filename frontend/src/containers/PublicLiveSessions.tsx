@@ -7,6 +7,7 @@ import globalStore from '../store/global';
 import HomeSessionItems from '../components/HomeSessionItems'
 import { getActiveAll } from '../core/server'
 import Cookies from 'js-cookie'
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { ISessionData } from '../types/ISessionData';
 
 interface Props extends RouteComponentProps{
@@ -18,6 +19,7 @@ interface Props extends RouteComponentProps{
 const OtherLiveSessions: React.FC<Props> = () => {
     const globalState = globalStore();
     const userState = userStore();
+    const [loading, setLoading] = useState(true);
     const [sessions, setSessions] = useState([])
 
     useEffect(() => {
@@ -25,6 +27,7 @@ const OtherLiveSessions: React.FC<Props> = () => {
             try {
                 const res = await getActiveAll(Cookies.get('spotifytoken')!)
                 setSessions(res.data)
+                setLoading(false);
                 console.log("SESES", res.data)
             } catch (err) {
                 console.log(err)
@@ -35,6 +38,13 @@ const OtherLiveSessions: React.FC<Props> = () => {
         }
         
     }, [])
+    if (loading) {
+        return (
+            <Box height="100%" width="100%" justifyContent="center" alignItems="center">
+                <CircularProgress/>
+            </Box>
+        )
+    }
     return (
         <Box height="100%">
             {sessions && sessions.map((session: ISessionData) => {

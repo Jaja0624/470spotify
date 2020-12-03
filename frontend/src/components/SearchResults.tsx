@@ -1,7 +1,8 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { ListItem, ListItemAvatar, Avatar, ListItemText } from '@material-ui/core';
+import { ListItem, ListItemAvatar, ListItemIcon, Avatar, ListItemText } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 interface CustomPropsLol extends RouteComponentProps {
     searchData: any
@@ -17,8 +18,15 @@ const SearchResults: React.FC<CustomPropsLol> = ({history, searchData}: CustomPr
         return arr.join(', ');
     }
 
+    const addSongToQueue = () => {
+        console.log("Adding song:", searchData.name, "to queue");
+        //TODO: Add songs to queue
+    }
     return (
-        <ListItem button className={classes.root}>
+        <ListItem button className={classes.root} onClick={addSongToQueue}>
+            <ListItemIcon>
+                <AddIcon/>
+            </ListItemIcon>
             <ListItemAvatar>
             {
                 searchData?.album.images[0]?.url && <Avatar src={searchData.album.images[0].url}/>

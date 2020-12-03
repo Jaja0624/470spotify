@@ -25,3 +25,12 @@ export const getPlaylist = async (accessToken: string, playlistId: string): Prom
         }
     })
 }
+
+export const getSearchResults = async (accessToken: string, query: string): Promise<AxiosResponse> => {
+    var concatQuery = query.replace(' ', '%20');
+    return await axios.get(`https://api.spotify.com/v1/search?q=${concatQuery}&type=track`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+}

@@ -112,3 +112,74 @@ exports.members = async function (req : any, res : any, next : any) {
     
 }
 
+//Interface of a Song item
+interface Song {
+    date_added: Date,
+    app_user: string,
+    songname : string,
+    song_uri : string,
+    group_name: string
+}
+
+
+//Interface of a SessionPlaylist item
+export default interface SessionPlaylist {
+    session_uid: number,
+    start_date: Date,
+    participants: String,
+    songs: Array<Song>
+}
+
+//Gets all the history session playlist of a group
+exports.historySessionPlaylists = async function (req : any, res : any, next : any) {
+    console.log("groupController exports.historySessionPlaylists");
+    console.log('params', req.params);
+    if (!req.query.groupId) {
+        res.status(400);
+        res.send('missing parameters');
+    } else {
+        try {
+            var result = await db.getGroupPlaylists(req.query.groupId);
+            console.log(result);
+            var playlists : Array<SessionPlaylist> = [];
+            if (result.rows.length != 0) {
+                var currentSessionUID = -1;
+
+                for(let i = 0; i < result.rows.length; i++){
+                    var row = result.rows[i];
+                    if(playlists.length == 0 || row.session_uid != currentSessionUID){
+                        playlists.push({
+                            session_uid : row.session_uid,
+                            start_date : row.date_start,
+                            participants : row.participants,
+                            songs : [{
+                                date_added: row.date_added,
+                                app_user: row.public_name,
+                                songname : "placeholder",
+                                song_uri : row.song_uri,
+                                group_name: row.group_name
+                            }]
+                        });
+                        console.log(playlists);
+                        currentSessionUID = row.session_uid;
+                    }
+                    else{
+                        playlists[playlists.length - 1].songs.push({
+                            date_added: row.date_added,
+                            app_user: row.public_name,
+                            songname : "placeholder",
+                            song_uri : row.song_uri,
+                            group_name: row.group_name
+                        });
+                    }
+                }
+            }
+            console.log('playlists result', playlists);
+            res.json(playlists);
+        } catch (err) {
+            console.log(err);
+            res.json(err)
+        }
+    }
+    
+}

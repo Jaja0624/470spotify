@@ -13,3 +13,27 @@ ADD constraint fk_spotify_uid
         foreign key(spotify_uid)
         references AppUser(spotify_uid)
         on delete cascade;
+
+--selects processed session data and each song associated with the data.
+--parameter should be a specific group uid
+select SessionOverview.session_uid as session_uid, SessionOverview.date_start, SessionOverview.participants, ah2.date_added, au2.public_name, ah2.spotify_uri, ag.group_name
+from (
+        select ah1.session_uid, min(ah1.date_added) as date_start, string_agg(distinct(au1.public_name), ', ') as participants
+        from AppHistory ah1
+        join AppUser au1 on ah1.spotify_uid = au1.spotify_uid
+        where group_uid = 34
+        group by ah1.session_uid
+) as SessionOverview
+join AppHistory ah2 on SessionOverview.session_uid = ah2.session_uid
+join AppUser au2 on ah2.spotify_uid = au2.spotify_uid
+left join AppGroup ag on ah2.group_uid = ag.group_uid;
+
+
+--inserts hardcoded data in the apphistory
+insert into apphistory (date_added, spotify_uid, spotify_uri, session_uid, group_uid)
+values
+('1999-01-08 04:05:06', '12141627997', 1, 4, 34),--maple, with session 4, spoon group, random uri?
+('1999-01-08 04:05:30', 'up89ecq6ac5e1bgtrpe9f144u', 2, 4, 34),--migs, with session 4, spoon group, random uri?
+('1999-01-08 04:06:30', 'up89ecq6ac5e1bgtrpe9f144u', 3, 4, 34),--migs, with session 4, spoon group, random uri?
+('1999-01-08 04:06:36', '12141627997', 1, 4, 34);
+

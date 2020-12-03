@@ -125,3 +125,35 @@ export async function getAppHistory() {
                  .select('*')
                  .from('apphistory')
 }
+
+/**
+ * Gets all session playlist data of a group using the AppHistory table.
+ * @param group_uid 
+ * 
+ * Returns an array of rows with the following format: 
+ * {
+ *      session_uid : number, 
+ *      date_start : date, 
+ *      participants : string, 
+ *      date_added : date, 
+ *      public_name : string, 
+ *      spotify_uri : string, 
+ *      group_name : string
+ * }
+ */
+export async function getGroupPlaylists(group_uid : number) {
+    console.log("dbHelper: getGroupPlaylists");
+    return await db.raw(`
+        select SessionOverview.session_uid as session_uid, SessionOverview.date_start, SessionOverview.participants, ah2.date_added, au2.public_name, ah2.spotify_uri, ag.group_name
+        from (
+                select ah1.session_uid, min(ah1.date_added) as date_start, string_agg(distinct(au1.public_name), ', ') as participants
+                from AppHistory ah1
+                join AppUser au1 on ah1.spotify_uid = au1.spotify_uid
+                where group_uid = ${group_uid}
+                group by ah1.session_uid
+        ) as SessionOverview
+        join AppHistory ah2 on SessionOverview.session_uid = ah2.session_uid
+        join AppUser au2 on ah2.spotify_uid = au2.spotify_uid
+        left join AppGroup ag on ah2.group_uid = ag.group_uid
+    `);
+}

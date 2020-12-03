@@ -15,7 +15,7 @@ export default interface SessionPlaylist {
     //All participants of a session playlist. Used as secondary information of
     //a session playlist when used in a List component. Could be used for search
     //purposes.
-    participants: Array<String>,
+    participants: String,
 
     //All songs of a session playlist. Used for the ViewSessionPlaylistHistoryModal
     //for potential exporting of the songs to the user's Spotify account. Could be

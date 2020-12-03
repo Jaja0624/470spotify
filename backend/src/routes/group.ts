@@ -12,5 +12,6 @@ router.post("/create", groupController.create);
 router.post("/join", groupController.join);
 router.post("/leave", groupController.leave);
 router.get("/members", groupController.members);
+router.get("/historySessionPlaylists", groupController.historySessionPlaylists);
 
 module.exports = router;

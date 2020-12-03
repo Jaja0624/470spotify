@@ -10,6 +10,7 @@ import CreateGroupModal from '../CreateGroupModal'
 import GroupList from './GroupList'
 import KeyboardArrowLeftTwoToneIcon from '@material-ui/icons/KeyboardArrowLeftTwoTone';
 import { createGroup } from '../../core/server'
+import CustomSnackbar from '../CustomSnackbar'
 
 interface Props extends RouteComponentProps {}
 
@@ -17,13 +18,18 @@ interface Props extends RouteComponentProps {}
 const GroupDrawer: React.FC<Props> = ({history}: Props) => {
     const userState = userStore();
     const classes = useStyles();
+    const [success, setSuccess] = useState({state: false, msg: ''})
     
     const createGroupHandler = async (groupName: string) => {
         console.log(groupName);
         console.log('group created...' + groupName);
         setCreateGroupModalVisible(false);
         let body = {groupName, id: userState.spotifyProfile.id};
-        await createGroup(body);
+        const res = await createGroup(body);
+        if (res.status === 201 || res.status === 0) {
+            setSuccess({state:true, msg: `Group ${groupName} created!`})
+        }
+        
         await userState.getAndUpdateUserGroups();
     }
 
@@ -71,6 +77,7 @@ const GroupDrawer: React.FC<Props> = ({history}: Props) => {
             </Grid>
             
             <GroupList/>
+            <CustomSnackbar open={success.state} text={success.msg} close={() => setSuccess({state: false, msg: ''})} type='success'/>
 
             <CreateGroupModal isOpen={createGroupModalVisible} 
                                 cancelHandler={() => setCreateGroupModalVisible(false)}

@@ -37,6 +37,7 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
             await userState.getAndUpdateUserGroups()
             console.log("leave", res);
             globalState.setMiddleContainer('notgroup')
+            setSuccess({state: true, msg: `Success! Left group ${userState.currentGroup.name}`})
             userState.setCurrentGroup("");
         } else {
             console.log(userState?.currentGroup?.id);

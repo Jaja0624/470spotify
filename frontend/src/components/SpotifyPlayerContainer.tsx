@@ -83,7 +83,6 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
                         color: '#ffffff',
                         loaderColor: '#ffffff',
                         sliderColor: theme.palette.primary.main,
-                        savedColor: theme.palette.primary.main,
                         trackArtistColor: '#cccccc',
                         trackNameColor: '#ffffff',
                         sliderHandleColor: '#ffffff',

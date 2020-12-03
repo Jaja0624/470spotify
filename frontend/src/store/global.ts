@@ -36,6 +36,8 @@ type State = {
     setAdminTabIndex: (index: number) => void, 
     playerOffset: number,
     setPlayerOffset: (index: number) => void
+    searchResults?: any[],
+    setSearchResults: (results: any[]) => void,
 }
 
 const globalStore = create<State>((set, get) => ({
@@ -103,8 +105,11 @@ const globalStore = create<State>((set, get) => ({
     playerOffset:0,
     setPlayerOffset: (index: number) => {
         set({playerOffset: index})
+    },
+    searchResults: undefined,
+    setSearchResults: (results: any[]) => {
+        set(state => ({searchResults: results}))
     }
-
 }))
 
 export default globalStore;

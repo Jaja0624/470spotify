@@ -79,3 +79,7 @@ export const getActive = async (groupId: string, spotifyId: string) => {
         }
     })
 }
+
+export const getActiveAll = async (accessToken: string) => {
+    return await axios.get('/api/session/activeAll', {params: {accessToken}})
+}

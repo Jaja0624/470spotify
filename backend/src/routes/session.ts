@@ -11,5 +11,6 @@ var sessionController = require("../controllers/sessionController");
 router.post("/create", sessionController.create);
 router.post("/stop", sessionController.stop);
 router.get("/active", sessionController.active);
+router.get("/activeAll", sessionController.activeAll);
 
 module.exports = router;

@@ -2,18 +2,11 @@ import create from 'zustand';
 import IGroup from '../types/IGroup'
 import Cookies from 'js-cookie';
 import { getGroupsHandler } from '../core/serverhandler'
-import { getActive } from '../core/server'
+import { getActive, getActiveAll } from '../core/server'
 import { getPlaylist } from '../core/spotify'
 import { AxiosResponse } from 'axios';
+import { ISessionData } from '../types/ISessionData'
 
-interface ICurrentSessionData {
-    group_uid: string,
-    is_active: boolean,
-    session_uid: number,
-    spotify_playlist_uri: string,
-    playlist: any,
-    key: string
-}
 
 
 type EmptyObject = {
@@ -33,10 +26,12 @@ type State = {
     getAndUpdateUserGroups: () => void,
     createSessionInfo: any,
     setCreateSessionInfo: (info: any) => void,  
-    currentSessionData: ICurrentSessionData | EmptyObject,
+    currentSessionData: ISessionData | EmptyObject,
     getActiveSession: () => void,
     currentSessionPlaying: number,
     setCurrentSessionPlaying: (session_uid: number) => void,
+    allPublicSessions: ISessionData[],
+    getAllPublicSessions: () => void
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -112,6 +107,16 @@ const userStore = create<State>((set, get)=> ({
     currentSessionPlaying: -1,
     setCurrentSessionPlaying: (session_uid: number) => {
         set({currentSessionPlaying: session_uid})
+    },
+    allPublicSessions: [],
+    getAllPublicSessions: async () => {
+        try {
+            const res = await getActiveAll(Cookies.get('spotifytoken')!)
+            console.log('all public sessions', res)
+        } catch (err) {
+            console.log('all public sessions', err)
+        }
+
     }
 }))
 

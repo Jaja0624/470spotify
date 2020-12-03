@@ -34,6 +34,15 @@ export const getMembers = async (groupId: string): Promise<AxiosResponse> => {
     })
 }
 
+//Gets the history session playlist from the backend
+export const getHistorySessionPlaylists = async (groupId: number): Promise<AxiosResponse> => {
+    return await axios.get('/api/group/historySessionPlaylists', {
+        params: {
+            groupId
+        }
+    })
+}
+
 // data.session_uid : new app session
 // data.playlist_id : new playlist created
 export const createSession = async (accessToken: string, groupId: string, spotifyId: string, createSessionInfo: any) => {

@@ -27,6 +27,16 @@ class SessionRoomManager {
             }
         } 
     }
+
+    // find what group session the user is in
+    findGroup(spotify_uid: string) {    
+        for (let group_uid in  this.groupSessions) {
+            if (this.groupSessions[group_uid].allItems().includes(spotify_uid)) {
+                return group_uid
+            }
+        }
+        return -1
+    }
     
     // finds user and remove them from any session
     removeUserAllGroups(spotify_uid: string) {

@@ -1,4 +1,3 @@
-import { IndeterminateCheckBox } from '@material-ui/icons';
 import create from 'zustand';
 interface ITrack {
     artists: string | string[],
@@ -23,6 +22,7 @@ type State = {
     setGroupInvite: (groupId?: number) => void,
     tracksToPlay: string[],
     setTracksToPlay: (tracks: string[]) => void,
+    getTracksToPlay: () => string[],
     playing: boolean,
     setPlaying: (play: boolean) => void,
     startPlaying: () => void,
@@ -33,7 +33,9 @@ type State = {
     resetPlayTimer: () => void,
     prevTrack: ITrack | null,
     adminTabIndex: number,
-    setAdminTabIndex: (index: number) => void
+    setAdminTabIndex: (index: number) => void, 
+    playerOffset: number,
+    setPlayerOffset: (index: number) => void
 }
 
 const globalStore = create<State>((set, get) => ({
@@ -68,6 +70,9 @@ const globalStore = create<State>((set, get) => ({
         set({tracksToPlay: tracks})
         console.log("new tracks set", get().tracksToPlay);
     },
+    getTracksToPlay: () => {
+        return get().tracksToPlay
+    },
     playing: false,
     setPlaying: (play: boolean) => {
         set({playing: play})
@@ -95,6 +100,10 @@ const globalStore = create<State>((set, get) => ({
     setAdminTabIndex: (index: number) => {
         set({adminTabIndex: index})
     },
+    playerOffset:0,
+    setPlayerOffset: (index: number) => {
+        set({playerOffset: index})
+    }
 
 }))
 

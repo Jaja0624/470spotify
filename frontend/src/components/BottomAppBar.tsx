@@ -38,10 +38,10 @@ const BottomAppBar: React.FC<Props> = ({history}) => {
 
     function duration() {
         if (globalState.prevTrack) {
-            console.log("prev track", globalState.prevTrack)
+            // console.log("prev track", globalState.prevTrack)
             return millisToMinutesAndSeconds(globalState.prevTrack?.durationMs)
         } else if (globalState.currentTrack) {
-            console.log("curr track", globalState.currentTrack)
+            // console.log("curr track", globalState.currentTrack)
             return millisToMinutesAndSeconds(globalState.currentTrack?.durationMs)
         } else {
             return "--"

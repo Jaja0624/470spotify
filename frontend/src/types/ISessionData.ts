@@ -4,5 +4,6 @@ export interface ISessionData {
     session_uid: number,
     spotify_playlist_uri: string,
     playlist: any,
-    [key: string]: any
+    [key: string]: any,
+    description: string
 }

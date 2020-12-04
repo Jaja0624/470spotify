@@ -53,6 +53,9 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
                                 - {userState.currentSessionData.playlist.tracks.items.length} songs
                             </Typography>
                         </Grid>
+                        <Typography style={{marginRight: 5}} variant='subtitle1' >
+                            {userState.currentSessionData.description}
+                        </Typography>
                     </Grid>
                 </Box>
             </Box>

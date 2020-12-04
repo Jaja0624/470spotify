@@ -114,6 +114,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                 </Typography>
 
                 <Button className={classes.title}
+                        color={globalState.middleContainer == 'user' ? 'primary' : 'default'}
                         onClick={() => {
                             userState.setSearchQuery('')
                             globalState.setMiddleContainer('user')

@@ -10,15 +10,13 @@ import Cookies from 'js-cookie';
 import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
-interface CustomPropsLol extends RouteComponentProps {}
+interface CustomPropsLol extends RouteComponentProps {
+    seekPositionChangeHandler: (positionMs: number) => void
+}
 
 // FC (function component)
-const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
-    const classes = useStyles();
-    const userState = userStore();
+const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history, seekPositionChangeHandler}: CustomPropsLol) => {
     const globalState = globalStore();
-    const [play, setPlay] = useState(false)
-    const [time, setTime] = useState(0)
     const theme = useTheme();
 
     const handleCallback = useCallback(({ type, ...state }: CallbackState) => {
@@ -29,6 +27,7 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
         globalState.resetPlayTimer();
         globalState.setPlaying(state.isPlaying);
         globalState.setCurrentTrack(state.track);
+        seekPositionChangeHandler(state.progressMs)
         socket.emit('sessionMusicChange', state)
       }, []);
 
@@ -83,7 +82,6 @@ const SpotifyPlayerContainer: React.FC<CustomPropsLol> = ({history}: CustomProps
                         color: '#ffffff',
                         loaderColor: '#ffffff',
                         sliderColor: theme.palette.primary.main,
-                        savedColor: theme.palette.primary.main,
                         trackArtistColor: '#cccccc',
                         trackNameColor: '#ffffff',
                         sliderHandleColor: '#ffffff',

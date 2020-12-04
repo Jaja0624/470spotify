@@ -15,6 +15,7 @@ import SessionContainer from './SessionContainer'
 import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import CustomSnackbar from '../components/CustomSnackbar'
 import PublicLiveSessions from './PublicLiveSessions'
+import SearchContainer from './SearchContainer'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -172,6 +173,8 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
             )
         } else if (globalState.middleContainer === 'session') {
             return <SessionContainer/>
+        } else if (globalState.middleContainer === 'search') {
+            return <SearchContainer/>
         } else {
             return (
                 <Box height="100%" width="100%">

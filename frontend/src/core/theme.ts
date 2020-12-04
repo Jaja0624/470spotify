@@ -23,6 +23,9 @@ declare module '@material-ui/core/styles/createMuiTheme' {
 }
 
 const theme = createMuiTheme({
+    typography: {
+        fontFamily: "Calibri"
+    },
     palette: {
         type:'dark',
         primary: { 
@@ -35,9 +38,6 @@ const theme = createMuiTheme({
     },
     drawer: {
         backgroundColor: '#1F1F23',
-    },
-    typography: {
-        fontFamily: 'Open Sans'
     },
     shape: {
         borderRadius: 15

@@ -112,16 +112,17 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                 <Typography className={classes.title} variant="h6" noWrap>
                     470
                 </Typography>
-
-                <Button className={classes.title}
-                        color={globalState.middleContainer == 'user' ? 'primary' : 'default'}
-                        onClick={() => {
-                            userState.setSearchQuery('')
-                            globalState.setMiddleContainer('user')
-                        }}>
-                    Home
-                </Button>
-
+                <div style={{paddingLeft: 15}}>
+                    <Button className={classes.title}
+                            style={{fontSize: 26}}
+                            color={globalState.middleContainer == 'user' ? 'primary' : 'default'}
+                            onClick={() => {
+                                userState.setSearchQuery('')
+                                globalState.setMiddleContainer('user')
+                            }}>
+                        Home
+                    </Button>
+                </div>
                 <div className={classes.search}>
                     <InputBase placeholder="Search Spotify"
                                classes={{

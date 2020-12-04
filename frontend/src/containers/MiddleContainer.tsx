@@ -44,12 +44,13 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
         }
     }
 
-    const createSessionHandler = async (createNewPlaylist: boolean, isPublic: boolean) => {
+    const createSessionHandler = async (createNewPlaylist: boolean, isPublic: boolean, description: string) => {
+        console.log(description);
         if (userState?.currentGroup?.id && userState.spotifyProfile.id && userState?.createSessionInfo) {
             setStartSessionModalVisible(false)
             console.log("create new playlist", createNewPlaylist);
             try {
-                const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo, createNewPlaylist, isPublic); 
+                const res = await createSession(Cookies.get('spotifytoken')!, userState?.currentGroup?.id, userState?.spotifyProfile.id, userState?.createSessionInfo, createNewPlaylist, isPublic, description); 
                 if (res.status == 201) {
                     await userState.getAndUpdateUserGroups()
                     await userState.getActiveSession()

@@ -75,7 +75,7 @@ exports.create = async function (req: any, res: any, next: any) {
             }
 
             const results = await db('appsession')
-                                    .insert({is_active:true, group_uid: BigInt(req.body.groupUid), public: req.body.isPublic}, 'session_uid');
+                                    .insert({is_active:true, group_uid: BigInt(req.body.groupUid), public: req.body.isPublic, description: req.body.description}, 'session_uid');
 
             // TODO...
             // Create admin

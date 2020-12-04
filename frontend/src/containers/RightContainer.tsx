@@ -44,10 +44,10 @@ const RightContainer: React.FC<Props> = () => {
         <div>
             <Tabs value={globalState.rightContainerIndex} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
                 scrollButtons="on" >
-                <Tab icon={<ChatIcon/>}/>
-                <Tab icon={<PeopleIcon/>}/>
-                <Tab icon={<LibraryMusicIcon/>}/>
-                <Tab icon={<SettingsIcon/>} label="Placeholder"/>
+                <Tab style={{ minWidth: 25 }} icon={<ChatIcon/>}/>
+                <Tab style={{ minWidth: 25 }} icon={<PeopleIcon/>}/>
+                <Tab style={{ minWidth: 25 }} icon={<LibraryMusicIcon/>}/>
+                <Tab style={{ minWidth: 25 }} icon={<SettingsIcon/>} label="Placeholder"/>
             </Tabs>
             {rightContainerShow()}
         </div>

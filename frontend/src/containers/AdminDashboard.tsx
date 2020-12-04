@@ -31,12 +31,12 @@ const AdminDashboard: React.FC<Props> = ({history}) => {
             <div>
                 <Tabs value={globalState.adminTabIndex} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth"
                     scrollButtons="on" >
-                    <Tab label="AppUser"/>
-                    <Tab label="AppGroup"/>
-                    <Tab label="GroupMember"/>
-                    <Tab label="AppSession"/>
-                    <Tab label="SessionAdmin"/>
-                    <Tab label="AppHistory"/>
+                    <Tab style={{ minWidth: 25 }} label="AppUser"/>
+                    <Tab style={{ minWidth: 25 }} label="AppGroup"/>
+                    <Tab style={{ minWidth: 25 }} label="GroupMember"/>
+                    <Tab style={{ minWidth: 25 }} label="AppSession"/>
+                    <Tab style={{ minWidth: 25 }} label="SessionAdmin"/>
+                    <Tab style={{ minWidth: 25 }} label="AppHistory"/>
                 </Tabs>
                 {adminTableComponentShow()}
             </div>

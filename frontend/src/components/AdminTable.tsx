@@ -79,10 +79,10 @@ const AdminTable: React.FC<CustomPropsLol> = ({history, tabIndex}: CustomPropsLo
                                 <TableRow>
                                 {
                                     tableHeader.map((item : any) => {
-                                        if(row[item] == true){
+                                        if(row[item] === true){
                                             return (<StyledTableCell> true </StyledTableCell>)
                                         }
-                                        else if(row[item] == false){
+                                        else if(row[item] === false){
                                             return (<StyledTableCell> false </StyledTableCell>)
                                         }
                                         else if(row[item] == null){

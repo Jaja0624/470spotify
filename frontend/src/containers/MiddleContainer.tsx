@@ -46,7 +46,6 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
     }
 
     const createSessionHandler = async (createNewPlaylist: boolean, isPublic: boolean, description: string) => {
-        console.log(description);
         if (userState?.currentGroup?.id && userState.spotifyProfile.id && userState?.createSessionInfo) {
             setStartSessionModalVisible(false)
             console.log("create new playlist", createNewPlaylist);

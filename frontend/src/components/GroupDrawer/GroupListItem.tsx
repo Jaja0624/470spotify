@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
-import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText, Box} from '@material-ui/core';
+import { Typography, ListItem, ListItemAvatar, Avatar, ListItemText, Box, Badge} from '@material-ui/core';
 import IGroup from '../../types/IGroup'
 import userStore from '../../store/user'
 import globalStore from '../../store/global'
@@ -33,13 +33,30 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
         } 
     }
 
+    const getAvatar = (isGroupActive : boolean | undefined) => {
+        if(isGroupActive){
+            return (
+                <Badge color="primary" overlap="circle" badgeContent=" "  variant="dot">
+                    {groupData.img_url 
+                    ?  <Avatar src={groupData.img_url}/>
+                    : <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
+                    }
+                </Badge>
+            )
+        }
+        else{
+            return (
+                groupData.img_url 
+                    ?  <Avatar src={groupData.img_url}/>
+                    : <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
+            )
+        }
+    }
+
     return (
         <ListItem button classes={(groupData.id === currentGroup?.id) ? {root:classes.currentGroup} : {root: classes.root}} key={groupData.id} onClick={groupClickHandler}>
-            <ListItemAvatar  classes={(groupData?.active?.is_active === true) ? {root: classes.avatar} : undefined}>
-                {groupData.img_url 
-                ?  <Avatar src={groupData.img_url}/>
-                : <Avatar src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg"/>
-                }
+            <ListItemAvatar  >
+                {getAvatar(groupData?.active?.is_active)}
             </ListItemAvatar>
             <ListItemText primary={groupData.name}/>
             {(groupData?.active?.session_uid === currentSessionPlaying) && <MusicNoteIcon/>}

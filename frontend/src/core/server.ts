@@ -45,7 +45,7 @@ export const getHistorySessionPlaylists = async (groupId: number): Promise<Axios
 
 // data.session_uid : new app session
 // data.playlist_id : new playlist created
-export const createSession = async (accessToken: string, groupId: string, spotifyId: string, createSessionInfo: any, createNewPlaylist: boolean, isPublic: boolean) => {
+export const createSession = async (accessToken: string, groupId: string, spotifyId: string, createSessionInfo: any, createNewPlaylist: boolean, isPublic: boolean, description: string) => {
     console.log("createSession TBD groupId", groupId);
     console.log("createSession TBD info", createSessionInfo);
     const body = {
@@ -54,7 +54,8 @@ export const createSession = async (accessToken: string, groupId: string, spotif
         spotifyId,
         createSessionInfo,
         createNewPlaylist,
-        isPublic
+        isPublic,
+        description: description
     }
     return await axios.post('/api/session/create', body)
 }

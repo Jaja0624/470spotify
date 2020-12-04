@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent:'center',
             alignItems:'center',
             width: '100%',
-            backgroundColor: 'blue'
+            backgroundColor: '#4a4a4a'
         }
     }),
 );

@@ -157,3 +157,12 @@ export async function getGroupPlaylists(group_uid : number) {
         left join AppGroup ag on ah2.group_uid = ag.group_uid
     `);
 }
+
+export async function getSessionPlaylist(group_uid: number){
+    console.log("dbHelper: getGroupPlaylists");
+    return await db.raw(`
+        select date_created as date_start, spotify_playlist_uri, session_uid
+        from appsession
+        where group_uid = ${group_uid} and spotify_playlist_uri is not null
+    `);
+}

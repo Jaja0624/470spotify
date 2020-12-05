@@ -1,5 +1,4 @@
 import * as db from '../db/dbHelper';
-import SSEManagerInstance from '../SSEClientManager'
 import SessionRooms from '../SessionRoomManager'
 import LoggedInClients from '../LoggedInSocketClients'
 import axios, {AxiosResponse} from 'axios';
@@ -31,15 +30,6 @@ exports.join = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.joinGroup(req.body.groupId, req.body.spotifyId);
-            const groupMembers = await db.getAllMembers(req.body.groupId);
-            // get spotify_uids as list
-            const groupMembersIdArray = groupMembers.map((mem: any) => mem.spotify_uid);
-            // tell everyone in this group to update groups
-            // SSEManagerInstance.sendMessage(groupMembersIdArray, 'a user just joined ur group man', 'updateGroup');
-            io.io().join(parseInt(req.body.groupId))
-            io.io().to(parseInt(req.body.group_uid)).emit('updateMembers')
-            io.io().to(parseInt(req.body.group_uid)).emit('updateSessions')
-
             console.log('trx result', result)
             res.json(result);
         } catch (err) {
@@ -57,11 +47,6 @@ exports.leave = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.leaveGroup(req.body.groupId, req.body.spotifyId);
-            const groupMembers = await db.getAllMembers(req.body.groupId);
-            // get spotify_uids as list
-            const groupMembersIdArray = groupMembers.map((mem: any) => mem.spotify_uid);
-            // tell everyone in this group to update groups
-            SSEManagerInstance.sendMessage(groupMembersIdArray, 'a user just left ur group man', 'updateGroup');
             console.log('trx result', result)
             res.json(result);
         } catch (err) {

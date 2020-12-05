@@ -43,17 +43,6 @@ const Dashboard: React.FC<Props> = ({history}) => {
             scopedGetGroup();
         }
         
-        const source = new EventSource(REACT_APP_BACKEND + '/stream?spotifyid=' + user.spotifyProfile.id);
-        source.onmessage = e => {
-            console.log(JSON.parse(e.data));
-        }
-        source.addEventListener('updateGroup', async (ev: any) => {
-            console.log('updateGroup');
-            console.log(JSON.parse(ev.data));
-            await user.getAndUpdateUserGroups()
-        })
-
-  
         if (user.spotifyProfile.images.length != 0) {
             socket.emit('loggedIn', {spotify_uid: user.spotifyProfile.id, pro_pic: user.spotifyProfile?.images[0]?.url})
         } else {

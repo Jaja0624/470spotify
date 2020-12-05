@@ -16,6 +16,7 @@ import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import CustomSnackbar from '../components/CustomSnackbar'
 import PublicLiveSessions from './PublicLiveSessions'
 import SearchContainer from './SearchContainer'
+import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {}
@@ -34,12 +35,19 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
 
     async function leaveGroupAndUpdate() {
         if (userState?.currentGroup?.id) {
+            const groupId = userState?.currentGroup?.id
             const res = await leaveGroup(userState.currentGroup?.id, userState.spotifyProfile.id);
             await userState.getAndUpdateUserGroups()
             console.log("leave", res);
             globalState.setMiddleContainer('notgroup')
             setSuccess({state: true, msg: `Success! Left group ${userState.currentGroup.name}`})
+            socket.emit('leaveGroup', {
+                group_uid: groupId,
+                spotify_uid: userState.spotifyProfile.id,
+                name: userState.spotifyProfile.display_name
+            })
             userState.setCurrentGroup("");
+
         } else {
             console.log(userState?.currentGroup?.id);
         }

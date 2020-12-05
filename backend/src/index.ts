@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import SSEManagerInstance  from './SSEClientManager';
 import { chatRoomKey, sessionKey } from './utils/socket'
 import { joinChatData, messageData, playerState} from './types/socket'
 var db = require('./db/dbConnection');
@@ -53,29 +52,6 @@ app.use((req, res, next) => {
     res.set('Content-Type', 'text/html');
     next();
 });
-
-// a logged in client will be connected to this stream
-app.get('/stream', (req, res) => {
-  const headers = {
-    'Content-Type': 'text/event-stream',
-    'Connection': 'keep-alive',
-    'Cache-Control': 'no-cache'
-  }
-  res.writeHead(200, headers)
-
-  const spotifyId: string = req.query.spotifyid as string;
-
-  res.on('close', () => {
-    console.log('sse closed');
-    res.end();
-    SSEManagerInstance.deleteClient(spotifyId);
-  })
-
-  if (spotifyId) {
-    console.log("adding", spotifyId)
-    SSEManagerInstance.addClient(spotifyId, {res});
-  }
-})
 
 function chatStatusUpdate(group_uid: string, msg: string) {
   io.to(chatRoomKey(group_uid)).emit(SOCKET_STUFF.NEW_MSG_EVENT, {
@@ -190,14 +166,26 @@ io.on("connection", function(socket: any) {
         msg: data.msg
       })
     })
+    
+    socket.on(SOCKET_STUFF.JOIN_GROUP_EVENT, async function (data: joinChatData) {
+      socket.join(data.group_uid)
+      io.to(data.group_uid).emit('updateMembers')
+      chatStatusUpdate(data.group_uid, data.name + " has joined the group!");
+    })
+
+    socket.on(SOCKET_STUFF.LEAVE_GROUP_EVENT, async function (data: joinChatData) {
+      socket.leave(data.group_uid)
+      io.to(data.group_uid).emit('updateMembers')
+      chatStatusUpdate(data.group_uid, data.name + " has left the group!");
+    })
 
     socket.on(SOCKET_STUFF.JOIN_SESSION_EVENT, async function (data: joinChatData) {
       console.log("join session ev");
       SessionRoomManager.addUser(data.group_uid, data.spotify_uid)
       console.log('updated group sessions', SessionRoomManager.all());
       socket.join(sessionKey(data.group_uid))
-    
       chatStatusUpdate(data.group_uid, data.name + " has joined the session");
+
       io.to(data.group_uid).emit('updateMembers')
     })
 

@@ -39,6 +39,7 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
                 <Box>
                     <Grid container direction='column' alignItems='flex-start' style={{paddingLeft:25}}>
                         <Typography variant='subtitle1' >Session Id: {userState.currentSessionData.session_uid}</Typography>
+                        <Typography variant='subtitle1' >{userState.currentSessionData.public ? "Public" : "Private"}</Typography>
                         <Typography variant='subtitle1' style={{fontFamily:'Arial', fontWeight:'bold'}}>PLAYLIST</Typography>
                         <Typography variant='h4' style={{fontWeight:'bold'}} >{userState.currentSessionData.playlist.name}</Typography>
                         {userState.currentSessionData?.playlist?.description ? <Typography variant='h6' color='primary'>{userState.currentSessionData.playlist.description}</Typography> : null}

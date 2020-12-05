@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent:'center',
             alignItems:'center',
             width: '100%',
+            '&:hover': {
+                backgroundColor: '#4a4a4a'
+            }
         },
         avatar: {
             backgroundColor: theme.palette.primary.main

@@ -58,7 +58,7 @@ const ViewSessionPlaylistHistoryModal: React.FC<Props> = ({history, isOpen, canc
                             return <SongListItem 
                                 key={getSongKey(song)}
                                 song={song} 
-                                isAppUserVisible={true} 
+                                isAppUserVisible={false} 
                                 isGroupNameVisible={false} 
                                 isDateAddedVisible={false} 
                                 onClickHandler={() => {}}

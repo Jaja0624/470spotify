@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import { List } from '@material-ui/core';
+import Cookies from 'js-cookie';
 
 import GroupPlaylistHistoryItem from '../components/GroupPlaylistHistoryItem';
 import ViewSessionPlaylistHistoryModal from './ViewSessionPlaylistHistoryModal';
@@ -46,7 +47,7 @@ const GroupPlaylistHistory: React.FC<Props> = () => {
     async function pullPlaylists() {
         if (userState?.currentGroup?.id) {
             console.log("<GroupPlaylistHistory>: currentgroup = ", userState.currentGroup?.id);
-            const backendPlaylists = await getHistorySessionPlaylists(parseInt(userState.currentGroup?.id));
+            const backendPlaylists = await getHistorySessionPlaylists(Cookies.get('spotifytoken')!, parseInt(userState.currentGroup?.id));
             console.log("<GroupPlaylistHistory>: New history session playlist data taken from the backend: ", backendPlaylists);
             if (backendPlaylists.status === 200) {
                 setPlaylistHistory(backendPlaylists.data);

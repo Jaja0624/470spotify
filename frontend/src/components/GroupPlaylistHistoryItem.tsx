@@ -45,9 +45,6 @@ const GroupPlaylistHistoryItem: React.FC<Props> = ({history, session_uid, startD
             <ListItemText
                 primary={getDate(startDate)}
             />
-            <Typography className={classes.small}>
-                with {participants}
-            </Typography>
         </ListItem>
     )
 }

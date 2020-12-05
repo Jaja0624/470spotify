@@ -9,12 +9,13 @@ import Cookies from 'js-cookie';
 import {getUserProfile, getPlaylists} from '../core/spotify';
 import { joinGroup } from '../core/server';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { socket } from '../core/socket'
 
 const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
     const user = userStore();
     const globalState = globalStore();
     const [loading, setLoading] = useState(true);
-
+    
     // verify user is logged in 
     const verifyAccessToken = async () => {
         const accessToken = Cookies.get('spotifytoken');
@@ -31,12 +32,17 @@ const AuthenticatedRoute = ({ component, redirectPath, ...rest}: any) => {
                         await user.getAndUpdateUserGroups();
                         globalState.setMiddleContainer('group');
                         user.setCurrentGroup(globalState.groupInvite?.groupId);
-                        // globalState.setGroupInvite(undefined);
+                        const groupId = globalState.groupInvite?.groupId
+                        globalState.setGroupInvite(undefined);
+                        socket.emit('joinGroup', {
+                            group_uid: groupId,
+                            spotify_uid: userProfile.data.id,
+                            name: userProfile.data.display_name
+                        })
                     } else {
                         // TODO indicate to user failure
                         console.log('join group err')
                     }
-                    
                 }
             } else {
                 user.setSpotifyProfile(undefined);

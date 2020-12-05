@@ -32,6 +32,9 @@ Libraries
 Username: jbaltar@sfu.ca  
 Password: cmpt470470  
 
+Username: 470veria2proj1@gmail.com
+Password: SFU470veria2proj1 
+
 
 ## 470 - Backend Setup (Windows)
 

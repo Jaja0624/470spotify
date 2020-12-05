@@ -2,6 +2,7 @@ import * as db from '../db/dbHelper';
 import SSEManagerInstance from '../SSEClientManager'
 import SessionRooms from '../SessionRoomManager'
 import LoggedInClients from '../LoggedInSocketClients'
+import axios, {AxiosResponse} from 'axios';
 const io = require('../socket')
 
 exports.create = async function (req : any, res : any, next : any) {
@@ -130,7 +131,7 @@ export default interface SessionPlaylist {
     songs: Array<Song>
 }
 
-//Gets all the history session playlist of a group
+//Gets all the history session playlist of a group based purely on the app session
 exports.historySessionPlaylists = async function (req : any, res : any, next : any) {
     console.log("groupController exports.historySessionPlaylists");
     console.log('params', req.params);
@@ -139,43 +140,57 @@ exports.historySessionPlaylists = async function (req : any, res : any, next : a
         res.send('missing parameters');
     } else {
         try {
-            var result = await db.getGroupPlaylists(req.query.groupId);
-            console.log(result);
-            var playlists : Array<SessionPlaylist> = [];
-            if (result.rows.length != 0) {
-                var currentSessionUID = -1;
+            var result = await db.getSessionPlaylist(req.query.groupId);
 
+            var playlists: Array<SessionPlaylist> = [];
+            if (result.rows.length != 0){
+
+                //process each result from the appsession
                 for(let i = 0; i < result.rows.length; i++){
                     var row = result.rows[i];
-                    if(playlists.length == 0 || row.session_uid != currentSessionUID){
-                        playlists.push({
-                            session_uid : row.session_uid,
-                            start_date : row.date_start,
-                            participants : row.participants,
-                            songs : [{
-                                date_added: row.date_added,
-                                app_user: row.public_name,
-                                songname : "placeholder",
-                                song_uri : row.song_uri,
-                                group_name: row.group_name
-                            }]
+
+                    //find the details of each playlist uri
+                    var playlistItem = await axios.get(`https://api.spotify.com/v1/playlists/${row.spotify_playlist_uri}/tracks`, {
+                        headers: {
+                            'Authorization': `Bearer ${req.query.accessToken}`
+                        }
+                    })
+
+                    var songs: Array<Song> = [];
+                    //format each of the songs into the interface
+                    for(let j = 0; j < playlistItem.data.items.length; j++){
+                        var item = playlistItem.data.items[j];
+
+                        //get all the names of the artists
+                        var artists = "";
+                        for(let k = 0; k < item.track.artists.length; k++){
+                            artists += item.track.artists[k].name + ", ";
+                        }
+                        artists = artists.slice(0, -1);
+                        var songname = `${item.track.name} - ${artists.slice(0, -1)}`;
+
+                        //append the song
+                        songs.push({
+                            date_added: item.added_at,
+                            app_user: "",//keep this empty for now
+                            songname : songname,
+                            song_uri : item.track.uri,
+                            group_name: ""//keep this empty for now
                         });
-                        console.log(playlists);
-                        currentSessionUID = row.session_uid;
                     }
-                    else{
-                        playlists[playlists.length - 1].songs.push({
-                            date_added: row.date_added,
-                            app_user: row.public_name,
-                            songname : "placeholder",
-                            song_uri : row.song_uri,
-                            group_name: row.group_name
-                        });
-                    }
+                    
+                    //format each playlist into the interface
+                    playlists.push({
+                        session_uid: row.session_uid,
+                        start_date: row.date_start,
+                        participants: "",
+                        songs: songs
+                    });
                 }
             }
-            console.log('playlists result', playlists);
+            console.log('playlists size', playlists.length);
             res.json(playlists);
+            
         } catch (err) {
             console.log(err);
             res.json(err)

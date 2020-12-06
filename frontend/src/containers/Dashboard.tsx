@@ -110,8 +110,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
         flexGrow: 1,
-        height:'100vh',
-        paddingBottom: 64,
+        height:'100%',
+        paddingBottom: 171,
     },
     box: {
         border: "solid 1px black",

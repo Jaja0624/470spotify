@@ -34,6 +34,8 @@ type State = {
     getAllPublicSessions: () => void
     searchQuery: string,
     setSearchQuery: (query: string) => void,
+    spotifyDeviceId: string,
+    setSpotifyDeviceId: (id: string) => void,
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -122,6 +124,10 @@ const userStore = create<State>((set, get)=> ({
     searchQuery: '',
     setSearchQuery: (query: string) => {
         set({searchQuery: query})
+    },
+    spotifyDeviceId: '',
+    setSpotifyDeviceId: (id: string) => {
+        set({spotifyDeviceId: id})
     }
 }))
 

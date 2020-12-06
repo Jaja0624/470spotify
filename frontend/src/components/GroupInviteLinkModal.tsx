@@ -15,6 +15,7 @@ const GroupInviteLinkModal: React.FC<Props> = ({history, isOpen, cancelHandler}:
     const classes = useStyles();
     const userState = userStore();
     const [inviteLink, setInviteLink] = useState('No Group Found')
+    const react_app_url = ""
     
     useEffect(() => {
         if (userState?.currentGroup?.id) {

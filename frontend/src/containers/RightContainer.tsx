@@ -47,7 +47,8 @@ const RightContainer: React.FC<Props> = () => {
                 <Tab style={{ minWidth: 25 }} icon={<ChatIcon/>}/>
                 <Tab style={{ minWidth: 25 }} icon={<PeopleIcon/>}/>
                 <Tab style={{ minWidth: 25 }} icon={<LibraryMusicIcon/>}/>
-                <Tab style={{ minWidth: 25 }} icon={<SettingsIcon/>} label="Placeholder"/>
+                {/* Commented out for demonstration purposes. */}
+                {/* <Tab style={{ minWidth: 25 }} icon={<SettingsIcon/>} label="Placeholder"/> */}
             </Tabs>
             {rightContainerShow()}
         </div>

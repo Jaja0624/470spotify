@@ -27,8 +27,8 @@ type State = {
     setPlaying: (play: boolean) => void,
     startPlaying: () => void,
     stopPlaying: () => void,
-    currentTrack: ITrack | null,
-    setCurrentTrack: (track: ITrack) => void,
+    currentTrack: any,
+    setCurrentTrack: (track: any) => void,
     playTimer: number,
     resetPlayTimer: () => void,
     adminTabIndex: number,
@@ -88,8 +88,8 @@ const globalStore = create<State>((set, get) => ({
     resetPlayTimer: () => {
         set({playTimer: 0})
     },
-    currentTrack: null,
-    setCurrentTrack: (track: ITrack) => {
+    currentTrack: '',
+    setCurrentTrack: (track: any) => {
         console.log("setting track", track);
         set({currentTrack: track})
     },

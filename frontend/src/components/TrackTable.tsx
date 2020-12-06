@@ -6,6 +6,9 @@ import { Button, IconButton, TableContainer, Table,
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import globalStore from '../store/global'
 import {extractUris, copyFrom} from '../core/utils'
+import Cookies from 'js-cookie';
+import userStore from '../store/user'
+import { socket } from '../core/socket'
 
 // extending RouteComponentProps allow us to bring in prop types already declared in RouteComponentProps
 interface CustomPropsLol extends RouteComponentProps {
@@ -16,16 +19,22 @@ interface CustomPropsLol extends RouteComponentProps {
 const TrackList: React.FC<CustomPropsLol> = ({history, tracks}: CustomPropsLol) => {
     const globalState = globalStore();
     const classes = useStyles();
+    const userState = userStore();
+
     console.log('playlist tracks', tracks);
 
     const extractTrackUris = (): string[] => {
         return extractUris(tracks);
     }
-    const playButtonHandler = (trackUri: string) => {
-        const index = tracks.findIndex((track: any) => track.track.uri === trackUri)
-        globalState.setPlayerOffset(index)
-        if (globalState.playing != true) {
-            globalState.setPlaying(true);
+    const playButtonHandler = async (trackUri: string) => {
+        const accessToken = Cookies.get('spotifytoken');
+        if (accessToken) {
+            console.log("access token found", accessToken);
+
+            const index = tracks.findIndex((track: any) => track.track.uri === trackUri)
+            console.log("index", index, "track", trackUri);
+
+            socket.emit('trackTable', [userState.currentSessionData, index]);
         }
     }
 

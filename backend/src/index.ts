@@ -199,7 +199,7 @@ io.on("connection", function(socket: any) {
       io.to(data.group_uid).emit('updateMembers')
     })
 
-    socket.on(SOCKET_STUFF.SESSION_MUSIC_CHANGE, async function (newState: playerState) {
+    socket.on(SOCKET_STUFF.SESSION_MUSIC_CHANGE, async function (newState: any) {
       console.log(SOCKET_STUFF.SESSION_MUSIC_CHANGE, newState)
       const groupId = SessionRoomManager.findGroup(socketSpotifyUid)
       if (groupId > 0) {
@@ -207,5 +207,12 @@ io.on("connection", function(socket: any) {
         io.to(sessionKey(groupId)).emit(SOCKET_STUFF.UPDATE_PLAYER, newState)
       }
     })
-});
 
+    socket.on(SOCKET_STUFF.TRACK_TABLE, async function (newState: any) {
+      console.log(SOCKET_STUFF.TRACK_TABLE, newState)
+      const groupId = SessionRoomManager.findGroup(socketSpotifyUid)
+      if (groupId > 0) {
+        io.to(sessionKey(groupId)).emit('updateFromTrackTable', newState)
+      }
+    })
+});

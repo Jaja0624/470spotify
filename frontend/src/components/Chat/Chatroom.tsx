@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign:'center',
             flexGrow:1,
             paddingLeft: 10,
-            paddingBottom: 100
+            paddingBottom: 125
         }
     }),
 );

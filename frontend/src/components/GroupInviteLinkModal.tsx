@@ -19,7 +19,7 @@ const GroupInviteLinkModal: React.FC<Props> = ({history, isOpen, cancelHandler}:
     useEffect(() => {
         if (userState?.currentGroup?.id) {
             console.log("asdasdasd", userState)
-            setInviteLink(`http://localhost:3000/invite?groupid=${userState.currentGroup.id}`) 
+            setInviteLink(`https://35.203.58.116:3000/invite?groupid=${userState.currentGroup.id}`) 
         } 
     })
         

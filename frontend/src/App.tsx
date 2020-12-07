@@ -14,7 +14,9 @@ import AdminLoginScreen from './containers/AdminLoginScreen'
 import AdminDashboard from './containers/AdminDashboard'
 
 const App: React.FC = () => {
-	
+	useEffect(() => {
+		document.title = 'Flamingo'
+	}, [])
 	return (
 		<ThemeProvider theme={theme}>
 			<CssBaseline/>

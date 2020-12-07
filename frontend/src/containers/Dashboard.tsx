@@ -36,6 +36,8 @@ const Dashboard: React.FC<Props> = ({history}) => {
     }
     // when frontend loads, it will call the "all group" endpoint every 5s
     useEffect(() => {
+        document.title = 'Flamingo - Home'
+        
         async function scopedGetGroup() {
             await user.getAndUpdateUserGroups();
         }

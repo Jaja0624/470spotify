@@ -119,6 +119,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
                             onClick={() => {
                                 userState.setSearchQuery('')
                                 globalState.setMiddleContainer('user')
+                                document.title = 'Flamingo - Home'
                             }}>
                         Home
                     </Button>

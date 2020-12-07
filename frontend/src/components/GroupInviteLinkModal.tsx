@@ -14,12 +14,13 @@ interface Props extends RouteComponentProps {
 const GroupInviteLinkModal: React.FC<Props> = ({history, isOpen, cancelHandler}: Props) => {
     const classes = useStyles();
     const userState = userStore();
-    const [inviteLink, setInviteLink] = useState('No Group Found')
+    const [inviteLink, setInviteLink] = useState('No Group Found');
+    const REACT_APP_PROJECT_URL = process.env.REACT_APP_PROJECT_URL || 'http://localhost';
     
     useEffect(() => {
         if (userState?.currentGroup?.id) {
             console.log("asdasdasd", userState)
-            setInviteLink(`https://35.203.58.116:3000/invite?groupid=${userState.currentGroup.id}`) 
+            setInviteLink(`${REACT_APP_PROJECT_URL}:3000/invite?groupid=${userState.currentGroup.id}`) 
         } 
     })
         

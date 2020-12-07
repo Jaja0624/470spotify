@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Button, Checkbox, Container} from '@material-ui/core';
+import { Button, Checkbox, Container } from '@material-ui/core';
+import { ListItem, ListItemAvatar, Avatar, ListItemText, Box, Badge} from '@material-ui/core';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import userStore from '../store/user'
 import { RouteComponentProps } from 'react-router-dom';
@@ -23,6 +24,11 @@ const Landing: React.FC<Props> = ({history}) => {
                 <Typography variant="h5" gutterBottom className={`${classes.typography}`}>
                     Sign in
                 </Typography>
+
+                <ListItemAvatar>
+                    <Avatar className={`${classes.logo}`} 
+                        src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg" />
+                </ListItemAvatar>
 
                 <Typography variant="body2" gutterBottom className={`${classes.typography}`}>
                     Connect your spotify account. <br/> Don't have an account?&nbsp;  
@@ -67,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
         right: 0,
         borderRadius: theme.shape.borderRadius,
         backgroundColor: '#434343',
-        height: 210,
+        height: 250,
         width: 340,
         margin: 'auto',
         textAlign: 'center',
@@ -96,8 +102,12 @@ const useStyles = makeStyles((theme: Theme) =>
     typography: {
         margin: 10
     },
-    adminLogin: {
+      adminLogin: {
+        paddingTop: 0,
         fontSize: 12
+    }, 
+    logo: {
+        margin: 'auto',
     }
 
   }),

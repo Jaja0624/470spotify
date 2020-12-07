@@ -61,7 +61,7 @@ const AdminMainAppBar: React.FC<Props> = ({history}) => {
                 <Grid style={{flexGrow:1}} container direction='row'>
                     <Box width={1} display="flex" alignItems='center'>
                         <Box position='absolute' >
-                            470
+                            Flamingo Player
                             <Button color={globalState.middleContainer == "user" ? 'primary' : 'default'} onClick={() => {
                                 globalState.setMiddleContainer('user')
                             }}>Home</Button>

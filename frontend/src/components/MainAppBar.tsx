@@ -110,7 +110,7 @@ const MainAppBar: React.FC<Props> = ({history}) => {
         <AppBar color='secondary' position="static">
             <Toolbar>
                 <Typography className={classes.title} variant="h6" noWrap>
-                    470
+                    Flamingo Player
                 </Typography>
                 <div style={{paddingLeft: 15}}>
                     <Button className={classes.title}

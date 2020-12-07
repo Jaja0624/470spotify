@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cstart": "concurrently \"npm run dev\" \"cd ../frontend && npm start",
+    "cstart": "concurrently \"npm run dev\" \"cd ../frontend && npm start\"",
     "start": "node jsOutput/index.js",
     "stop": "taskkill -f -im node.exe",
     "dev": "nodemon src/index.ts",

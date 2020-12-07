@@ -24,6 +24,7 @@ const OtherLiveSessions: React.FC<Props> = () => {
 
     useEffect(() => {
         async function getAll() {
+            
             try {
                 const res = await getActiveAll(Cookies.get('spotifytoken')!)
                 setSessions(res.data)

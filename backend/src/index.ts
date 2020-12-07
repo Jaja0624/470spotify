@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { chatRoomKey, sessionKey } from './utils/socket'
-import { joinChatData, messageData, playerState} from './types/socket'
+import { joinChatData, messageData, playerState, playlistData} from './types/socket'
 var db = require('./db/dbConnection');
 import * as dbHelper from './db/dbHelper';
 var spotifyRouter = require('./routes/spotify');
@@ -206,6 +206,12 @@ io.on("connection", function(socket: any) {
         console.log("player update", groupId)
         io.to(sessionKey(groupId)).emit(SOCKET_STUFF.UPDATE_PLAYER, newState)
       }
+    })
+
+    socket.on(SOCKET_STUFF.PLAYLIST_CHANGE, async function(data: any) {
+        console.log('playlist update', data.group_uid);
+        // const groupId = SessionRoomManager.findGroup(socketSpotifyUid)
+        io.to(parseInt(data.group_uid)).emit('playlistChange', data)
     })
 
     socket.on(SOCKET_STUFF.TRACK_TABLE, async function (newState: any) {

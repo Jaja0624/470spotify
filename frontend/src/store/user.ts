@@ -20,6 +20,7 @@ type State = {
     userGroups: IGroup[],
     currentGroup?: IGroup,
     setCurrentGroup: (id: string) => void,
+    getCurrentGroup: () => any,
     setUserGroups: (userGroups: IGroup[]) => void,
     userPlaylists?: any[],
     setUserPlaylists: (playlists: any[]) => void,
@@ -36,6 +37,7 @@ type State = {
     setSearchQuery: (query: string) => void,
     spotifyDeviceId: string,
     setSpotifyDeviceId: (id: string) => void,
+    updateCurrentSessionDataPlaylist: () => void
 }
 
 const userStore = create<State>((set, get)=> ({
@@ -59,6 +61,9 @@ const userStore = create<State>((set, get)=> ({
         set(state => ({
             currentGroup: state.userGroups.find((group: IGroup) => group.id === id) || undefined
         }))
+    },
+    getCurrentGroup: () => {
+        return get().currentGroup
     },
     getAndUpdateUserGroups: async () => {
         if (get().spotifyProfile?.id) {
@@ -107,6 +112,22 @@ const userStore = create<State>((set, get)=> ({
             console.log("failed to get an active session. Session results", sessionData);
             set({currentSessionData: {}})
         }
+    },
+    updateCurrentSessionDataPlaylist: async () => {
+        const playlistRes: AxiosResponse = await getPlaylist(Cookies.get('spotifytoken')!, get().currentSessionData.playlist.id)
+        const playlistData = playlistRes.data
+        const oldSessionData: ISessionData | EmptyObject = get().currentSessionData
+        console.log("getActiveSession412412412412414", playlistData)
+        // get playlist songs
+        set({currentSessionData: {
+            ...oldSessionData,
+            playlist: playlistData
+        }})
+        // get().currentSessionData.playlist = playlistData.data
+        // set({currentSessionData: {
+        //     ...get().currentSessionData,
+        //     playlist: playlistData.data
+        // }})
     },
     currentSessionPlaying: -1,
     setCurrentSessionPlaying: (session_uid: number) => {

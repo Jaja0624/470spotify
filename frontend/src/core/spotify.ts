@@ -35,6 +35,37 @@ export const getSearchResults = async (accessToken: string, query: string): Prom
     })
 }
 
+export const addTrackToPlaylist = async (accessToken: string, playlistId: string, track: string): Promise<AxiosResponse> => {
+    const headers = {
+        headers: { 
+            'Authorization': `Bearer ${accessToken}`,
+        }
+    }
+
+    const body = {
+        'uris': [`${track}`]
+    }
+    
+    return await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, body, headers)
+}
+
+export const removeTracksFromPlaylist = async (accessToken: string, playlistId: string, track: string): Promise<AxiosResponse> => {
+    const request = {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        },
+        data: {
+            'tracks': [
+                {
+                'uri': `${track}`
+                }
+            ]
+        }
+    }
+
+    return await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, request)
+}
+
 export const getCurrentPlayback = async (accessToken: string): Promise<AxiosResponse> => {
     return await axios.get(`https://api.spotify.com/v1/me/player`, {
         headers: {

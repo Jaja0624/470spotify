@@ -66,7 +66,7 @@ const SessionItem: React.FC<Props> = ({history, sessionData}: Props) => {
 
 
     return (
-        <Box width="100%" height="100%" justifyContent='flex-start' >
+        <Box width="100%" height="100%" justifyContent='flex-start' className={classes.root}>
             <Box onClick={() => setTracksModalVisible(true)} display="flex">
                 <Box>
                     <CardMedia
@@ -98,6 +98,10 @@ const SessionItem: React.FC<Props> = ({history, sessionData}: Props) => {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            '&:hover': {
+                background:"#38961e",
+                cursor: 'pointer'
+            },
         },
         cover: {
             width:200,

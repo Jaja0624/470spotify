@@ -22,3 +22,12 @@ export const copyFrom = (target: any, array: any[]) => {
     }
     return newArr;
 }
+
+export const remove = (target: any, array: any[]) => {
+    for (let i = 0; i < array.length; i++) {    
+        if (array[i] == target) {
+            array.splice(array[i], 1)
+        }
+    }
+    return array;
+}

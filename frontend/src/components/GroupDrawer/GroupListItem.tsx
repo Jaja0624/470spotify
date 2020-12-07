@@ -22,10 +22,10 @@ const GroupListItem: React.FC<Props> = ({history, groupData, key}: Props) => {
     const setCurrentGroup = userStore(state => state.setCurrentGroup);
     
     const groupClickHandler = () => {
+        document.title = 'Flamingo - ' + groupData.name
         setCurrentGroup(groupData.id);
         if (currentSession.group_uid != groupData.id) {
             setMiddleContainer('group');
-            document.title = 'Flamingo - ' + groupData.name
         } else {
             setMiddleContainer('session')
         }

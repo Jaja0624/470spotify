@@ -14,7 +14,12 @@ export const LEAVE_GROUP_EVENT = 'leaveGroup';
 
 export const SESSION_MUSIC_CHANGE = 'sessionMusicChange'; // Sent from client when player updates play, stop, next
 export const UPDATE_PLAYER = 'updatePlayer' // Sent to client to tell them to update player
+
 export const TRACK_TABLE = 'trackTable'
+
+export const PLAYLIST_CHANGE = 'playlistChange' // Sent from client when playlist track is added or removed
+export const UPDATE_PLAYLIST = 'updatePlaylist' // Sent to client to tell them to update player
+
 // spotify track uri
 // event keys ===
 

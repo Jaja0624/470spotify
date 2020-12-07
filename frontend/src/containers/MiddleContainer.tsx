@@ -91,7 +91,7 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
 
     const endSessionHandler = async (unfollow: boolean) => {
         console.log("end sesh", userState.currentSessionData.session_uid)
-        const res = await endSession(Cookies.get('spotifytoken')!, userState.currentSessionData.session_uid, unfollow, userState.currentSessionData.playlist.id);
+        const res = await endSession(Cookies.get('spotifytoken')!, userState.currentSessionData?.session_uid!, unfollow, userState.currentSessionData.playlist.id);
         if (res.status === 200) {
             // if it was the users playing session then 
             if (userState.currentSessionPlaying === userState.currentSessionData.session_uid) {

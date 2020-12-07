@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import userStore from '../store/user'
+import globalStore from '../store/global'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { RouteComponentProps, withRouter} from 'react-router-dom';
 import { Box, Button } from '@material-ui/core';
@@ -10,6 +11,9 @@ import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import { socket } from '../core/socket'
 import { joinChatData } from '../types/socket'
 import CustomSnackbar from '../components/CustomSnackbar'
+import { getPlaylist } from '../core/spotify'
+import Cookies from 'js-cookie'
+import { AxiosResponse } from 'axios';
 
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -31,7 +35,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                 name: userState.spotifyProfile.display_name
             }
             socket.emit('joinSession', clientData)
-            userState.setCurrentSessionPlaying(userState.currentSessionData.session_uid)
+            userState.setCurrentSessionPlaying(userState.currentSessionData?.session_uid!)
         }
     }
 
@@ -61,6 +65,8 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
             )
         }
     }
+
+
     return (
         <div className={classes.root}>
             <div style={{display:'flex', alignItems:'center', marginBottom:12}}>

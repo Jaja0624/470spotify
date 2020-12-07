@@ -60,7 +60,14 @@ const Dashboard: React.FC<Props> = ({history}) => {
             console.log("socket on - updateSessions")
             await user.getActiveSession();
         })
-
+        socket.on('playlistChange', async (data: any) => {
+            if (data.group_uid != user.getCurrentGroup()?.id) {
+                return
+            }
+            console.log("socket on - playlistChange", data)
+            await user.updateCurrentSessionDataPlaylist()
+        })
+ 
     }, [])
 
     return (

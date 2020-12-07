@@ -21,3 +21,7 @@ export interface playerState {
     position: number,
     [key: string]: any // rest
 }
+
+export interface playlistData {
+    spotify_playlist_uri: string
+}

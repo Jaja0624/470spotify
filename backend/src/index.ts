@@ -221,4 +221,11 @@ io.on("connection", function(socket: any) {
         io.to(sessionKey(groupId)).emit('updateFromTrackTable', newState)
       }
     })
+
+    socket.on('endSession', async function (data: any) {
+      console.log("ENDSESSION BABY", data)
+      SessionRoomManager.endSession(data.group_uid)
+      socket.leave(sessionKey(data.group_uid))
+      io.to(parseInt(data.group_uid)).emit('updateMembers')
+    })
 });

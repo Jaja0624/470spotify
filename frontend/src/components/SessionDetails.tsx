@@ -22,7 +22,7 @@ const SessionDetails: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => 
     if (!userState.currentSessionData || !userState.currentSessionData.playlist) {
         return (
             <div className={classes.root}>
-                Error. Try refreshing page.
+                Session has ended or not live
             </div>
         )
     }

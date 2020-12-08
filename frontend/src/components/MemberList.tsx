@@ -49,6 +49,7 @@ const MemberList: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
 
     useEffect(() => {
         socket.on('updateMembers', async () => {
+            console.log("yeet yeet yeet")
             await pullMembers();
         })
     }, [])

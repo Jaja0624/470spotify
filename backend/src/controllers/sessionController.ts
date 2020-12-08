@@ -135,6 +135,7 @@ exports.stop = async function (req : any, res : any, next : any) {
         // IMPORTANT: USE INTEGER FOR ROOM ID
         io.io().to(parseInt(sessions[0].group_uid)).emit('updateGroup', sessions[0])
         io.io().to(parseInt(sessions[0].group_uid)).emit('updateSessions', sessions[0])
+        io.io().to(parseInt(sessions[0].group_uid)).emit('endSession', sessions[0])
 
         if (req.body.unfollow === true) {
             await unfollowPlaylist(req.body.accessToken, req.body.playlistId)

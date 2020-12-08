@@ -64,10 +64,6 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
         }
     }
 
-    if (!userState.currentSessionData.is_active) {
-        globalState.setMiddleContainer('group')
-    }
-    
     return (
         <div className={classes.root}>
             <div style={{display:'flex', alignItems:'center', marginBottom:12}}>

@@ -12,7 +12,7 @@ exports.create = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.createGroup(req.body.groupName, req.body.id);
-            console.log('trx result', result)
+            // console.log('trx result', result)
             res.json(result);
         } catch (err) {
             console.log(err);
@@ -30,7 +30,7 @@ exports.join = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.joinGroup(req.body.groupId, req.body.spotifyId);
-            console.log('trx result', result)
+            // console.log('trx result', result)
             res.json(result);
         } catch (err) {
             console.log(err);
@@ -47,7 +47,7 @@ exports.leave = async function (req : any, res : any, next : any) {
     } else {
         try {
             var result = await db.leaveGroup(req.body.groupId, req.body.spotifyId);
-            console.log('trx result', result)
+            // console.log('trx result', result)
             res.json(result);
         } catch (err) {
             console.log(err);
@@ -88,7 +88,7 @@ exports.members = async function (req : any, res : any, next : any) {
                     }
                 }
             }
-            console.log('trx result', result)
+            // console.log('trx result', result)
             res.json(result);
         } catch (err) {
             console.log(err);

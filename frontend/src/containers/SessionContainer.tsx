@@ -11,9 +11,6 @@ import MiddleContainerHeader from '../components/MiddleContainerHeader'
 import { socket } from '../core/socket'
 import { joinChatData } from '../types/socket'
 import CustomSnackbar from '../components/CustomSnackbar'
-import { getPlaylist } from '../core/spotify'
-import Cookies from 'js-cookie'
-import { AxiosResponse } from 'axios';
 
 interface CustomPropsLol extends RouteComponentProps {}
 
@@ -21,6 +18,7 @@ interface CustomPropsLol extends RouteComponentProps {}
 const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) => {
     const classes = useStyles();
     const userState = userStore();
+    const globalState = globalStore();
     const [error, setError] = useState({state: false, msg: ''})
     const [loading, setLoading] = useState(false);
 
@@ -66,7 +64,10 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
         }
     }
 
-
+    if (!userState.currentSessionData.is_active) {
+        globalState.setMiddleContainer('group')
+    }
+    
     return (
         <div className={classes.root}>
             <div style={{display:'flex', alignItems:'center', marginBottom:12}}>

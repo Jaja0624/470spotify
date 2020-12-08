@@ -6,8 +6,7 @@ import { getActive, getActiveAll } from '../core/server'
 import { getPlaylist } from '../core/spotify'
 import { AxiosResponse } from 'axios';
 import { ISessionData } from '../types/ISessionData'
-
-
+import { followPlaylist } from '../core/spotify'
 
 type EmptyObject = {
     [K in any] : never
@@ -107,10 +106,16 @@ const userStore = create<State>((set, get)=> ({
                 ...sessionData.data,
                 playlist: playlistData.data
             }})
+            try {
+                await followPlaylist(Cookies.get('spotifytoken')!, playlistData.data.id)
+            } catch (err) {
+                console.log('not followed')
+            }
             console.log("session + playlist data", get().currentSessionData);
         } else {
             console.log("failed to get an active session. Session results", sessionData);
             set({currentSessionData: {}})
+            set({currentSessionPlaying: -1})
         }
     },
     updateCurrentSessionDataPlaylist: async () => {

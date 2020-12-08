@@ -96,6 +96,7 @@ const MiddleContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =>
             // if it was the users playing session then 
             if (userState.currentSessionPlaying === userState.currentSessionData.session_uid) {
                 userState.setCurrentSessionPlaying(-1);
+                globalState.setMiddleContainer('group')
             }
             setSuccess({state: true, msg: 'Success: Session ended'})
         } else {

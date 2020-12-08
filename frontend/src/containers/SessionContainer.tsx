@@ -85,7 +85,7 @@ const SessionContainer: React.FC<CustomPropsLol> = ({history}: CustomPropsLol) =
                     {userState.currentSessionData.is_active && <Box>
                         {sessionButtons()}
                     </Box>}
-                    <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>
+                    {userState.currentSessionData.playlist && <TrackTable tracks={userState.currentSessionData.playlist?.tracks?.items}/>}
                 </Box>
             )}
             <CustomSnackbar open={error.state} text={error.msg} close={() => setError({state: false, msg: ''})} type='error'/>
